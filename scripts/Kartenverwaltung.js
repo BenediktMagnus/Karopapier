@@ -64,7 +64,9 @@ exports.SocketAnbinden = function (socket)
 
             Karte[x][y].IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
 
-            socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
+            //Die anderen nur über die Änderung informieren, wenn es dadurch das Höchste ist:
+            if (HoechstenWertErmitteln(Karte[x][y]) == WerkzeugID)
+                socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
 
             KarteSpeichern(socket.Karte, socket.Raum);
         }
@@ -80,6 +82,22 @@ exports.SocketAnbinden = function (socket)
     );
 };
 
+function HoechstenWertErmitteln (Punkt)
+{
+    let Hoechstes = 0;
+    let Wert = 0;
+
+    //Höchste Zahl an Unterstützern ermitteln, das nehmen, undefinierte Werte ignorieren:
+    for (let i = 0; i < Punkt.length; i++)
+        if ((Punkt[i] != undefined) && (Punkt[i] > Hoechstes))
+        {
+            Hoechstes = Punkt[i];
+            Wert = i;
+        }
+
+    return Wert;
+}
+
 function KarteSerialisieren (Karte)
 {
     let Kartenwerte = [];
@@ -90,18 +108,7 @@ function KarteSerialisieren (Karte)
             {
                 if (Karte[x][y] != undefined)
                 {
-                    let Hoechstes = 0;
-                    let Wert = 0;
-
-                    //Höchste Zahl an Unterstützern ermitteln, das nehmen, undefinierte Werte ignorieren:
-                    for (let i = 0; i < Karte[x][y].length; i++)
-                        if ((Karte[x][y][i] != undefined) && (Karte[x][y][i] > Hoechstes))
-                        {
-                            Hoechstes = Karte[x][y][i];
-                            Wert = i;
-                        }
-
-                        Kartenwerte.push({'x': x, 'y': y, 'id': Wert});
+                    Kartenwerte.push({'x': x, 'y': y, 'id': HoechstenWertErmitteln(Karte[x][y])});
                 }
             }
     
