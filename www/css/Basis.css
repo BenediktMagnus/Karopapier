@@ -20,3 +20,49 @@ td {
 td:hover {
     opacity: 0.5;
 }
+
+#Palette {
+    position: absolute;
+    width: 2.9vh;
+    height: 24.5vh;
+    background-color: #888;
+}
+
+#Palette div {
+    background-size: 100%;
+    width: 2.5vh;
+    height: 2.5vh;
+    margin: 0.2vh;
+}
+
+#Palette div:hover {
+    opacity: 0.5;
+}
+
+#PLeer {
+    background-image: url('/images/Leer.png');
+}
+#PWeg {
+    background-image: url('/images/Weg.png');
+}
+#PPlatte {
+    background-image: url('/images/Platte.png');
+}
+#PTorO {
+    background-image: url('/images/Tor_Oben.png');
+}
+#PTorR {
+    background-image: url('/images/Tor_Rechts.png');
+}
+#PTorU {
+    background-image: url('/images/Tor_Unten.png');
+}
+#PTorL {
+    background-image: url('/images/Tor_Links.png');
+}
+#PStufen {
+    background-image: url('/images/Stufen.png');
+}
+#PPfeil {
+    background-image: url('/images/Pfeil.png');
+}
