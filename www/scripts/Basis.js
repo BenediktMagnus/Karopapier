@@ -4,21 +4,34 @@ var Papier;
 var Palette;
 var Auswahl = null;
 
+var Verbindung = io();
+
 /**
  * Initialisierungsroutine.
  */
 function Initialisieren ()
 {
+    KarteWaehlen();
+    Verbindung.on('reconnect', KarteWaehlen);
+
+    function KarteWaehlen ()
+    {
+        //Raum-ID aus dem Querystring der URL extrahieren, vorangehendes Fragezeichen entfernen:
+        Verbindung.emit('KarteWaehlen', window.location.search.substring(1));
+    }
+
     //Das Zeichenpapier, sprich die Tabelle, ermitteln:
     Papier = document.getElementById('Papier');
     //Die Palette zum Zuweisen von Kartenteilen:
     Palette = document.getElementById('Palette');
 
+    Papier.Liste = [];
     //Karos auf dem Papier zeichnen:
     for (let y = 0; y < 40; y++)
     {
         let Reihe = document.createElement('tr');
         Papier.appendChild(Reihe);
+        Papier.Liste[y] = [];
 
         for(let x = 0; x < 40; x++)
         {
@@ -29,22 +42,27 @@ function Initialisieren ()
             Punkt.y = y;
 
             Reihe.appendChild(Punkt);
+            Papier.Liste[y][x] = Punkt;
 
             Punkt.onclick = PunktKlick;
         }
     }
+
     //Werkzeuge in der Palette mit Funktion ausstatten:
     let Werkzeuge = document.getElementsByClassName('Werkzeug');
     for (let i = 0; i < Werkzeuge.length; i++)
+    {
         Werkzeuge[i].onclick = WerkzeugKlick;
+        Werkzeuge[i].Stil = Werkzeuge[i].currentStyle || window.getComputedStyle(Werkzeuge[i], false)
+    }
 
     function WerkzeugKlick ()
     {
         if (Auswahl != null)
         {
-            var Stil = this.currentStyle || window.getComputedStyle(this, false);
+            Verbindung.emit('Eintrag', Auswahl.x, Auswahl.y, this.getAttribute('werkzeugid'));
 
-            Auswahl.style.backgroundImage = Stil.backgroundImage;
+            Auswahl.style.backgroundImage = this.Stil.backgroundImage;
             Auswahl = null;
             Palette.style.display = 'none';
         }
@@ -56,6 +74,25 @@ function Initialisieren ()
             Palette.style.display = 'none';
         },
         true
+    );
+
+    Verbindung.emit('KarteHolen', function (Kartenwerte)
+        {
+            let WerkzeugeNode = document.getElementsByClassName('Werkzeug');
+            let Werkzeuge = [];
+            for (let i = 0; i < WerkzeugeNode.length; i++)
+                Werkzeuge.push(WerkzeugeNode[i]);
+            Werkzeuge.sort(function (a, b) { return a.getAttribute('werkzeugid') - b.getAttribute('werkzeugid'); }); //Aufsteigend nach ID sortieren.
+
+            for (let i = 0; i < Kartenwerte.length; i++)
+                Papier.Liste[Kartenwerte[i].y][Kartenwerte[i].x].style.backgroundImage = Werkzeuge[Kartenwerte[i].id].Stil.backgroundImage;
+        }
+    );
+
+    Verbindung.on('Eintrag', function (X, Y, WerkzeugID)
+        {
+            document.getElementById('Punkt_' + X + ':' + Y).style.backgroundImage = document.getElementById('Werkzeug_' + WerkzeugID).Stil.backgroundImage;
+        }
     );
 }
 
