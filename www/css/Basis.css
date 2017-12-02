@@ -16,6 +16,7 @@ table {
 td {
     background-color: #000;
     background-size: 100%;
+    background-repeat: no-repeat;
 }
 
 td:hover {
