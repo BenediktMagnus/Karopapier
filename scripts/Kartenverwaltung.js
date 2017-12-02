@@ -11,7 +11,11 @@ exports.Initialisieren = function ()
     for (let i = 0; i < Level.length; i++)
         Karten.set(Level[i], []);
 
-    Karten.forEach( KarteDeserialisieren); //Beide haben die gleichen Parameter, daher geht das.
+    Karten.forEach(function (Karte, Kartenname)
+        {
+            KarteDeserialisieren(Karte, KarteLaden(Kartenname));
+        }
+    );
 };
 
 /**
@@ -115,7 +119,7 @@ function KarteDeserialisieren (Karte, Kartenwerte)
         if (Karte[x] == undefined) Karte[x] = [];
         if (Karte[x][y] == undefined) Karte[x][y] = [];
 
-        Karte[x][y][Kartenwerte.id] = 3;
+        Karte[x][y][Kartenwerte[i].id] = 3;
     }
 }
 
@@ -128,5 +132,12 @@ function KarteSpeichern (Karte, Name)
 function KarteLaden (Name)
 {
     let fs = require('fs');
-    return JSON.parse(fs.readFileSync('./speicher/' + Name + '.karo', 'utf8').toString());
+    try
+    {
+        return JSON.parse(fs.readFileSync('./speicher/' + Name + '.karo', 'utf8').toString());
+    }
+    catch (error)
+    {
+        return [];
+    }
 }
