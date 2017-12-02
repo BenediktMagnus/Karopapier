@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", Initialisieren, false); 
 
 var Papier;
+var Palette;
+var Auswahl = null;
 
 /**
  * Initialisierungsroutine.
@@ -9,6 +11,8 @@ function Initialisieren ()
 {
     //Das Zeichenpapier, sprich die Tabelle, ermitteln:
     Papier = document.getElementById('Papier');
+    //Die Palette zum Zuweisen von Kartenteilen:
+    Palette = document.getElementById('Palette');
 
     //Karos auf dem Papier zeichnen:
     for (let y = 0; y < 40; y++)
@@ -29,15 +33,35 @@ function Initialisieren ()
             Punkt.onclick = PunktKlick;
         }
     }
+    //Werkzeuge in der Palette mit Funktion ausstatten:
+    let Werkzeuge = document.getElementsByClassName('Werkzeug');
+    for (let i = 0; i < Werkzeuge.length; i++)
+        Werkzeuge[i].onclick = WerkzeugKlick;
 
+    function WerkzeugKlick ()
+    {
+        if (Auswahl != null)
+        {
+            var Stil = this.currentStyle || window.getComputedStyle(this, false);
 
+            Auswahl.style.backgroundImage = Stil.backgroundImage;
+            Auswahl = null;
+            Palette.style.display = 'none';
+        }
+    }
+
+    //Bei Klick irgendwohin, die Palette ausblenden:
+    document.body.addEventListener('click', function ()
+        {
+            Palette.style.display = 'none';
+        },
+        true
+    );
 }
 
 function PunktKlick ()
 {
-    console.log(this.offsetLeft + ' : ' + this.offsetTop);
-    //alert(this.id);
-    let Palette = document.getElementById('Palette');
+    Auswahl = this;
 
     //Palette zuerst anzeigen, um Größe zu haben:
     Palette.style.display = 'inline';
