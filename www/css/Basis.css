@@ -15,6 +15,7 @@ table {
 
 td {
     background-color: #000;
+    background-size: 100%;
 }
 
 td:hover {
@@ -23,8 +24,8 @@ td:hover {
 
 #Palette {
     position: absolute;
-    width: 2.9vh;
-    height: 24.5vh;
+    width: 5.8vh;
+    height: 14.5vh;
     background-color: #888;
 }
 
@@ -33,36 +34,37 @@ td:hover {
     width: 2.5vh;
     height: 2.5vh;
     margin: 0.2vh;
+    float: left;
 }
 
 #Palette div:hover {
     opacity: 0.5;
 }
 
-#PLeer {
+.PLeer {
     background-image: url('/images/Leer.png');
 }
-#PWeg {
+.PWeg {
     background-image: url('/images/Weg.png');
 }
-#PPlatte {
+.PPlatte {
     background-image: url('/images/Platte.png');
 }
-#PTorO {
+.PTorO {
     background-image: url('/images/Tor_Oben.png');
 }
-#PTorR {
+.PTorR {
     background-image: url('/images/Tor_Rechts.png');
 }
-#PTorU {
+.PTorU {
     background-image: url('/images/Tor_Unten.png');
 }
-#PTorL {
+.PTorL {
     background-image: url('/images/Tor_Links.png');
 }
-#PStufen {
+.PStufen {
     background-image: url('/images/Stufen.png');
 }
-#PPfeil {
+.PPfeil {
     background-image: url('/images/Pfeil.png');
 }
