@@ -62,6 +62,7 @@ exports.SocketAnbinden = function (socket)
     socket.on('KarteHolen', function (KarteGeben)
         {
             let Karte = socket.Karte;
+            if (Karte == undefined) return;
             let Antwortkarte = [];
 
             for (let x = 0; x < Karte.length; x++)
