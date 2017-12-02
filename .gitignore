@@ -1,0 +1,21 @@
+#Module von node.js gehören nicht ins Repository:
+node_modules/
+
+#VS-Code nicht ins Repository einpflegen:
+.vscode/
+
+www/css/c/*.css
+
+www/scripts/c/*.js
+
+www/lang/c/*.lang
+
+www/html/c/*.html
+
+www/html/Fehler/c/*.html
+
+www/index/c/*.html
+
+#Macdateien ignorieren:
+.DS_Store
+*.DS_Store
