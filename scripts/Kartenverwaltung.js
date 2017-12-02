@@ -6,7 +6,12 @@ var Karten = new Map();
 
 exports.Initialisieren = function ()
 {
-    Karten.set('testus', []);
+    let Level = ['testus', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6'];
+
+    for (let i = 0; i < Level.length; i++)
+        Karten.set(Level[i], []);
+
+    Karten.forEach( KarteDeserialisieren); //Beide haben die gleichen Parameter, daher geht das.
 };
 
 /**
@@ -56,6 +61,8 @@ exports.SocketAnbinden = function (socket)
             Karte[x][y].IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
 
             socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
+
+            KarteSpeichern(socket.Karte, socket.Raum);
         }
     );
 
@@ -63,30 +70,63 @@ exports.SocketAnbinden = function (socket)
         {
             let Karte = socket.Karte;
             if (Karte == undefined) return;
-            let Antwortkarte = [];
-
-            for (let x = 0; x < Karte.length; x++)
-                if (Karte[x] != undefined)
-                    for (let y = 0; y < Karte[x].length; y++)
-                    {
-                        if (Karte[x][y] != undefined)
-                        {
-                            let Hoechstes = 0;
-                            let Wert = 0;
-
-                            //Höchste Zahl an Unterstützern ermitteln, das nehmen, undefinierte Werte ignorieren:
-                            for (let i = 0; i < Karte[x][y].length; i++)
-                                if ((Karte[x][y][i] != undefined) && (Karte[x][y][i] > Hoechstes))
-                                {
-                                    Hoechstes = Karte[x][y][i];
-                                    Wert = i;
-                                }
-
-                            Antwortkarte.push({'x': x, 'y': y, 'id': Wert});
-                        }
-                    }
-
-            KarteGeben(Antwortkarte);
+            
+            KarteGeben(KarteSerialisieren(Karte));
         }
     );
 };
+
+function KarteSerialisieren (Karte)
+{
+    let Kartenwerte = [];
+
+    for (let x = 0; x < Karte.length; x++)
+        if (Karte[x] != undefined)
+            for (let y = 0; y < Karte[x].length; y++)
+            {
+                if (Karte[x][y] != undefined)
+                {
+                    let Hoechstes = 0;
+                    let Wert = 0;
+
+                    //Höchste Zahl an Unterstützern ermitteln, das nehmen, undefinierte Werte ignorieren:
+                    for (let i = 0; i < Karte[x][y].length; i++)
+                        if ((Karte[x][y][i] != undefined) && (Karte[x][y][i] > Hoechstes))
+                        {
+                            Hoechstes = Karte[x][y][i];
+                            Wert = i;
+                        }
+
+                        Kartenwerte.push({'x': x, 'y': y, 'id': Wert});
+                }
+            }
+    
+    return Kartenwerte;
+}
+
+function KarteDeserialisieren (Karte, Kartenwerte)
+{
+    for (let i = 0; i < Kartenwerte.length; i++)
+    {
+        let x = Kartenwerte[i].x;
+        let y = Kartenwerte[i].y;
+    
+        //Reihen und Spalten initialisieren:
+        if (Karte[x] == undefined) Karte[x] = [];
+        if (Karte[x][y] == undefined) Karte[x][y] = [];
+
+        Karte[x][y][Kartenwerte.id] = 3;
+    }
+}
+
+function KarteSpeichern (Karte, Name)
+{
+    let fs = require('fs');
+    fs.writeFile('./speicher/' + Name + '.karo', JSON.stringify(KarteSerialisieren(Karte)), 'utf8', () => {} );
+}
+
+function KarteLaden (Name)
+{
+    let fs = require('fs');
+    return JSON.parse(fs.readFileSync('./speicher/' + Name + '.karo', 'utf8').toString());
+}
