@@ -34,6 +34,9 @@ var Verzeichnisse = require('./scripts/Verzeichnisse.js');
 Verzeichnisse.Eintragen(app, express, Debug);
 Verzeichnisse = null; //Verzeichnisobjekt wird nicht mehr benötigt.
 
+var Kartenverwaltung = require('./scripts/Kartenverwaltung.js');
+Kartenverwaltung.Initialisieren();
+
 console.log('Beginne mit Ereignisinitialisierung.');
 
 io.on('connection', function(socket)
@@ -48,6 +51,7 @@ io.on('connection', function(socket)
     }
   );
 
+  Kartenverwaltung.SocketAnbinden(socket);
 });
 
 console.log('Ereignisse initialisiert.');
