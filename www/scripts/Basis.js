@@ -27,13 +27,13 @@ function Initialisieren ()
 
     Papier.Liste = [];
     //Karos auf dem Papier zeichnen:
-    for (let y = -20; y < 20; y++)
+    for (let y = 0; y < 40; y++)
     {
         let Reihe = document.createElement('tr');
         Papier.appendChild(Reihe);
         Papier.Liste[y] = [];
 
-        for(let x = -20; x < 20; x++)
+        for(let x = 0; x < 40; x++)
         {
             let Punkt = document.createElement('td');
             
