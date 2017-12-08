@@ -8,8 +8,9 @@ exports.Initialisieren = function ()
 {
     let Level = ['testus', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6'];
 
+    //Level in die Kartenmap setzen:
     for (let i = 0; i < Level.length; i++)
-        Karten.set(Level[i], []);
+        Karten.set(Level[i], new Map());
 
     Karten.forEach(function (Karte, Kartenname)
         {
@@ -40,32 +41,37 @@ exports.SocketAnbinden = function (socket)
             let Karte = socket.Karte;
             if (Karte == undefined) return;
 
-            //Reihen und Spalten initialisieren:
-            if (Karte[x] == undefined) Karte[x] = [];
-            if (Karte[x][y] == undefined) Karte[x][y] = [];
+            //Reihen initialisieren:
+            if (!Karte.has(x))
+                Karte.set(x, new Map());
+            let KarteX = Karte.get(x);
+            //Spalten initialisieren:
+            if (!KarteX.has(y))
+                KarteX.set(y, []);
+            let KarteY = KarteX.get(y);
 
             //IP-Liste ggf. initialisieren und andernfalls prüfen, ob ein Werkzeug bereits ausgewählt:
-            if (Karte[x][y].IPs == undefined)
-                Karte[x][y].IPs = new Map();
-            else if (Karte[x][y].IPs.has(socket.request.connection.remoteAddress))
+            if (KarteY.IPs == undefined)
+                KarteY.IPs = new Map();
+            else if (KarteY.IPs.has(socket.request.connection.remoteAddress))
             {
-                let Werkzeug = Karte[x][y].IPs.get(socket.request.connection.remoteAddress);
+                let Werkzeug = KarteY.IPs.get(socket.request.connection.remoteAddress);
                 if (Werkzeug == WerkzeugID)
                     return; //Wenn dasselbe Werkzeug nochmal ausgewählt wurde, muss nichts getan werden.
                 else
-                    Karte[x][y][Werkzeug]--;
+                KarteY[Werkzeug]--;
             }
 
             //Entsprechendes Werkzeug setzen:
-            if (Karte[x][y][WerkzeugID] == undefined)
-                Karte[x][y][WerkzeugID] = 1;
+            if (KarteY[WerkzeugID] == undefined)
+                KarteY[WerkzeugID] = 1;
             else
-                Karte[x][y][WerkzeugID]++;
+                KarteY[WerkzeugID]++;
 
-            Karte[x][y].IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
+                KarteY.IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
 
             //Die anderen nur über die Änderung informieren, wenn es dadurch das Höchste ist:
-            if (HoechstenWertErmitteln(Karte[x][y]) == WerkzeugID)
+            if (HoechstenWertErmitteln(KarteY) == WerkzeugID)
                 socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
 
             KarteSpeichern(socket.Karte, socket.Raum);
@@ -102,15 +108,15 @@ function KarteSerialisieren (Karte)
 {
     let Kartenwerte = [];
 
-    for (let x = 0; x < Karte.length; x++)
-        if (Karte[x] != undefined)
-            for (let y = 0; y < Karte[x].length; y++)
-            {
-                if (Karte[x][y] != undefined)
+    Karte.forEach((KarteX, x) => 
+        {
+            KarteX.forEach((KarteY, y) =>
                 {
-                    Kartenwerte.push({'x': x, 'y': y, 'id': HoechstenWertErmitteln(Karte[x][y])});
+                    Kartenwerte.push({'x': x, 'y': y, 'id': HoechstenWertErmitteln(KarteY)});
                 }
-            }
+            );
+        }
+    );
     
     return Kartenwerte;
 }
@@ -122,11 +128,16 @@ function KarteDeserialisieren (Karte, Kartenwerte)
         let x = Kartenwerte[i].x;
         let y = Kartenwerte[i].y;
     
-        //Reihen und Spalten initialisieren:
-        if (Karte[x] == undefined) Karte[x] = [];
-        if (Karte[x][y] == undefined) Karte[x][y] = [];
+        //Reihen initialisieren:
+        if (!Karte.has(x))
+            Karte.set(x, new Map());
+        let KarteX = Karte.get(x);
+        //Spalten initialisieren:
+        if (!KarteX.has(y))
+            KarteX.set(y, []);
+        let KarteY = KarteX.get(y);
 
-        Karte[x][y][Kartenwerte[i].id] = 3;
+        KarteY[Kartenwerte[i].id] = 3;
     }
 }
 
