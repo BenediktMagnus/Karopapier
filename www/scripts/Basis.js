@@ -25,15 +25,28 @@ function Initialisieren ()
     //Die Palette zum Zuweisen von Kartenteilen:
     Palette = document.getElementById('Palette');
 
-    Papier.Liste = [];
+    Papier.HolePunkt = function (x, y)
+    {
+        if (Papier.Liste.has(y))
+        {
+            ListeY = Papier.Liste.get(y);
+            if (ListeY.has(x))
+                return ListeY.get(x);
+        }
+        return undefined;
+    };
+
+    Papier.Liste = new Map();
     //Karos auf dem Papier zeichnen:
-    for (let y = 0; y < 40; y++)
+    for (let y = -20; y < 20; y++)
     {
         let Reihe = document.createElement('tr');
         Papier.appendChild(Reihe);
-        Papier.Liste[y] = [];
 
-        for(let x = 0; x < 60; x++)
+        let ListeX = new Map();
+        Papier.Liste.set(y, ListeX);
+
+        for(let x = -30; x < 30; x++)
         {
             let Punkt = document.createElement('td');
             
@@ -42,14 +55,20 @@ function Initialisieren ()
             Punkt.y = y;
 
             Reihe.appendChild(Punkt);
-            Papier.Liste[y][x] = Punkt;
+            ListeX.set(x, Punkt);
 
             Punkt.onclick = PunktKlick;
         }
     }
 
+    //Werkzeuge laden und nach ID sortieren:
+    let WerkzeugeNode = document.getElementsByClassName('Werkzeug');
+    var Werkzeuge = [];
+    for (let i = 0; i < WerkzeugeNode.length; i++)
+        Werkzeuge.push(WerkzeugeNode[i]);
+    Werkzeuge.sort(function (a, b) { return a.getAttribute('werkzeugid') - b.getAttribute('werkzeugid'); }); //Aufsteigend nach ID sortieren.
+
     //Werkzeuge in der Palette mit Funktion ausstatten:
-    let Werkzeuge = document.getElementsByClassName('Werkzeug');
     for (let i = 0; i < Werkzeuge.length; i++)
     {
         Werkzeuge[i].onclick = WerkzeugKlick;
@@ -78,20 +97,20 @@ function Initialisieren ()
 
     Verbindung.emit('KarteHolen', function (Kartenwerte)
         {
-            let WerkzeugeNode = document.getElementsByClassName('Werkzeug');
-            let Werkzeuge = [];
-            for (let i = 0; i < WerkzeugeNode.length; i++)
-                Werkzeuge.push(WerkzeugeNode[i]);
-            Werkzeuge.sort(function (a, b) { return a.getAttribute('werkzeugid') - b.getAttribute('werkzeugid'); }); //Aufsteigend nach ID sortieren.
-
             for (let i = 0; i < Kartenwerte.length; i++)
-                Papier.Liste[Kartenwerte[i].y][Kartenwerte[i].x].style.backgroundImage = Werkzeuge[Kartenwerte[i].id].Stil.backgroundImage;
+            {
+                let Punkt = Papier.HolePunkt(Kartenwerte[i].x, Kartenwerte[i].y);
+                if (Punkt != undefined)
+                    Punkt.style.backgroundImage = Werkzeuge[Kartenwerte[i].id].Stil.backgroundImage;
+            }
         }
     );
 
     Verbindung.on('Eintrag', function (X, Y, WerkzeugID)
         {
-            document.getElementById('Punkt_' + X + ':' + Y).style.backgroundImage = document.getElementById('Werkzeug_' + WerkzeugID).Stil.backgroundImage;
+            let Punkt = Papier.HolePunkt(X, Y);
+            if (Punkt != undefined)
+                Punkt.style.backgroundImage = Werkzeuge[WerkzeugID].Stil.backgroundImage;
         }
     );
 }
