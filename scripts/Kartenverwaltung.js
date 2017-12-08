@@ -6,7 +6,10 @@ var Karten = new Map();
 
 exports.Initialisieren = function ()
 {
-    let Level = ['testus', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6'];
+    //Mögliche Level befüllen:
+    let Level = ['testus', 'gr1_level10', 'gr1_level11', 'gr1_level12', 'gr1_level13'];
+    for (let i = 1; i < 10; i++)
+        Level.push('gr1_level0' + i);
 
     //Level in die Kartenmap setzen:
     for (let i = 0; i < Level.length; i++)
