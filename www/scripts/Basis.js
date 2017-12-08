@@ -33,7 +33,7 @@ function Initialisieren ()
         Papier.appendChild(Reihe);
         Papier.Liste[y] = [];
 
-        for(let x = 0; x < 40; x++)
+        for(let x = 0; x < 60; x++)
         {
             let Punkt = document.createElement('td');
             
