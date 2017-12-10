@@ -28,8 +28,19 @@ exports.Initialisieren = function ()
  */
 exports.SocketAnbinden = function (socket)
 {
+    var LevelWeiterleitungen = [];
+    for (let i = 1; i < 10; i++)
+        LevelWeiterleitungen.push('gr1_level' + i);
+    var LevelErsetzungen = [];
+    for (let i = 1; i < 10; i++)
+        LevelErsetzungen.push('gr1_level0' + i);
+
     socket.on('KarteWaehlen', function (Kartenname)
         {
+            let Levelindex = LevelWeiterleitungen.indexOf(Kartenname);
+            if (Levelindex > -1)
+                Kartenname = LevelErsetzungen[Levelindex];
+
             if (Karten.has(Kartenname))
             {
                 socket.Karte = Karten.get(Kartenname);
