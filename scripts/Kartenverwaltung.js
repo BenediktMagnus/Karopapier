@@ -64,7 +64,7 @@ exports.SocketAnbinden = function (socket)
             let KarteX = Karte.get(x);
             //Spalten initialisieren:
             if (!KarteX.has(y))
-                KarteX.set(y, {Liste: [1]});
+                KarteX.set(y, {Liste: [2]});
             let KarteY = KarteX.get(y);
 
             //IP-Liste ggf. initialisieren und andernfalls prüfen, ob ein Werkzeug bereits ausgewählt:
@@ -81,7 +81,7 @@ exports.SocketAnbinden = function (socket)
 
             //Entsprechendes Werkzeug setzen:
             if (KarteY.Liste[WerkzeugID] == undefined)
-                KarteY.Liste[WerkzeugID] = 2;
+                KarteY.Liste[WerkzeugID] = 1;
             else
                 KarteY.Liste[WerkzeugID]++;
 
