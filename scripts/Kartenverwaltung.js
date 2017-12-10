@@ -61,7 +61,7 @@ exports.SocketAnbinden = function (socket)
             let KarteX = Karte.get(x);
             //Spalten initialisieren:
             if (!KarteX.has(y))
-                KarteX.set(y, [2]);
+                KarteX.set(y, [1]);
             let KarteY = KarteX.get(y);
 
             //IP-Liste ggf. initialisieren und andernfalls prüfen, ob ein Werkzeug bereits ausgewählt:
@@ -151,7 +151,7 @@ function KarteDeserialisieren (Karte, Kartenwerte)
             KarteX.set(y, []);
         let KarteY = KarteX.get(y);
 
-        KarteY[Kartenwerte[i].id] = 3;
+        KarteY[Kartenwerte[i].id] = 2;
     }
 }
 
