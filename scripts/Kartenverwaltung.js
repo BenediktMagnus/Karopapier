@@ -35,6 +35,9 @@ exports.SocketAnbinden = function (socket)
     for (let i = 1; i < 10; i++)
         LevelErsetzungen.push('gr1_level0' + i);
 
+    //Wenn hinter einem Proxy (Apache), ist die angegebene IP falsch un der Proxyheader muss beachtet werden:
+    socket.IP = socket.handshake.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+
     socket.on('KarteWaehlen', function (Kartenname)
         {
             let Levelindex = LevelWeiterleitungen.indexOf(Kartenname);
@@ -67,9 +70,9 @@ exports.SocketAnbinden = function (socket)
             //IP-Liste ggf. initialisieren und andernfalls prüfen, ob ein Werkzeug bereits ausgewählt:
             if (KarteY.IPs == undefined)
                 KarteY.IPs = new Map();
-            else if (KarteY.IPs.has(socket.request.connection.remoteAddress))
+            else if (KarteY.IPs.has(socket.IP))
             {
-                let Werkzeug = KarteY.IPs.get(socket.request.connection.remoteAddress);
+                let Werkzeug = KarteY.IPs.get(socket.IP);
                 if (Werkzeug == WerkzeugID)
                     return; //Wenn dasselbe Werkzeug nochmal ausgewählt wurde, muss nichts getan werden.
                 else
@@ -78,17 +81,15 @@ exports.SocketAnbinden = function (socket)
 
             //Entsprechendes Werkzeug setzen:
             if (KarteY.Liste[WerkzeugID] == undefined)
-                KarteY.Liste[WerkzeugID] = 1;
+                KarteY.Liste[WerkzeugID] = 2;
             else
                 KarteY.Liste[WerkzeugID]++;
 
-            KarteY.IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
+            KarteY.IPs.set(socket.IP, WerkzeugID);
 
             //Die anderen nur über die Änderung informieren, wenn es dadurch das Höchste ist:
             if (HoechstenWertErmitteln(KarteY.Liste) == WerkzeugID)
                 socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
-
-            console.log(HoechstenWertErmitteln(KarteY.Liste));
 
             KarteSpeichern(socket.Karte, socket.Raum);
         }
