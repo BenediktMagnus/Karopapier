@@ -61,7 +61,7 @@ exports.SocketAnbinden = function (socket)
             let KarteX = Karte.get(x);
             //Spalten initialisieren:
             if (!KarteX.has(y))
-                KarteX.set(y, [1]);
+                KarteX.set(y, {Liste: [1]});
             let KarteY = KarteX.get(y);
 
             //IP-Liste ggf. initialisieren und andernfalls prüfen, ob ein Werkzeug bereits ausgewählt:
@@ -73,20 +73,22 @@ exports.SocketAnbinden = function (socket)
                 if (Werkzeug == WerkzeugID)
                     return; //Wenn dasselbe Werkzeug nochmal ausgewählt wurde, muss nichts getan werden.
                 else
-                KarteY[Werkzeug]--;
+                    KarteY.Liste[Werkzeug]--;
             }
 
             //Entsprechendes Werkzeug setzen:
-            if (KarteY[WerkzeugID] == undefined)
-                KarteY[WerkzeugID] = 1;
+            if (KarteY.Liste[WerkzeugID] == undefined)
+                KarteY.Liste[WerkzeugID] = 1;
             else
-                KarteY[WerkzeugID]++;
+                KarteY.Liste[WerkzeugID]++;
 
-                KarteY.IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
+            KarteY.IPs.set(socket.request.connection.remoteAddress, WerkzeugID);
 
             //Die anderen nur über die Änderung informieren, wenn es dadurch das Höchste ist:
-            if (HoechstenWertErmitteln(KarteY) == WerkzeugID)
+            if (HoechstenWertErmitteln(KarteY.Liste) == WerkzeugID)
                 socket.broadcast.to(socket.Raum).emit('Eintrag', x, y, WerkzeugID);
+
+            console.log(HoechstenWertErmitteln(KarteY.Liste));
 
             KarteSpeichern(socket.Karte, socket.Raum);
         }
@@ -126,7 +128,7 @@ function KarteSerialisieren (Karte)
         {
             KarteX.forEach((KarteY, y) =>
                 {
-                    Kartenwerte.push({'x': x, 'y': y, 'id': HoechstenWertErmitteln(KarteY)});
+                    Kartenwerte.push({'x': x, 'y': y, 'id': HoechstenWertErmitteln(KarteY.Liste)});
                 }
             );
         }
@@ -148,10 +150,10 @@ function KarteDeserialisieren (Karte, Kartenwerte)
         let KarteX = Karte.get(x);
         //Spalten initialisieren:
         if (!KarteX.has(y))
-            KarteX.set(y, []);
+            KarteX.set(y, {Liste: []});
         let KarteY = KarteX.get(y);
 
-        KarteY[Kartenwerte[i].id] = 2;
+        KarteY.Liste[Kartenwerte[i].id] = 2;
     }
 }
 
