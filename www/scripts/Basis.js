@@ -16,8 +16,21 @@ function Initialisieren ()
 
     function KarteWaehlen ()
     {
+        var URLPosition = window.location.search;
+        console.log(URLPosition);
+        if (URLPosition.charAt(1) == '-')
+        {
+            URLPosition = URLPosition.substring(1); //Erstes Zeichen abschneiden.
+
+            var link  = document.createElement('link');
+            link.rel  = 'stylesheet';
+            link.type = 'text/css';
+            link.href = '/css/Trans.css';
+            document.body.appendChild(link);
+        }
+
         //Raum-ID aus dem Querystring der URL extrahieren, vorangehendes Fragezeichen entfernen:
-        Verbindung.emit('KarteWaehlen', window.location.search.substring(1));
+        Verbindung.emit('KarteWaehlen', URLPosition.substring(1));
     }
 
     //Das Zeichenpapier, sprich die Tabelle, ermitteln:
