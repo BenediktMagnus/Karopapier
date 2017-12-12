@@ -52,7 +52,7 @@ function Initialisieren ()
 
     Papier.Liste = new Map();
     //Karos auf dem Papier zeichnen:
-    for (let y = -20; y < 20; y++)
+    for (let y = -20; y < 21; y++)
     {
         let Reihe = document.createElement('tr');
         Papier.appendChild(Reihe);
@@ -60,7 +60,7 @@ function Initialisieren ()
         let ListeX = new Map();
         Papier.Liste.set(y, ListeX);
 
-        for(let x = -30; x < 30; x++)
+        for(let x = -30; x < 31; x++)
         {
             let Punkt = document.createElement('td');
             
