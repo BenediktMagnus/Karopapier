@@ -17,7 +17,6 @@ function Initialisieren ()
     function KarteWaehlen ()
     {
         var URLPosition = window.location.search;
-        console.log(URLPosition);
         if (URLPosition.charAt(1) == '-')
         {
             URLPosition = URLPosition.substring(1); //Erstes Zeichen abschneiden.
@@ -35,9 +34,10 @@ function Initialisieren ()
 
     //Das Zeichenpapier, sprich die Tabelle, ermitteln:
     Papier = document.getElementById('Papier');
+    Papier.Koordinaten = document.getElementById('Koordinaten');
     //Die Palette zum Zuweisen von Kartenteilen:
     Palette = document.getElementById('Palette');
-    Palette.Koordinaten = document.getElementById('Koordinaten');
+    Palette.Koordinaten = document.getElementById('PaletteKoordinaten');
 
     Papier.HolePunkt = function (x, y)
     {
@@ -72,6 +72,7 @@ function Initialisieren ()
             ListeX.set(x, Punkt);
 
             Punkt.onclick = PunktKlick;
+            Punkt.onmouseover = PunktMausBewegung;
         }
     }
 
@@ -148,4 +149,9 @@ function PunktKlick ()
     Palette.style.top = y + 'px';
 
     Palette.Koordinaten.textContent = Auswahl.x + ':' + Auswahl.y;
+}
+
+function PunktMausBewegung ()
+{
+    Papier.Koordinaten.textContent = this.x + ':' + this.y;
 }
