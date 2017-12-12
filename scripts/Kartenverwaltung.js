@@ -11,7 +11,7 @@ exports.Initialisieren = function ()
     fs = require('fs');
 
     //Level/Karten laden:
-    let Level = JSON.parse(fs.readFileSync('./speicher/_karten.conf', 'utf8').toString());
+    let Level = JSON.parse(fs.readFileSync('./config/karten.conf', 'utf8').toString());
 
     //Level in die Kartenmap setzen:
     for (let i = 0; i < Level.length; i++)
@@ -30,7 +30,7 @@ exports.Initialisieren = function ()
  */
 exports.SocketAnbinden = function (socket)
 {
-    var Aliase = JSON.parse(fs.readFileSync('./speicher/_aliase.conf', 'utf8').toString());
+    var Aliase = JSON.parse(fs.readFileSync('./config/aliase.conf', 'utf8').toString());
 
     //Wenn hinter einem Proxy (Apache), ist die angegebene IP falsch un der Proxyheader muss beachtet werden:
     socket.IP = socket.handshake.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;

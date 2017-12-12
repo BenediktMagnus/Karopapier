@@ -17,7 +17,8 @@ www/html/Fehler/c/*.html
 www/index/c/*.html
 
 speicher/*.karo
-speicher/*.conf
+
+config/*.conf
 
 #Macdateien ignorieren:
 .DS_Store
