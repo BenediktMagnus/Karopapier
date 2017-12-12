@@ -2,7 +2,7 @@
 //Verwaltet das Kartenmaterial und dessen Handhabung.
 //
 
-var Karten, fs;
+var Karten, fs, Aliase;
 
 exports.Initialisieren = function ()
 {
@@ -10,8 +10,13 @@ exports.Initialisieren = function ()
     Karten = new Map();
     fs = require('fs');
 
+    //Standarddatei verwenden, falls keine Config erstellt:
+    let LevelDatei = './config/karten.conf';
+    if (!fs.existsSync(LevelDatei))
+        LevelDatei = './config/karten.default';
+
     //Level/Karten laden:
-    let Level = JSON.parse(fs.readFileSync('./config/karten.conf', 'utf8').toString());
+    let Level = JSON.parse(fs.readFileSync(LevelDatei, 'utf8').toString());
 
     //Level in die Kartenmap setzen:
     for (let i = 0; i < Level.length; i++)
@@ -22,6 +27,14 @@ exports.Initialisieren = function ()
             KarteDeserialisieren(Karte, KarteLaden(Kartenname));
         }
     );
+
+    //Standarddatei für Aliase beachten:
+    let AliaseDatei = './config/aliase.conf';
+    if (!fs.existsSync(AliaseDatei))
+        AliaseDatei = './config/aliase.default';
+
+    //Aliase laden:
+    Aliase = JSON.parse(fs.readFileSync(AliaseDatei, 'utf8').toString());
 };
 
 /**
@@ -30,8 +43,6 @@ exports.Initialisieren = function ()
  */
 exports.SocketAnbinden = function (socket)
 {
-    var Aliase = JSON.parse(fs.readFileSync('./config/aliase.conf', 'utf8').toString());
-
     //Wenn hinter einem Proxy (Apache), ist die angegebene IP falsch un der Proxyheader muss beachtet werden:
     socket.IP = socket.handshake.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 
