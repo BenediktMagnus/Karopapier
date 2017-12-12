@@ -2,14 +2,16 @@
 //Verwaltet das Kartenmaterial und dessen Handhabung.
 //
 
-var Karten = new Map();
+var Karten, fs;
 
 exports.Initialisieren = function ()
 {
-    //Mögliche Level befüllen:
-    let Level = ['testus', 'gr1_level10', 'gr1_level11', 'gr1_level12', 'gr1_level13'];
-    for (let i = 1; i < 10; i++)
-        Level.push('gr1_level0' + i);
+    //Instanzen initialisieren:
+    Karten = new Map();
+    fs = require('fs');
+
+    //Level/Karten laden:
+    let Level = JSON.parse(fs.readFileSync('./speicher/_karten.conf', 'utf8').toString());
 
     //Level in die Kartenmap setzen:
     for (let i = 0; i < Level.length; i++)
@@ -28,21 +30,16 @@ exports.Initialisieren = function ()
  */
 exports.SocketAnbinden = function (socket)
 {
-    var LevelWeiterleitungen = [];
-    for (let i = 1; i < 10; i++)
-        LevelWeiterleitungen.push('gr1_level' + i);
-    var LevelErsetzungen = [];
-    for (let i = 1; i < 10; i++)
-        LevelErsetzungen.push('gr1_level0' + i);
+    var Aliase = JSON.parse(fs.readFileSync('./speicher/_aliase.conf', 'utf8').toString());
 
     //Wenn hinter einem Proxy (Apache), ist die angegebene IP falsch un der Proxyheader muss beachtet werden:
     socket.IP = socket.handshake.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
 
     socket.on('KarteWaehlen', function (Kartenname)
         {
-            let Levelindex = LevelWeiterleitungen.indexOf(Kartenname);
-            if (Levelindex > -1)
-                Kartenname = LevelErsetzungen[Levelindex];
+            let Alias = Aliase[Kartenname];
+            if (Alias != undefined)
+                Kartenname = Alias;
 
             if (Karten.has(Kartenname))
             {
@@ -160,13 +157,11 @@ function KarteDeserialisieren (Karte, Kartenwerte)
 
 function KarteSpeichern (Karte, Name)
 {
-    let fs = require('fs');
     fs.writeFile('./speicher/' + Name + '.karo', JSON.stringify(KarteSerialisieren(Karte)), 'utf8', () => {} );
 }
 
 function KarteLaden (Name)
 {
-    let fs = require('fs');
     try
     {
         return JSON.parse(fs.readFileSync('./speicher/' + Name + '.karo', 'utf8').toString());
