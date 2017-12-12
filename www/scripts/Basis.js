@@ -37,6 +37,7 @@ function Initialisieren ()
     Papier = document.getElementById('Papier');
     //Die Palette zum Zuweisen von Kartenteilen:
     Palette = document.getElementById('Palette');
+    Palette.Koordinaten = document.getElementById('Koordinaten');
 
     Papier.HolePunkt = function (x, y)
     {
@@ -145,4 +146,6 @@ function PunktKlick ()
 
     Palette.style.left = x + 'px';
     Palette.style.top = y + 'px';
+
+    Palette.Koordinaten.textContent = Auswahl.x + ':' + Auswahl.y;
 }
