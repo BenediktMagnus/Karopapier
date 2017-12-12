@@ -4,7 +4,9 @@ body {
 
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: end;
+
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
@@ -23,6 +25,14 @@ td:hover {
     opacity: 0.5;
 }
 
+.Nebendiv {
+    width: 5vw;
+}
+
+#Koordinaten {
+    color: white;
+}
+
 #Palette {
     position: absolute;
     width: 5.8vh;
@@ -35,7 +45,6 @@ td:hover {
     width: 5.2vh;
     margin: 0.2vh 0.2vh 0 0.2vh;
     float: left;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 #Palette div {
