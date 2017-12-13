@@ -9,5 +9,8 @@
     "html-minifier": "^3.5.6",
     "socket.io": "^2.0.3",
     "uglify-es": "^3.1.6"
+  },
+  "devDependencies": {
+    "jquery": "^3.2.1"
   }
 }

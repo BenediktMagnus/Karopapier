@@ -1,4 +1,6 @@
 //Komprimiert alle Javascript- und CSS-Dateien:
+srcFolder = './www';
+dstFolder = './dist';
 module.exports = {
   Komprimiere: function ()
   {
@@ -16,7 +18,7 @@ module.exports = {
 
     KompressorJS.Namenscache = {}; //Cache zum Abgleich aller Funktionsnamen in den JS-Dateien.
 
-    var JSVerzeichnisse = ['./www/scripts'];
+    var JSVerzeichnisse = [srcFolder + '/scripts'];
     JSVerzeichnisse.forEach( function (Verzeichnis)
       {
         Dateidurchlauf(fs, Verzeichnis, '.js', function (Dateiinhalt)
@@ -35,11 +37,11 @@ module.exports = {
               },
               nameCache: KompressorJS.Namenscache // Ein Namenscache sorgt für die Persistenz von Funktionsnamen zwischen allen Javascriptdateien.
             };
-          
+
             var Ergebnis = KompressorJS.minify(Dateiinhalt, Optionen);
-          
+
             Fehlerbehandlung(Ergebnis);
-          
+
             return Ergebnis.code;
           }
         , true);
@@ -57,7 +59,7 @@ module.exports = {
 
     var KompressorCSS = require('clean-css');
 
-    Dateidurchlauf(fs, './www/css', '.css', function (Dateiinhalt)
+    Dateidurchlauf(fs, srcFolder + '/css', '.css', function (Dateiinhalt)
       {
         var Ergebnis = new KompressorCSS().minify(Dateiinhalt);
 
@@ -78,7 +80,7 @@ module.exports = {
 
     var KompressorHTML = require('html-minifier');
 
-    var HTMLVerzeichnisse = ['./www/index'];
+    var HTMLVerzeichnisse = [srcFolder];
     HTMLVerzeichnisse.forEach( function (Verzeichnis)
       {
         Dateidurchlauf(fs, Verzeichnis, '.html', function (Dateiinhalt)
@@ -108,11 +110,11 @@ module.exports = {
 }
 
 /**
- * @param {Object} fs 
- * @param {String} Pfad 
- * @param {String} Typ 
- * @param {Function} Prozedur 
- * @param {Boolean} Doppelt 
+ * @param {Object} fs
+ * @param {String} Pfad
+ * @param {String} Typ
+ * @param {Function} Prozedur
+ * @param {Boolean} Doppelt
  */
 function Dateidurchlauf (fs, Pfad, Typ, Prozedur, Doppelt = false)
 {
@@ -125,13 +127,13 @@ function Dateidurchlauf (fs, Pfad, Typ, Prozedur, Doppelt = false)
     if (Dateien[i].includes(Typ))
     {
       var Dateiinhalt = fs.readFileSync(Pfad + '/' + Dateien[i], 'utf8').toString();
-      fs.writeFileSync(Pfad + '/c/' + Dateien[i], Prozedur(Dateiinhalt), 'utf8');
+      fs.writeFileSync(Pfad.replace(srcFolder, dstFolder) + '/' + Dateien[i], Prozedur(Dateiinhalt), 'utf8');
     }
   }
 }
 
 /**
- * @param {String} Ergebnis 
+ * @param {String} Ergebnis
  */
 function Fehlerbehandlung (Ergebnis)
 {
