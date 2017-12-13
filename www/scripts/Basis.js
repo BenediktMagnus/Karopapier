@@ -102,7 +102,6 @@
 
     function feldKlick () {
         var $this = $(this);
-        console.log('clicked cell');
         if(!isNaN(ausgewaehltesWerkzeug) && isFinite(ausgewaehltesWerkzeug) && ausgewaehltesWerkzeug !== null) {
             var x = $this.data('x');
             var y = $this.data('y');
@@ -128,13 +127,11 @@
 
             $('body').removeClass().addClass('transparent-background');
         }
-        console.log('selecting map');
         //Raum-ID aus dem Querystring der URL extrahieren, vorangehendes Fragezeichen entfernen:
         socket.emit('KarteWaehlen', URLPosition.substring(1));
 
         socket.emit('KarteHolen', function (karte)
             {
-                console.log('creating map tiles');
                 // Randwerte ermitteln
                 minX = -30;
                 maxX = 30;
@@ -204,7 +201,6 @@
             var feldOffset = $feld.offset();
             // X- und Y-Wert ermitteln. Wenn die Palette dadurch über den Bildschirm ragte, Wert entsprechend verkleinern:
             var $body = $('body');
-            console.log(feldOffset.left);
             var x = feldOffset.left + $feld.innerWidth();
             if (x + $palette.innerWidth() > $body.innerWidth()) {
                 x = $body.innerWidth() - $palette.innerWidth();
@@ -213,8 +209,6 @@
             if (y + $palette.innerHeight() > $body.innerHeight()) {
                 y = $body.innerHeight() - $palette.innerHeight();
             }
-            console.log(x);
-            console.log(y);
             $ausgewaehltesFeld = $feld;
             $palette.css({'top': y + 'px', 'left': x + 'px'});
             $('.palette-koordinaten').text($feld.data('x') + ':' + $feld.data('y'));
