@@ -3,6 +3,8 @@ node_modules/
 
 #VS-Code nicht ins Repository einpflegen:
 .vscode/
+# IntelliJ auch nicht
+.idea
 
 www/css/c/*.css
 
@@ -23,3 +25,7 @@ config/*.conf
 #Macdateien ignorieren:
 .DS_Store
 *.DS_Store
+
+dist/**/*.css
+dist/**/*.html
+dist/**/*.js

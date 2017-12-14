@@ -1,157 +1,273 @@
-document.addEventListener("DOMContentLoaded", Initialisieren, false); 
+;(function($, io) {
 
-var Papier;
-var Palette;
-var Auswahl = null;
+    var werkzeugIdAttribut = 'werkzeugId';
+    var werkzeuge = [
+        {
+            id: 1,
+            tooltip: 'Weg',
+            klasse: 'PWeg'
+        },
+        {
+            id: 2,
+            tooltip: 'Platte',
+            klasse: 'PPlatte'
+        },
+        {
+            id: 3,
+            tooltip: 'Tor Oben',
+            klasse: 'PTorO'
+        },
+        {
+            id: 4,
+            tooltip: 'Tor Unten',
+            klasse: 'PTorU'
+        },
+        {
+            id: 5,
+            tooltip: 'Tor Links',
+            klasse: 'PTorL'
+        },
+        {
+            id: 6,
+            tooltip: 'Tor Rechts',
+            klasse: 'PTorR'
+        },
+        {
+            id: 7,
+            tooltip: 'Stufen',
+            klasse: 'PStufen'
 
-var Verbindung = io();
+        },
+        {
+            id: 8,
+            tooltip: 'Spielerposition',
+            klasse: 'PPfeil'
+        },
+        {
+            id: 0,
+            tooltip: 'Leer',
+            klasse: 'PLeer'
+        }
+    ];
 
-/**
- * Initialisierungsroutine.
- */
-function Initialisieren ()
-{
-    KarteWaehlen();
-    Verbindung.on('reconnect', KarteWaehlen);
 
-    function KarteWaehlen ()
-    {
+    var ausgewaehltesWerkzeug = null;
+    var $ausgewaehltesFeld = null;
+
+    var felder;
+
+    var minX = -30, maxX = 30;
+    var minY = -20, maxY = 20;
+
+    var socket = io();
+
+    var $palette = null;
+
+    /* Kartenfunktionen */
+
+
+    function feldSetzen(x, y, werkzeugId) {
+        x = x - minX;
+        y = y - minY;
+        if(felder.length > x && felder[x].length > y) {
+            var werkzeug = werkzeuge.find(function(w) { return w.id === werkzeugId });
+            if(werkzeug) {
+                felder[x][y].removeClass().addClass(werkzeug.klasse);
+            }
+        }
+    }
+
+    /* Event Handler */
+    function sidebarWerkzeugKlick() {
+        var $this = $(this);
+        var werkzeugId = $this.data(werkzeugIdAttribut);
+        $('.sidebar .werkzeug').removeClass('selected');
+        $this.addClass('selected');
+        ausgewaehltesWerkzeug = werkzeugId;
+        paletteVerstecken();
+    }
+
+    function paletteWerkzeugKlick() {
+        if(!$ausgewaehltesFeld) {
+            return;
+        }
+        var x = $ausgewaehltesFeld.data('x');
+        var y = $ausgewaehltesFeld.data('y');
+        var werkzeugId = $(this).data(werkzeugIdAttribut);
+        feldSetzen(x, y, werkzeugId);
+        socket.emit('Eintrag', x, y, werkzeugId);
+        $ausgewaehltesFeld = null;
+        paletteVerstecken();
+    }
+
+    function feldKlick () {
+        var $this = $(this);
+        if(!isNaN(ausgewaehltesWerkzeug) && isFinite(ausgewaehltesWerkzeug) && ausgewaehltesWerkzeug !== null) {
+            var x = $this.data('x');
+            var y = $this.data('y');
+            feldSetzen(x, y, ausgewaehltesWerkzeug);
+            socket.emit('Eintrag', x, y, ausgewaehltesWerkzeug);
+        }
+        else {
+            paletteAnzeigen($this);
+        }
+    }
+
+    function feldMouseEnter() {
+        var $this = $(this);
+        $('.sidebar .koordinaten').text($this.data('x') + ':' + $this.data('y'));
+    }
+
+    /* Socket.IO Geraffel */
+    function karteWaehlen() {
         var URLPosition = window.location.search;
-        if (URLPosition.charAt(1) == '-')
+        if (URLPosition.charAt(1) === '-')
         {
             URLPosition = URLPosition.substring(1); //Erstes Zeichen abschneiden.
 
-            var link  = document.createElement('link');
-            link.rel  = 'stylesheet';
-            link.type = 'text/css';
-            link.href = '/css/Trans.css';
-            document.body.appendChild(link);
+            $('body').removeClass().addClass('transparent-background');
         }
-
         //Raum-ID aus dem Querystring der URL extrahieren, vorangehendes Fragezeichen entfernen:
-        Verbindung.emit('KarteWaehlen', URLPosition.substring(1));
-    }
+        socket.emit('KarteWaehlen', URLPosition.substring(1));
 
-    //Das Zeichenpapier, sprich die Tabelle, ermitteln:
-    Papier = document.getElementById('Papier');
-    Papier.Koordinaten = document.getElementById('Koordinaten');
-    //Die Palette zum Zuweisen von Kartenteilen:
-    Palette = document.getElementById('Palette');
-    Palette.Koordinaten = document.getElementById('PaletteKoordinaten');
-
-    Papier.HolePunkt = function (x, y)
-    {
-        if (Papier.Liste.has(y))
-        {
-            ListeY = Papier.Liste.get(y);
-            if (ListeY.has(x))
-                return ListeY.get(x);
-        }
-        return undefined;
-    };
-
-    Papier.Liste = new Map();
-    //Karos auf dem Papier zeichnen:
-    for (let y = -20; y < 21; y++)
-    {
-        let Reihe = document.createElement('tr');
-        Papier.appendChild(Reihe);
-
-        let ListeX = new Map();
-        Papier.Liste.set(y, ListeX);
-
-        for(let x = -30; x < 31; x++)
-        {
-            let Punkt = document.createElement('td');
-            
-            Punkt.id = "Punkt_" + x + ':' + y;
-            Punkt.x = x;
-            Punkt.y = y;
-
-            Reihe.appendChild(Punkt);
-            ListeX.set(x, Punkt);
-
-            Punkt.onclick = PunktKlick;
-            Punkt.onmouseover = PunktMausBewegung;
-        }
-    }
-
-    //Werkzeuge laden und nach ID sortieren:
-    let WerkzeugeNode = document.getElementsByClassName('Werkzeug');
-    var Werkzeuge = [];
-    for (let i = 0; i < WerkzeugeNode.length; i++)
-        Werkzeuge.push(WerkzeugeNode[i]);
-    Werkzeuge.sort(function (a, b) { return a.getAttribute('werkzeugid') - b.getAttribute('werkzeugid'); }); //Aufsteigend nach ID sortieren.
-
-    //Werkzeuge in der Palette mit Funktion ausstatten:
-    for (let i = 0; i < Werkzeuge.length; i++)
-    {
-        Werkzeuge[i].onclick = WerkzeugKlick;
-        Werkzeuge[i].Stil = Werkzeuge[i].currentStyle || window.getComputedStyle(Werkzeuge[i], false)
-    }
-
-    function WerkzeugKlick ()
-    {
-        if (Auswahl != null)
-        {
-            Verbindung.emit('Eintrag', Auswahl.x, Auswahl.y, this.getAttribute('werkzeugid'));
-
-            Auswahl.style.backgroundImage = this.Stil.backgroundImage;
-            Auswahl = null;
-            Palette.style.display = 'none';
-        }
-    }
-
-    //Bei Klick irgendwohin, die Palette ausblenden:
-    document.body.addEventListener('click', function ()
-        {
-            Palette.style.display = 'none';
-        },
-        true
-    );
-
-    Verbindung.emit('KarteHolen', function (Kartenwerte)
-        {
-            for (let i = 0; i < Kartenwerte.length; i++)
+        socket.emit('KarteHolen', function (karte)
             {
-                let Punkt = Papier.HolePunkt(Kartenwerte[i].x, Kartenwerte[i].y);
-                if (Punkt != undefined)
-                    Punkt.style.backgroundImage = Werkzeuge[Kartenwerte[i].id].Stil.backgroundImage;
+                // Randwerte ermitteln
+                minX = -30;
+                maxX = 30;
+                minY = -20;
+                maxY = 20;
+                for(var j = 0; j < karte.length; j++) {
+                    if(karte[j].x < minX) {
+                        minX = karte[j].x;
+                    }
+                    else if(karte[j].x > maxX) {
+                        maxX = karte[j].x;
+                    }
+                    if(karte[j].y < minY) {
+                        minY = karte[j].y;
+                    }
+                    else if(karte[j].y > maxY) {
+                        maxY = karte[j].y;
+                    }
+                }
+                felder = [];
+                var $tabelle = $('#Papier');
+                $tabelle.empty();
+
+                // Jede Tabellenzeile enthaelt alle [x]. Da wir aber [x][y] wollen muessen wir die Array-Zuweisung drehen
+
+                for(var y = minY; y <= maxY; y++) {
+                    var reihe = [];
+                    for(var x = minX; x <= maxX; x++) {
+                        if(felder.length <= x - minX) {
+                            felder.push([]);
+                        }
+                        var $zelle = $('<td></td>');
+                        $zelle.attr('id', 'Punkt_' + x + ':' + y);
+                        $zelle.data('x', x);
+                        $zelle.data('y', y);
+                        $zelle.click(feldKlick);
+                        $zelle.on('mouseenter', feldMouseEnter);
+                        felder[x - minX].push($zelle);
+                        reihe.push($zelle);
+                    }
+                    felder.push(reihe);
+                    var $reihe = $('<tr></tr>');
+                    $reihe.append(reihe);
+                    $tabelle.append($reihe);
+                }
+
+                for (var i = 0; i < karte.length; i++)
+                {
+                    feldSetzen(karte[i].x, karte[i].y, karte[i].id);
+                }
             }
+        );
+    }
+
+
+    socket.on('reconnect', karteWaehlen);
+    socket.on('Eintrag', feldSetzen);
+
+    // UI Hilfsfunktionen
+    function paletteAnzeigen($feld) {
+        // Palette zuerst anzeigen, um Größe zu haben:
+        $palette.show();
+        if($feld) {
+            // hier gibt es einen Bug wenn die Palette ausserhalb des Bildschirms erscheint. Dadurch verschieben sich alle Elemente wegen der Scrollbar
+            // deshalb initial einmal die Position auf (0, 0) setzen, dadurch wird die Scrollbar vermieden
+            $palette.css({'top': 0, 'left': 0});
+            var feldOffset = $feld.offset();
+            // X- und Y-Wert ermitteln. Wenn die Palette dadurch über den Bildschirm ragte, Wert entsprechend verkleinern:
+            var $body = $('body');
+            var x = feldOffset.left + $feld.innerWidth();
+            if (x + $palette.innerWidth() > $body.innerWidth()) {
+                x = $body.innerWidth() - $palette.innerWidth();
+            }
+            var y = feldOffset.top;
+            if (y + $palette.innerHeight() > $body.innerHeight()) {
+                y = $body.innerHeight() - $palette.innerHeight();
+            }
+            $ausgewaehltesFeld = $feld;
+            $palette.css({'top': y + 'px', 'left': x + 'px'});
+            $('.palette-koordinaten').text($feld.data('x') + ':' + $feld.data('y'));
         }
-    );
+    }
 
-    Verbindung.on('Eintrag', function (X, Y, WerkzeugID)
-        {
-            let Punkt = Papier.HolePunkt(X, Y);
-            if (Punkt != undefined)
-                Punkt.style.backgroundImage = Werkzeuge[WerkzeugID].Stil.backgroundImage;
+    function paletteVerstecken() {
+        $palette.hide();
+    }
+
+    // Initialisierung
+
+    function werkzeugButtonErstellen(tooltip, klasse, id) {
+        var $button = $('<div></div>');
+        $button.addClass('werkzeug');
+        $button.attr('title', tooltip);
+        if(!isNaN(id) && id > -1) {
+            $button.addClass(klasse);
+            $button.data(werkzeugIdAttribut, id);
         }
-    );
-}
+        return $button;
+    }
 
-function PunktKlick ()
-{
-    Auswahl = this;
+    function buttonsErstellen() {
+        var $elements = [];
+        werkzeuge.forEach(function (werkzeug) {
+            $elements.push(werkzeugButtonErstellen(werkzeug.tooltip, werkzeug.klasse, werkzeug.id));
+        });
+        return $elements;
+    }
 
-    //Palette zuerst anzeigen, um Größe zu haben:
-    Palette.style.display = 'inline';
+    $(document).ready(function() {
+        $palette = $('.palette');
+        paletteVerstecken();
+        // beim Klick irgendwo hin weg mit der Palette
+        // muss direkt addEventListener sein weil jQuery kein event capturing kann
+        document.body.addEventListener('click', function() {
+            paletteVerstecken();
+        }, true);
 
-    //X- und Y-Wert ermitteln. Wenn die Palette dadurch über den Bildschirm ragte, Wert entsprechend verkleinern:
-    let x = Papier.offsetLeft + this.offsetLeft + this.clientWidth;
-    if (x + Palette.clientWidth > document.body.clientWidth)
-        x = document.body.clientWidth - Palette.clientWidth;
-    let y = Papier.offsetTop + this.offsetTop;
-    if (y + Palette.clientHeight > document.body.clientHeight)
-        y = document.body.clientHeight - Palette.clientHeight;
+        // Buttons erstellen und mit event handlern ausstatten
 
-    Palette.style.left = x + 'px';
-    Palette.style.top = y + 'px';
+        var $sidebarButtons = buttonsErstellen();
+        // In der sidebar noch den Button zum Moduswechsel einbauen
+        var $modusButton = werkzeugButtonErstellen('Auswahl aufheben', 'PAuswahl');
+        // Der ist auch direkt ausgewaehlt
+        $modusButton.addClass('selected');
+        $sidebarButtons.unshift($modusButton);
+        $('.sidebar .werkzeug-container').append($sidebarButtons);
+        $('.sidebar .werkzeug').on('click', sidebarWerkzeugKlick);
 
-    Palette.Koordinaten.textContent = Auswahl.x + ':' + Auswahl.y;
-}
 
-function PunktMausBewegung ()
-{
-    Papier.Koordinaten.textContent = this.x + ':' + this.y;
-}
+
+        var $paletteButtons = buttonsErstellen();
+        $palette.find('.werkzeug-container').append($paletteButtons);
+        $palette.find('.werkzeug').on('click', paletteWerkzeugKlick);
+
+        karteWaehlen();
+
+    });
+
+})(window.jQuery, window.io);
