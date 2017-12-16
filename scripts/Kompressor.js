@@ -1,6 +1,8 @@
-//Komprimiert alle Javascript- und CSS-Dateien:
+//Datei- und Zielpfade:
 srcFolder = './www';
 dstFolder = './dist';
+
+//Komprimiert alle Javascript- und CSS-Dateien.
 module.exports = {
   Komprimiere: function ()
   {

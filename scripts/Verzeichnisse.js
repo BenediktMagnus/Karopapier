@@ -3,10 +3,12 @@ exports.Eintragen = function (app, express, Debug)
 {
   console.log('Starte mit Verzeichniseintrag.');
 
-  if(Debug) {
+  if(Debug)
+  {
     app.use('/', express.static('./www/'));
   }
-  else {
+  else
+  {
     app.use('/', express.static('./dist/'));
   }
 

@@ -6,26 +6,13 @@ node_modules/
 # IntelliJ auch nicht
 .idea
 
-www/css/c/*.css
-
-www/scripts/c/*.js
-
-www/lang/c/*.lang
-
-www/html/c/*.html
-
-www/html/Fehler/c/*.html
-
-www/index/c/*.html
+dist/**/*.css
+dist/**/*.html
+dist/**/*.js
 
 speicher/*.karo
-
 config/*.conf
 
 #Macdateien ignorieren:
 .DS_Store
 *.DS_Store
-
-dist/**/*.css
-dist/**/*.html
-dist/**/*.js
