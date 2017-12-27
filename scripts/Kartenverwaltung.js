@@ -64,7 +64,7 @@ exports.SocketAnbinden = function (socket)
     socket.on('Eintrag', function (x, y, WerkzeugID)
         {
             //Nur Zahlen(!) zwischen -128 und 128 erlauben, außerdem Werkzeuge begrenzen:
-            if (x > 128 || x < -128 || y > 128 || y < 128 || isNaN(x) || isNaN(y) || WerkzeugID < 0 || WerkzeugID > 16 || isNaN(WerkzeugID))
+            if (x > 128 || x < -128 || y > 128 || y < -128 || isNaN(x) || isNaN(y) || WerkzeugID < 0 || WerkzeugID > 16 || isNaN(WerkzeugID))
                 return;
 
             let Karte = socket.Karte;
