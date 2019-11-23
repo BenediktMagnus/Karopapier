@@ -1,6 +1,6 @@
 {
   "name": "Karopapier",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Karopapier, ein Onlinezeichenpapier zum Erstellen von Karten. - Von B.Magnus",
   "dependencies": {
     "compression": "^1.7.1",
