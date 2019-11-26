@@ -1,6 +1,9 @@
 # No node_modules:
 node_modules/
 
+# No package-lock.json (package manager specific):
+package-lock.json
+
 # No browser specific configs:
 .vscode
 .idea
