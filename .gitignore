@@ -6,9 +6,18 @@ node_modules/
 # IntelliJ auch nicht
 .idea
 
-speicher/*.karo
-config/*.conf
+# Ignore Mac files:
 
 #Macdateien ignorieren:
 .DS_Store
 *.DS_Store
+
+# No user data or config:
+data/**/*
+config/**/*
+
+# Allow default config files:
+!config/*.default
+
+# Allow all keep files:
+!**/.keep
