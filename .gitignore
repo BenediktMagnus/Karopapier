@@ -1,14 +1,11 @@
-#Module von node.js gehören nicht ins Repository:
+# No node_modules:
 node_modules/
 
-#VS-Code nicht ins Repository einpflegen:
-.vscode/
-# IntelliJ auch nicht
+# No browser specific configs:
+.vscode
 .idea
 
 # Ignore Mac files:
-
-#Macdateien ignorieren:
 .DS_Store
 *.DS_Store
 
