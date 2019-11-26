@@ -1,10 +1,10 @@
 {
-  "name": "karopapier",
-  "version": "0.2.0",
-  "description": "Karopapier, ein Onlinezeichenpapier zum Erstellen von Karten. - Von B.Magnus",
-  "dependencies": {
-    "compression": "^1.7.1",
-    "express": "^4.16.2",
-    "socket.io": "^2.0.3"
-  }
+    "name": "karopapier",
+    "version": "0.2.0",
+    "description": "Karopapier, ein Onlinezeichenpapier zum Erstellen von Karten. - Von B.Magnus",
+    "dependencies": {
+        "compression": "^1.7.1",
+        "express": "^4.16.2",
+        "socket.io": "^2.0.3"
+    }
 }
