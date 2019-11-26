@@ -16,5 +16,8 @@ config/**/*
 # Allow default config files:
 !config/*.default
 
+# No builds:
+build/**/*
+
 # Allow all keep files:
 !**/.keep
