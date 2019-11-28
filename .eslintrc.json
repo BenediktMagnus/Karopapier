@@ -60,6 +60,7 @@
         "no-param-reassign": "error",
         "guard-for-in": "error",
         "curly": "error",
+        "prefer-promise-reject-errors": "error",
         "prefer-const": [
             "error",
             {
