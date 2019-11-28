@@ -1,6 +1,10 @@
+import Karopapier from "./karopapier";
+
 class Main
 {
     private applicationIsRunning = false;
+
+    private karopapier: Karopapier|null = null;
 
     constructor ()
     {
@@ -23,7 +27,10 @@ class Main
         {
             this.applicationIsRunning = false;
 
-            // TODO: Do something at shutdown.
+            if (this.karopapier)
+            {
+                this.karopapier.terminate();
+            }
 
             console.log("\nKaropapier closed.");
         }
@@ -35,7 +42,7 @@ class Main
 
         this.applicationIsRunning = true;
 
-        // TODO: Do something at startup.
+        this.karopapier = new Karopapier();
 
         console.log('Karopapier started.');
     }
