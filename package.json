@@ -15,6 +15,9 @@
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
+        "@types/express": "^4.17.2",
+        "@types/compression": "^1.0.1",
+        "@types/socket.io": "^2.1.4",
         "typescript": "^3.7.2",
         "eslint": "^6.7.1",
         "@typescript-eslint/parser": "^2.9.0",
