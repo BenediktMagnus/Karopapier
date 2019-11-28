@@ -9,9 +9,9 @@
         "url": "git+https://github.com/BenediktMagnus/Karopapier.git"
     },
     "dependencies": {
-        "compression": "^1.7.1",
-        "express": "^4.16.2",
-        "socket.io": "^2.0.3"
+        "express": "^4.17.1",
+        "compression": "^1.7.4",
+        "socket.io": "^2.3.0"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
