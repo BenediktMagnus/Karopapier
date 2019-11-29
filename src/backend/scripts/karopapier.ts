@@ -1,4 +1,4 @@
-import Database from './karopapier/database';
+import Database from './karopapier/database/database';
 import Server from './karopapier/server';
 
 const httpPort = 8031;

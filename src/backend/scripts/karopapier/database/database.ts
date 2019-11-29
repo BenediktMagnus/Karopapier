@@ -105,20 +105,10 @@ export default class Database
     }
 
     /**
-     * Closes all database connections.
+     * Close the database connection.
      */
     public close (): void
     {
-        // This process must be safe because it will be called when the programme
-        // is terminated. Therefor we must be sure to not throw any errors.
-
-        try
-        {
-            this.database.close();
-        }
-        catch (error)
-        {
-            console.error(error);
-        }
+        this.database.close();
     }
 }
