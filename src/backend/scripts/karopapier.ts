@@ -15,8 +15,39 @@ export default class Karopapier
         this.server.start();
     }
 
+    /**
+     * Call a method safely without throwing errors and write to the error log if one occurs.
+     * @param method The method to call.
+     */
+    protected callSafely (method: () => void): void
+    {
+        try
+        {
+            method();
+        }
+        catch (error)
+        {
+            console.error(error);
+        }
+    }
+
+    /**
+     * Terminates all processes running for the application.
+     * NOTE: This method must be safe because it will be called when the programme
+     *       is terminated. Therefore we must be sure to not throw any errors.
+     */
     public terminate (): void
     {
-        this.server.stop();
+        this.callSafely(
+            () =>
+            {
+                if (this.server)
+                {
+                    this.server.stop();
+                    this.server.socketIo.close();
+                }
+            }
+        );
+
     }
 }
