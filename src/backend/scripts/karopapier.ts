@@ -1,5 +1,6 @@
 import Database from './karopapier/database/database';
 import Server from './karopapier/server';
+import UserHandler from './karopapier/userHandler';
 
 const httpPort = 8031;
 
@@ -7,6 +8,7 @@ export default class Karopapier
 {
     protected readonly database: Database;
     protected readonly server: Server;
+    protected readonly userHandler: UserHandler;
 
     constructor (inMemory = false)
     {
@@ -15,6 +17,8 @@ export default class Karopapier
         this.server = new Server();
 
         this.server.httpPort = httpPort;
+
+        this.userHandler = new UserHandler(this.server.socketIo);
 
         this.server.start();
     }
