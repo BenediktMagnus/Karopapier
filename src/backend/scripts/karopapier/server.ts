@@ -1,6 +1,7 @@
 import * as http from 'http';
 import compression from 'compression';
 import express from 'express';
+import socketIo from 'socket.io';
 
 export default class Server
 {
@@ -9,7 +10,9 @@ export default class Server
     protected readonly server: express.Express;
     protected readonly http: http.Server;
 
-    public httpPort: number = Server.defaultHttpPort;
+    protected readonly io: socketIo.Server;
+
+    public httpPort: number;
 
     constructor ()
     {
@@ -22,7 +25,16 @@ export default class Server
         this.server.use('/css', express.static('./files/css'));
         this.server.use('/images', express.static('./files/images'));
 
+        this.httpPort = Server.defaultHttpPort;
+
         this.http = new http.Server(this.server);
+
+        this.io = socketIo(this.http);
+    }
+
+    public get socketIo (): socketIo.Server
+    {
+        return this.io;
     }
 
     public start (): void
