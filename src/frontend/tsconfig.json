@@ -1,7 +1,7 @@
 {
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.default.jsonc",
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "es2015",
 		"target": "es5",
 
 		"outDir": "../../build/frontend"

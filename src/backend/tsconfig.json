@@ -1,5 +1,5 @@
 {
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.default.jsonc",
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es2018",

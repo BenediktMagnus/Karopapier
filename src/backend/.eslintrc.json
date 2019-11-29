@@ -10,6 +10,6 @@
         "ecmaVersion": 2018
     },
     "extends": [
-        "../../.eslintrc.json"
+        "../../eslintrc.default.jsonc"
     ]
 }

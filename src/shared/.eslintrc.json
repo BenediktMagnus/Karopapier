@@ -1,14 +1,12 @@
 {
     "env": {
-        "node": false,
-        "es6": true,
         "browser": true
     },
     "root": true,
     "parserOptions": {
-        "project": "./tsconfig.json",
+        "project": "src/frontend/tsconfig.json",
         "sourceType": "module",
-        "ecmaVersion": 2018
+        "ecmaVersion": 5
     },
     "extends": [
         "../../eslintrc.default.jsonc"

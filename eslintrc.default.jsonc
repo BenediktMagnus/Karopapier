@@ -15,11 +15,9 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
-        "@typescript-eslint/no-explicit-any": "off",
         "spaced-comment": "warn",
         "no-multi-spaces": "warn",
         "no-whitespace-before-property": "warn",
-        "no-unused-expressions": "warn",
         "sort-imports": [
             "warn",
             {
@@ -35,10 +33,6 @@
                 ],
                 "location": "anywhere"
             }
-        ],
-        "space-before-function-paren": [
-            "warn",
-            "always"
         ],
         "capitalized-comments": [
             "warn",
@@ -66,6 +60,12 @@
             {
                 "ignoreReadBeforeAssign": true
             }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-expressions": "warn",
+        "@typescript-eslint/space-before-function-paren": [
+            "warn",
+            "always"
         ],
         "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/restrict-plus-operands": "error",
