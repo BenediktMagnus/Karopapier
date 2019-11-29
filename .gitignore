@@ -12,8 +12,10 @@ package-lock.json
 .DS_Store
 *.DS_Store
 
-# No user data or config:
-data/**/*
+# No databases:
+data/*.sqlite
+
+# No user config:
 config/**/*
 
 # Allow default config files:
