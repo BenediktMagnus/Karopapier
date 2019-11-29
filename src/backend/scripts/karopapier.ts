@@ -1,13 +1,17 @@
+import Database from './karopapier/database';
 import Server from './karopapier/server';
 
 const httpPort = 8031;
 
 export default class Karopapier
 {
+    protected readonly database: Database;
     protected readonly server: Server;
 
-    constructor ()
+    constructor (inMemory = false)
     {
+        this.database = new Database('karopapier', inMemory);
+
         this.server = new Server();
 
         this.server.httpPort = httpPort;
@@ -49,5 +53,14 @@ export default class Karopapier
             }
         );
 
+        this.callSafely(
+            () =>
+            {
+                if (this.database)
+                {
+                    this.database.close();
+                }
+            }
+        );
     }
 }
