@@ -20,8 +20,11 @@ export default class Server
 
         // Middleware for gzip compression:
         this.server.use(compression());
-        // Serving of static files:
+        // Serving of html files on root level without extension:
         this.server.use('/', express.static('./files/html', {extensions: ['html']}));
+        // Serving of script files from the build directory:
+        this.server.use('/scripts', express.static('./build/frontend'));
+        // Serving of static resources:
         this.server.use('/css', express.static('./files/css'));
         this.server.use('/images', express.static('./files/images'));
 
