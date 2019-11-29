@@ -38,4 +38,9 @@ CREATE INDEX `userSessionId` ON `user` (`sessionId`);
 CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`);
 CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`);
 
+INSERT INTO
+	`user` (`id`, `name`, `passwordHash`, `sessionId`, `isAdmin`)
+VALUES
+	(0, 'anonymous', '', '', 0);
+
 COMMIT;
