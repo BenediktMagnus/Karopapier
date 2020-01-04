@@ -1,7 +1,11 @@
-export default interface UserTable
+export interface UserTableInsert
 {
-    id: number;
     name: string;
     passwordHash: string;
     isAdmin: boolean;
+}
+
+export interface UserTable extends UserTableInsert
+{
+    id: number;
 }
