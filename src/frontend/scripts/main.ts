@@ -1,4 +1,4 @@
-import SocketFunctions from "./shared/socketFunctions";
+import * as FunctionNames from "./shared/functionNames";
 
 class Main
 {
@@ -11,7 +11,7 @@ class Main
 
     protected onDocumentLoaded (): void
     {
-        this.socket.emit(SocketFunctions.login, 'myName', 'myPassword');
+        this.socket.emit(FunctionNames.login, 'myName', 'myPassword');
 
         console.log('ID: ' + this.socket.id);
     }
