@@ -4,8 +4,15 @@ CREATE TABLE `user` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`name`	TEXT NOT NULL UNIQUE,
 	`passwordHash`	TEXT NOT NULL,
-	`sessionId`	TEXT,
 	`isAdmin`	INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE `session` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`userId`	INTEGER NOT NULL,
+	`token`	TEXT NOT NULL UNIQUE,
+	`lastAccess`	INTEGER NOT NULL,
+	FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
 );
 
 CREATE TABLE `map` (
@@ -34,13 +41,12 @@ CREATE TABLE `mapEntryUser` (
 );
 
 CREATE UNIQUE INDEX `userName` ON `user` (`name`);
-CREATE INDEX `userSessionId` ON `user` (`sessionId`);
 CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`);
 CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`);
 
 INSERT INTO
-	`user` (`id`, `name`, `passwordHash`, `sessionId`, `isAdmin`)
+	`user` (`id`, `name`, `passwordHash`, `isAdmin`)
 VALUES
-	(0, 'anonymous', '', '', 0);
+	(0, 'anonymous', '', 0);
 
 COMMIT;

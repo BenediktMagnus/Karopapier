@@ -1,5 +1,8 @@
 import * as fs from 'fs';
 import Sqlite = require('better-sqlite3');
+import SessionTable from './tables/sessionTable';
+import { UserTable } from './tables/userTable';
+import Utils from '../../utility/utils';
 
 export default class Database
 {
@@ -110,5 +113,82 @@ export default class Database
     public close (): void
     {
         this.database.close();
+    }
+
+    public getUserByName (userName: string): UserTable
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM user WHERE name = ?'
+        );
+
+        const user: UserTable = statement.get(userName);
+
+        return user;
+    }
+
+    /**
+     * Insert a new session into the database.
+     * @param userId The user ID for the user this session will be associated with.
+     * @param token The unique token for the session.
+     */
+    public insertSession (userId: number, token: string): SessionTable
+    {
+        const statement = this.database.prepare(
+            `INSERT INTO
+                contact (userId, token, lastAccess)
+            VALUES
+                (:userId, :token, :lastAccess)`
+        );
+
+        const insertObject = {
+            userId: userId,
+            token: token,
+            lastAccess: Utils.getCurrentUnixTime()
+        };
+
+        const runResult = statement.run(insertObject);
+
+        const sessionTable: SessionTable = {
+            ...insertObject,
+            id: runResult.lastInsertRowid as number
+        };
+
+        return sessionTable;
+    }
+
+    public getSession (sessionId: number): SessionTable
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM session WHERE id = ?'
+        );
+
+        const session: SessionTable = statement.get(sessionId);
+
+        return session;
+    }
+
+    public updateSessionAccessTime (sessionId: number): void
+    {
+        const statement = this.database.prepare(
+            `UPDATE
+                session
+            SET
+                lastAccess = ?
+            WHERE
+                id = ?`
+        );
+
+        const currentUnixTime = Utils.getCurrentUnixTime();
+
+        statement.run(currentUnixTime, sessionId);
+    }
+
+    public deleteSession (sessionId: number): void
+    {
+        const statement = this.database.prepare(
+            'DELETE FROM session WHERE id = ?'
+        );
+
+        statement.run(sessionId);
     }
 }

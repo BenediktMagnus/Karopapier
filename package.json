@@ -13,6 +13,7 @@
         "compression": "^1.7.4",
         "socket.io": "^2.3.0",
         "better-sqlite3": "^5.4.3",
+        "bcrypt": "^3.0.7"
     },
     "devDependencies": {
         "@types/node": "^12.12.14",
@@ -21,6 +22,7 @@
         "@types/socket.io": "^2.1.4",
         "@types/socket.io-client": "^1.4.32",
         "@types/better-sqlite3": "^5.4.0",
+        "@types/bcrypt": "^3.0.0",
         "typescript": "^3.7.2",
         "eslint": "^6.7.1",
         "@typescript-eslint/parser": "^2.9.0",
