@@ -63,10 +63,13 @@
         ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unused-expressions": "warn",
+        "@typescript-eslint/no-floating-promises": "warn",
+        "@typescript-eslint/no-misused-promises": "warn",
         "@typescript-eslint/space-before-function-paren": [
             "warn",
             "always"
         ],
+        "@typescript-eslint/promise-function-async": "error",
         "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/restrict-plus-operands": "error",
         "@typescript-eslint/semi": [
