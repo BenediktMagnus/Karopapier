@@ -1,7 +1,7 @@
 {
     "name": "karopapier",
     "version": "0.2.0",
-    "description": "Karopapier, ein Onlinezeichenpapier zum Erstellen von Karten. - Von B.Magnus",
+    "description": "Karopapier, an online drawing tool for the creation of simple two-dimensional maps.",
     "author": "Benedikt Magnus",
     "license": "MIT",
     "repository": {
