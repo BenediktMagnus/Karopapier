@@ -4,4 +4,5 @@ export const authenticate = 'authenticate';
 export const listMaps = 'listmaps';
 export const loadMap = 'loadmap';
 export const login = 'login';
+export const selectMap = 'selectmap';
 export const setMapEntry = 'setmapentry';

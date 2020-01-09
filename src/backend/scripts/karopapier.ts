@@ -1,4 +1,5 @@
 import Database from './karopapier/database/database';
+import MapHandler from './karopapier/map/mapHandler';
 import Server from './karopapier/server';
 import UserHandler from './karopapier/user/userHandler';
 
@@ -9,6 +10,7 @@ export default class Karopapier
     protected readonly database: Database;
     protected readonly server: Server;
     protected readonly userHandler: UserHandler;
+    protected readonly mapHandler: MapHandler;
 
     constructor (inMemory = false)
     {
@@ -19,6 +21,7 @@ export default class Karopapier
         this.server.httpPort = httpPort;
 
         this.userHandler = new UserHandler(this.server, this.database);
+        this.mapHandler = new MapHandler(this.server, this.database, this.userHandler);
 
         this.server.start();
     }

@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { MapTable } from './tables/mapTable';
 import Sqlite = require('better-sqlite3');
 import SessionTable from './tables/sessionTable';
 import { UserTable } from './tables/userTable';
@@ -201,5 +202,50 @@ export default class Database
         );
 
         statement.run(sessionId);
+    }
+
+    /**
+     * Get a map by it's ID.
+     * @returns The map.
+     */
+    public getMap (mapId: number): MapTable
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM map WHERE id = ?'
+        );
+
+        const map: MapTable = statement.get(mapId);
+
+        return map;
+    }
+
+    /**
+     * Get all maps.
+     * @returns The list of map entries.
+     */
+    public getMaps (): MapTable[]
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM map'
+        );
+
+        const maps: MapTable[] = statement.all();
+
+        return maps;
+    }
+
+    /**
+     * Get all currently active maps (isActive == true).
+     * @returns The list of active maps.
+     */
+    public getActiveMaps (): MapTable[]
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM map WHERE isActive = 1'
+        );
+
+        const activeMaps: MapTable[] = statement.all();
+
+        return activeMaps;
     }
 }
