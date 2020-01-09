@@ -11,28 +11,30 @@ class Main
 
     constructor ()
     {
-        this.mapId = null;
-
-        this.socket = io();
-
-        this.socket.on('connect', this.onConnect.bind(this));
-        this.socket.on('reconnect', this.onReconnect.bind(this));
-
-        this.socket.connect();
-    }
-
-    public run (): void
-    {
-        document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
-    }
-
-    protected onConnect (): void
-    {
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
         const mapId = urlParameters.get('map');
 
-        if (mapId === null)
+        this.mapId = (mapId === null) ? null : Number.parseInt(mapId);
+
+        // DOM events:
+        document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
+
+        this.socket = io();
+
+        // Socket.io events:
+        this.socket.on('connect', this.onConnect.bind(this));
+        this.socket.on('reconnect', this.onReconnect.bind(this));
+    }
+
+    public run (): void
+    {
+        this.socket.connect();
+    }
+
+    protected onConnect (): void
+    {
+        if (this.mapId === null)
         {
             this.socket.disconnect();
 
@@ -40,10 +42,6 @@ class Main
 
             // TODO: Should we inform the user about the missing map ID?
             //       If we let him draw for himself we must go sure this has no unforeseen consequences.
-        }
-        else
-        {
-            this.mapId = parseInt(mapId);
         }
 
         // After connection, the same has to happen as after a reconnect:
@@ -62,8 +60,6 @@ class Main
 
     protected onDocumentLoaded (): void
     {
-        console.log('ID: ' + this.socket.id);
-
         this.paper = new Paper(Constants.mapWidth, Constants.mapHeight);
     }
 }
