@@ -5,6 +5,7 @@ import Server from '../server';
 import socketIo from 'socket.io';
 import User from '../user/user';
 import UserHandler from '../user/userHandler';
+import Validation from '../../utility/validation';
 
 export default class MapHandler
 {
@@ -56,6 +57,11 @@ export default class MapHandler
 
     protected onSelectMap (socket: socketIo.Socket, mapId: number): void
     {
+        if (!Validation.isValidId(mapId))
+        {
+            return;
+        }
+
         const map = this.database.getMap(mapId); // TODO: Handle map not being found.
 
         if (!map.isActive)

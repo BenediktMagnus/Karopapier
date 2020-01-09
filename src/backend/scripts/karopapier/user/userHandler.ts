@@ -6,6 +6,7 @@ import SessionManager from './sessionManager';
 import socketIo from 'socket.io';
 import User from './user';
 import Utils from '../../utility/utils';
+import Validation from '../../utility/validation';
 
 export default class UserHandler
 {
@@ -73,6 +74,11 @@ export default class UserHandler
         reply: FunctionDefinitions.LoginResponseFunction
     ): Promise<void>
     {
+        if (!Validation.isNonEmptyString(name) || !Validation.isNonEmptyString(password))
+        {
+            return;
+        }
+
         const session = await this.sessionManager.login(name, password);
 
         if (session === null)
@@ -97,6 +103,11 @@ export default class UserHandler
         reply: FunctionDefinitions.AuthenticateResponseFunction
     ): void
     {
+        if (!Validation.isValidId(sessionId) || !Validation.isNonEmptyString(sessionToken))
+        {
+            return;
+        }
+
         const session = this.sessionManager.authenticate(sessionId, sessionToken);
 
         if (session === null)
