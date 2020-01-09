@@ -15,9 +15,10 @@ class Main
 
         this.socket = io();
 
+        this.socket.on('connect', this.onConnect.bind(this));
         this.socket.on('reconnect', this.onReconnect.bind(this));
 
-        this.onConnect();
+        this.socket.connect();
     }
 
     public run (): void
