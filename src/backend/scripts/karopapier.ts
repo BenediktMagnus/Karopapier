@@ -18,7 +18,7 @@ export default class Karopapier
 
         this.server.httpPort = httpPort;
 
-        this.userHandler = new UserHandler(this.server.socketIo, this.database);
+        this.userHandler = new UserHandler(this.server, this.database);
 
         this.server.start();
     }

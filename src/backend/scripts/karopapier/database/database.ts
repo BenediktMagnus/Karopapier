@@ -115,6 +115,17 @@ export default class Database
         this.database.close();
     }
 
+    public getUser (userId: number): UserTable
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM user WHERE id = ?'
+        );
+
+        const user: UserTable = statement.get(userId);
+
+        return user;
+    }
+
     public getUserByName (userName: string): UserTable
     {
         const statement = this.database.prepare(

@@ -23,7 +23,7 @@ CREATE TABLE `map` (
 
 CREATE TABLE `mapEntryAnonymous` (
 	`mapId`	INTEGER NOT NULL,
-	`quantity`	INTEGER NOT NULL,
+	`ip`	TEXT NOT NULL,
 	`x`	INTEGER NOT NULL,
 	`y`	INTEGER NOT NULL,
 	`content`	INTEGER NOT NULL,
