@@ -1,5 +1,5 @@
 import Point, { PointEvent, PointEvents } from "./point";
-import Boundaries from "../utility/boundaries";
+import Boundaries from "../../utility/boundaries";
 import Row from "./row";
 
 type RowMap = Map<number, Row>;

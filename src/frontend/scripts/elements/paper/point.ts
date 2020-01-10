@@ -1,4 +1,4 @@
-import Boundaries from "../utility/boundaries";
+import Boundaries from "../../utility/boundaries";
 
 export type PointEvent = (point: Point) => void;
 
