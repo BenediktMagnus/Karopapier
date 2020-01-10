@@ -48,6 +48,8 @@ class Main
 
         // After connection, the same has to happen as after a reconnect:
         this.onReconnect();
+
+        this.callOnReadyIfReady();
     }
 
     protected onReconnect (): void
@@ -66,6 +68,28 @@ class Main
 
         this.coordinates = new Coordinates('coordinates');
         this.paper.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
+
+        this.callOnReadyIfReady();
+    }
+
+    /**
+     * Will check wether everything is read i.e. the document is completely loaded, the socket is connected etc.
+     * and if yes it will call the associated event.
+     */
+    protected callOnReadyIfReady (): void
+    {
+        if (this.socket.connected && (document.readyState != 'loading'))
+        {
+            this.onReady();
+        }
+    }
+
+    /**
+     * Called when everything is ready, i.e. the document is completely loaded, the socket is connected etc.
+     */
+    protected onReady (): void
+    {
+        // TODO: Implement.
     }
 }
 
