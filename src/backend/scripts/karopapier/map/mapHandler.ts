@@ -73,6 +73,10 @@ export default class MapHandler
         const roomName = this.mapIdToRoomName(map.id);
 
         user.socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
+
+        user.selectedMap = map.id;
+
+        // TODO: Should this event return map meta data like name, description and tools instead of onLoadMap?
     }
 
     protected onLoadMap (reply: () => void): void
