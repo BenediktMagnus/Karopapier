@@ -56,7 +56,7 @@ export default class MapHandler
         // TODO: If we do that, we need to ship the mapDescriber information in onLoadMap.
     }
 
-    protected onSelectMap (socket: socketIo.Socket, publicIdentifier: string): void
+    protected onSelectMap (user: User, publicIdentifier: string): void
     {
         if (!Validation.isNonEmptyString(publicIdentifier))
         {
@@ -72,7 +72,7 @@ export default class MapHandler
 
         const roomName = this.mapIdToRoomName(map.id);
 
-        socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
+        user.socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
     }
 
     protected onLoadMap (reply: () => void): void

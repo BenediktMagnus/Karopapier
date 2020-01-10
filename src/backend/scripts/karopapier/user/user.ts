@@ -1,5 +1,7 @@
+import socketIo from 'socket.io';
 import { UserTable } from "../database/tables/userTable";
 
-type User = UserTable; // TODO: Should the user contain it's socket?
-
-export default User;
+export default interface User extends UserTable
+{
+    socket: socketIo.Socket;
+}

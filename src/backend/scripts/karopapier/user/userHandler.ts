@@ -40,7 +40,12 @@ export default class UserHandler
             userId = this.anonymousUserId;
         }
 
-        const user = this.database.getUser(userId);
+        const userTable = this.database.getUser(userId);
+
+        const user: User = {
+            ...userTable,
+            socket: socket
+        };
 
         return user;
     }
