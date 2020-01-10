@@ -1,3 +1,5 @@
+import Boundaries from "../utility/boundaries";
+
 export type PointEvent = (point: Point) => void;
 
 export class PointEvents
@@ -14,6 +16,11 @@ export default class Point
     public readonly y: number;
 
     protected events: PointEvents;
+
+    public get boundaries (): Boundaries
+    {
+        return this.element;
+    }
 
     constructor (x: number, y: number, events: PointEvents)
     {

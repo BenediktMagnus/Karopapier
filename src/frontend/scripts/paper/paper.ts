@@ -1,4 +1,5 @@
 import Point, { PointEvent, PointEvents } from "./point";
+import Boundaries from "../utility/boundaries";
 import Row from "./row";
 
 type RowMap = Map<number, Row>;
@@ -14,6 +15,11 @@ export default class Paper
      * A map of rows with the y coordinates as key and the row instance as value.
      */
     protected rows: RowMap;
+
+    public get boundaries (): Boundaries
+    {
+        return this.element;
+    }
 
     constructor (width: number, height: number)
     {
