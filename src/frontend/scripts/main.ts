@@ -1,6 +1,7 @@
 import * as Constants from "./shared/constants";
 import * as FunctionNames from "./shared/functionNames";
-import Paper from "./paper/paper";
+import Coordinates from "./elements/coordinates";
+import Paper from "./elements/paper/paper";
 
 class Main
 {
@@ -8,6 +9,7 @@ class Main
 
     protected mapPublicIdentifier: string|null;
     protected paper?: Paper;
+    protected coordinates?: Coordinates;
 
     constructor ()
     {
@@ -56,6 +58,8 @@ class Main
     protected onDocumentLoaded (): void
     {
         this.paper = new Paper(Constants.mapWidth, Constants.mapHeight);
+        this.coordinates = new Coordinates('coordinates');
+        this.paper.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
     }
 }
 
