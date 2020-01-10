@@ -9,6 +9,9 @@ export interface MapTableInsert
      * Human readable name for the map.
      */
     name: string;
+    /**
+     * True if it is allowed to load the map and view or change it's content.
+     */
     isActive: boolean;
 }
 

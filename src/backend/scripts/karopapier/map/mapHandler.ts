@@ -37,7 +37,7 @@ export default class MapHandler
 
     protected onListMaps (reply: (activeMaps: MapDescriber[]) => void): void
     {
-        const activeMaps = this.database.getActiveMaps();
+        const activeMaps = this.database.getMaps();
 
         const mapDescribers: MapDescriber[] = [];
 
