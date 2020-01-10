@@ -63,8 +63,13 @@ export default class MapHandler
             return;
         }
 
-        const map = this.database.getMapByPublicIdentifier(publicIdentifier);
+        const hasMap = this.database.hasMapPublicIdentifier(publicIdentifier);
+        if (!hasMap)
+        {
+            return; // TODO: Should we inform the user about this?
+        }
 
+        const map = this.database.getMapByPublicIdentifier(publicIdentifier);
         if (!map.isActive)
         {
             return; // TODO: Should we inform the user about this?
