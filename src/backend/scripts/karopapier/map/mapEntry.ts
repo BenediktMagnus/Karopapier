@@ -1,20 +1,15 @@
-import MapContent from "./mapContent";
-
-type ContentToUserIdMap = Map<MapContent, number[]>;
-type UserIdToContentMap = Map<number, MapContent[]>;
-
 interface UserEntry
 {
     userId: number;
-    content: MapContent;
+    contentId: number;
 }
 
 export default class MapEntry
 {
     protected userEntries: UserEntry[];
 
-    protected contentToUserIdMap: ContentToUserIdMap;
-    protected userIdToContentMap: UserIdToContentMap;
+    protected contentIdToUserIdMap: Map<number, number[]>;
+    protected userIdToContentIdMap: Map<number, number[]>;
 
     constructor (userEntries?: UserEntry[]|null)
     {
@@ -27,25 +22,25 @@ export default class MapEntry
             this.userEntries = userEntries;
         }
 
-        this.contentToUserIdMap = new Map<MapContent, number[]>();
-        this.userIdToContentMap = new Map<number, MapContent[]>();
+        this.contentIdToUserIdMap = new Map<number, number[]>();
+        this.userIdToContentIdMap = new Map<number, number[]>();
 
         // Fill the maps:
         for (const userEntry of this.userEntries)
         {
-            this.initialiseMapEntry(this.userIdToContentMap, userEntry.userId);
+            this.initialiseMapEntry(this.userIdToContentIdMap, userEntry.userId);
 
-            const userEntries = this.userIdToContentMap.get(userEntry.userId);
-            userEntries?.push(userEntry.content);
+            const userEntries = this.userIdToContentIdMap.get(userEntry.userId);
+            userEntries?.push(userEntry.contentId);
 
-            this.initialiseMapEntry(this.contentToUserIdMap, userEntry.content);
+            this.initialiseMapEntry(this.contentIdToUserIdMap, userEntry.contentId);
 
-            const userIds = this.contentToUserIdMap.get(userEntry.content);
+            const userIds = this.contentIdToUserIdMap.get(userEntry.contentId);
             userIds?.push(userEntry.userId);
         }
     }
 
-    protected initialiseMapEntry (map: ContentToUserIdMap|UserIdToContentMap, key: MapContent|number): void
+    protected initialiseMapEntry (map: Map<number, number[]>, key: number): void
     {
         if (!map.has(key))
         {
@@ -54,12 +49,12 @@ export default class MapEntry
     }
 
     /*
-    public getUserIds (content: MapContent): number[]
+    public getUserIds (contentId: number): number[]
     {
 
     }
 
-    public getContents (userId: number): MapContent[]
+    public getContents (userId: number): number[]
     {
 
     }

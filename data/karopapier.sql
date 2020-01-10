@@ -27,8 +27,9 @@ CREATE TABLE `mapEntryAnonymous` (
 	`ip`	TEXT NOT NULL,
 	`x`	INTEGER NOT NULL,
 	`y`	INTEGER NOT NULL,
-	`content`	INTEGER NOT NULL,
-	FOREIGN KEY(`mapId`) REFERENCES `map`(`id`)
+	`contentId`	INTEGER NOT NULL,
+	FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
+	FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
 );
 
 CREATE TABLE `mapEntryUser` (
@@ -36,9 +37,23 @@ CREATE TABLE `mapEntryUser` (
 	`userId`	INTEGER NOT NULL,
 	`x`	INTEGER NOT NULL,
 	`y`	INTEGER NOT NULL,
-	`content`	INTEGER NOT NULL,
+	`contentId`	INTEGER NOT NULL,
 	FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
-	FOREIGN KEY(`userId`) REFERENCES `user`(`id`)
+	FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
+	FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
+);
+
+CREATE TABLE `content` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`publicIdentifier`	TEXT NOT NULL,
+	`name`	TEXT NOT NULL
+);
+
+CREATE TABLE `mapContent` (
+	`mapId`	INTEGER NOT NULL,
+	`contentId`	INTEGER NOT NULL,
+	FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
+	FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
 );
 
 CREATE UNIQUE INDEX `userName` ON `user` (`name`);
