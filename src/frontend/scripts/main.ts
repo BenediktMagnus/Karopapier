@@ -1,6 +1,7 @@
 import * as Constants from "./shared/constants";
 import * as FunctionNames from "./shared/functionNames";
 import Coordinates from "./elements/coordinates";
+import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
 
 class Main
@@ -9,6 +10,7 @@ class Main
 
     protected mapPublicIdentifier: string|null;
     protected paper?: Paper;
+    protected palette?: Palette;
     protected coordinates?: Coordinates;
 
     constructor ()
@@ -58,6 +60,10 @@ class Main
     protected onDocumentLoaded (): void
     {
         this.paper = new Paper(Constants.mapWidth, Constants.mapHeight);
+        this.palette = new Palette(this.paper.boundaries);
+
+        this.paper.addClickListener(this.palette.onPaperClick.bind(this.palette));
+
         this.coordinates = new Coordinates('coordinates');
         this.paper.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
     }
