@@ -1,4 +1,4 @@
-import Point, { PointEvents } from "./point";
+import Point, { PointEvent, PointEvents } from "./point";
 import Row from "./row";
 
 type RowMap = Map<number, Row>;
@@ -7,6 +7,9 @@ export default class Paper
 {
     protected element: HTMLTableElement;
 
+    protected clickListeners: PointEvent[];
+    protected mouseOverListeners: PointEvent[];
+
     /**
      * A map of rows with the y coordinates as key and the row instance as value.
      */
@@ -14,6 +17,9 @@ export default class Paper
 
     constructor (width: number, height: number)
     {
+        this.clickListeners = [];
+        this.mouseOverListeners = [];
+
         const element = document.getElementById('paper') as HTMLTableElement;
 
         if (element === null)
@@ -50,13 +56,75 @@ export default class Paper
         }
     }
 
-    protected onPointClick (point: Point): void
+    public addClickListener (listener: PointEvent): void
     {
-        // TODO: Implement.
+        this.addPointEventListener(listener, this.clickListeners);
     }
 
+    public removeClickListener (listener: PointEvent): void
+    {
+        this.removePointEventListener(listener, this.clickListeners);
+    }
+
+    public addMouseOverListener (listener: PointEvent): void
+    {
+        this.addPointEventListener(listener, this.mouseOverListeners);
+    }
+
+    public removeMouseOverListener (listener: PointEvent): void
+    {
+        this.removePointEventListener(listener, this.mouseOverListeners);
+    }
+
+    /**
+     * Add a listener to a point event list.
+     * @param listener The listener to add.
+     * @param list The list of point events to add the listener to.
+     */
+    protected addPointEventListener (listener: PointEvent, list: PointEvent[]): void
+    {
+        if (!list.includes(listener))
+        {
+            list.push(listener);
+        }
+    }
+
+    /**
+     * Remove a listener from a point event list.
+     * @param listener The listener to renove.
+     * @param list The list of point events to remove the listener from.
+     */
+    protected removePointEventListener (listener: PointEvent, list: PointEvent[]): void
+    {
+        const position = list.indexOf(listener);
+
+        if (position > -1)
+        {
+            list.splice(position, 1);
+        }
+    }
+
+    /**
+     * Called if a point is clicked. Will call all listeners of the click event.
+     * @param point The point that has been clicked.
+     */
+    protected onPointClick (point: Point): void
+    {
+        for (const listener of this.clickListeners)
+        {
+            listener(point);
+        }
+    }
+
+    /**
+     * Called if a mouse over on a point has happened. Will call all listeners of the mouse over event.
+     * @param point The point the mouse is at.
+     */
     protected onPointMouseOver (point: Point): void
     {
-        // TODO: Implement.
+        for (const listener of this.mouseOverListeners)
+        {
+            listener(point);
+        }
     }
 }

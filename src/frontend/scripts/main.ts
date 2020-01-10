@@ -7,7 +7,7 @@ class Main
     protected readonly socket: SocketIOClient.Socket;
 
     protected mapPublicIdentifier: string|null;
-    protected paper: Paper|undefined;
+    protected paper?: Paper;
 
     constructor ()
     {
