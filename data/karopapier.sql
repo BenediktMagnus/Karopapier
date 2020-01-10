@@ -17,7 +17,8 @@ CREATE TABLE `session` (
 
 CREATE TABLE `map` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`name`	TEXT NOT NULL UNIQUE,
+	`publicIdentifier`	TEXT NOT NULL UNIQUE,
+	`name`	TEXT NOT NULL,
 	`isActive`	INTEGER NOT NULL DEFAULT 1
 );
 
@@ -41,6 +42,7 @@ CREATE TABLE `mapEntryUser` (
 );
 
 CREATE UNIQUE INDEX `userName` ON `user` (`name`);
+CREATE UNIQUE INDEX `mapPublicIdentifier` ON `map` (`publicIdentifier`);
 CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`);
 CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`);
 

@@ -204,6 +204,27 @@ export default class Database
         statement.run(sessionId);
     }
 
+    public hasMapPublicIdentifier (publicIdentifier: string): boolean
+    {
+        const statement = this.database.prepare(
+            `SELECT
+                CASE
+                    WHEN EXISTS
+                        (SELECT 1 FROM map WHERE publicIdentifier = ? LIMIT 1)
+                    THEN 1
+                    ELSE 0
+                END`
+        );
+
+        // Will make the get method to return the value of the first column instead of an object for all
+        // columns. Since we only want one value this makes it much easier:
+        statement.pluck(true);
+
+        const result: boolean = statement.get(publicIdentifier);
+
+        return result;
+    }
+
     /**
      * Get a map by it's ID.
      * @returns The map.
@@ -215,6 +236,21 @@ export default class Database
         );
 
         const map: MapTable = statement.get(mapId);
+
+        return map;
+    }
+
+    /**
+     * Get a map by it's public identifier.
+     * @returns The map.
+     */
+    public getMapByPublicIdentifier (publicIdentifier: string): MapTable
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM map WHERE publicIdentifier = ?'
+        );
+
+        const map: MapTable = statement.get(publicIdentifier);
 
         return map;
     }

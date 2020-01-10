@@ -30,6 +30,7 @@ export default class MapHandler
         // 2. Inject the user (get via socket) if needd for us to know which user does the action.
 
         socket.on(FunctionNames.listMaps, this.onListMaps.bind(this));
+        socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
         socket.on(FunctionNames.loadMap, this.onLoadMap.bind(this));
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
@@ -55,21 +56,21 @@ export default class MapHandler
         // TODO: If we do that, we need to ship the mapDescriber information in onLoadMap.
     }
 
-    protected onSelectMap (socket: socketIo.Socket, mapId: number): void
+    protected onSelectMap (socket: socketIo.Socket, publicIdentifier: string): void
     {
-        if (!Validation.isValidId(mapId))
+        if (!Validation.isNonEmptyString(publicIdentifier))
         {
             return;
         }
 
-        const map = this.database.getMap(mapId); // TODO: Handle map not being found.
+        const map = this.database.getMapByPublicIdentifier(publicIdentifier);
 
         if (!map.isActive)
         {
             return; // TODO: Should we inform the user about this?
         }
 
-        const roomName = this.mapIdToRoomName(mapId);
+        const roomName = this.mapIdToRoomName(map.id);
 
         socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
     }

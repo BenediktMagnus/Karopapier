@@ -6,16 +6,14 @@ class Main
 {
     protected readonly socket: SocketIOClient.Socket;
 
-    protected mapId: number|null;
+    protected mapPublicIdentifier: string|null;
     protected paper: Paper|undefined;
 
     constructor ()
     {
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
-        const mapId = urlParameters.get('map');
-
-        this.mapId = (mapId === null) ? null : Number.parseInt(mapId);
+        this.mapPublicIdentifier = urlParameters.get('map');
 
         // DOM events:
         document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
@@ -34,13 +32,13 @@ class Main
 
     protected onConnect (): void
     {
-        if (this.mapId === null)
+        if (this.mapPublicIdentifier === null)
         {
             this.socket.disconnect();
 
             return;
 
-            // TODO: Should we inform the user about the missing map ID?
+            // TODO: Should we inform the user about the missing map public identifier?
             //       If we let him draw for himself we must go sure this has no unforeseen consequences.
         }
 
@@ -52,10 +50,7 @@ class Main
     {
         // TODO: Authenticate.
 
-        // TODO: The following currently uses the map ID to identify a map. It would be much nicer
-        //       to have a readable name in the URL. Maybe use that instead and add a "description"
-        //       field to maps to have a well readably, non-URL-encoded description for it to show.
-        this.socket.emit(FunctionNames.selectMap, this.mapId);
+        this.socket.emit(FunctionNames.selectMap, this.mapPublicIdentifier);
     }
 
     protected onDocumentLoaded (): void
