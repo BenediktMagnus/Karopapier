@@ -75,7 +75,7 @@ export default class MapHandler
         }
 
         const hasMap = this.database.hasMapPublicIdentifier(publicIdentifier);
-        if (!hasMap)
+        if (!hasMap) // FIXME: The booleans are numbers! Must be fixed in database.
         {
             return; // TODO: Should we inform the user about this?
         }

@@ -1,5 +1,5 @@
 /**
- * Describes the boundaries of something, meaning it's position and size.
+ * Describes the boundaries of something, meaning it's (DOM) position and size.
  */
 export default interface Boundaries
 {
