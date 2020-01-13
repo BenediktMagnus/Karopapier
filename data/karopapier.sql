@@ -68,9 +68,9 @@ CREATE UNIQUE INDEX `userName` ON `user` (`name`);
 -- Search by map's public identifier is needed for selecting maps via URL:
 CREATE UNIQUE INDEX `mapPublicIdentifier` ON `map` (`publicIdentifier`);
 -- Speeding up tile searches:
-CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`);
+CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`, `ip`);
 -- Speeding up tile searches:
-CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`);
+CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`, `userId`);
 
 -- The default anonymous user, here to go sure the ID is zero and the first entry:
 INSERT INTO
