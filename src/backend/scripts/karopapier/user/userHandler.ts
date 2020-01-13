@@ -61,10 +61,12 @@ export default class UserHandler
         }
 
         const userTable = this.database.getUser(userId);
+        const ipAddress = this.sessionManager.getIpAddress(socket);
 
         const user: User = {
             ...userTable,
-            socket: socket
+            socket: socket,
+            ip: ipAddress,
         };
 
         this.socketIdToUserMap.set(socket.id, user);

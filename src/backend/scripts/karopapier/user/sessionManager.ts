@@ -59,25 +59,6 @@ export default class SessionManager
         return sessionToken;
     }
 
-    protected getIpAddress (socket: socketIo.Socket): string
-    {
-        let ipAddress: string;
-
-        const xForwardedForHeader: string|undefined = socket.handshake.headers['x-forwarded-for'];
-
-        if (xForwardedForHeader)
-        {
-            const ipAddresses = xForwardedForHeader.split(',');
-            ipAddress = ipAddresses[0].trim();
-        }
-        else
-        {
-            ipAddress = socket.request.connection.remoteAddress;
-        }
-
-        return ipAddress;
-    }
-
     protected sessionIsExpired (lastAccess: number): boolean
     {
         const currentTime = Utils.getCurrentUnixTime();
@@ -136,5 +117,30 @@ export default class SessionManager
         {
             return null;
         }
+    }
+
+    /**
+     * Get the current IP of the socket connection. \
+     * This takes possible (reverse) proxies that set an x-forwarded-for header into account and returns the IP they mention in the header.
+     * @param socket The socket to get the IP from.
+     * @returns The socket's IP.
+     */
+    public getIpAddress (socket: socketIo.Socket): string
+    {
+        let ipAddress: string;
+
+        const xForwardedForHeader: string|undefined = socket.handshake.headers['x-forwarded-for'];
+
+        if (xForwardedForHeader)
+        {
+            const ipAddresses = xForwardedForHeader.split(',');
+            ipAddress = ipAddresses[0].trim();
+        }
+        else
+        {
+            ipAddress = socket.request.connection.remoteAddress;
+        }
+
+        return ipAddress;
     }
 }
