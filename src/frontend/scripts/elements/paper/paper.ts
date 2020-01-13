@@ -1,5 +1,6 @@
 import Point, { PointEvent, PointEvents } from "./point";
 import Boundaries from "../../utility/boundaries";
+import { ContentEntryListElement } from "../../shared/map";
 import Row from "./row";
 
 type RowMap = Map<number, Row>;
@@ -80,6 +81,54 @@ export default class Paper
     public removeMouseOverListener (listener: PointEvent): void
     {
         this.removePointEventListener(listener, this.mouseOverListeners);
+    }
+
+    public loadMap (contentEntryListElements: ContentEntryListElement[]): void
+    {
+        // NOTE: We can asume a y-x order of the list here.
+
+        let y = Number.NEGATIVE_INFINITY;
+        let row: Row|undefined;
+
+        for (const contentEntryListElement of contentEntryListElements)
+        {
+            if (contentEntryListElement.y !== y)
+            {
+                y = contentEntryListElement.y;
+
+                row = this.rows.get(y);
+            }
+
+            if (row === undefined)
+            {
+                continue; // TODO: Should we do something here like making the paper bigger?
+            }
+
+            const point = row.getPoint(contentEntryListElement.x);
+
+            if (point === null)
+            {
+                continue; // TODO: Should we do something here like making the paper bigger?
+            }
+
+            point.loadContentEntries(contentEntryListElement.contentEntries);
+        }
+    }
+
+    protected getPointAt (x: number, y: number): Point|null
+    {
+        // TODO: We could build the automatic size increasing procedure in here and give back a point in every case.
+
+        const row = this.rows.get(y);
+
+        if (row === undefined)
+        {
+            return null;
+        }
+
+        const point = row.getPoint(x);
+
+        return point;
     }
 
     /**

@@ -32,4 +32,17 @@ export default class Row
             this.points.set(x, point);
         }
     }
+
+    public getPoint (x: number): Point|null
+    {
+        const point = this.points.get(x);
+
+        // Null is correct here instead of undefined because the structure (coordinates) do exist but there is no point there:
+        if (point === undefined)
+        {
+            return null;
+        }
+
+        return point;
+    }
 }

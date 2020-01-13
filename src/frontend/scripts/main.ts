@@ -89,7 +89,10 @@ class Main
      */
     protected onReady (): void
     {
-        // TODO: Implement.
+        if (this.paper !== undefined)
+        {
+            this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
+        }
     }
 }
 

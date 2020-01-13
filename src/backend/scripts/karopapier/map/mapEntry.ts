@@ -1,19 +1,32 @@
+import { ContentEntry, ParsableContentEntry } from "../../shared/map";
+import MapEntryStatus from "./mapEntryStatus";
+
 interface UserEntry
 {
     userId: number;
     contentId: number;
 }
 
+interface AnonymousEntry
+{
+    ip: string;
+    contentId: number;
+}
+
 export default class MapEntry
 {
-    protected userEntries: UserEntry[];
+    protected userIdToUserEntryMap: Map<number, UserEntry>;
+    protected ipToAnonymousEntryMap: Map<string, AnonymousEntry>;
 
-    protected contentIdToUserIdMap: Map<number, number[]>;
-    protected userIdToContentIdMap: Map<number, number[]>;
+    protected contentIdToContentEntryMap: Map<number, ContentEntry>;
 
-    constructor (userEntries?: UserEntry[]|null)
+    constructor ()
     {
-        if ((userEntries === undefined) || (userEntries === null))
+        this.userIdToUserEntryMap = new Map<number, UserEntry>();
+        this.ipToAnonymousEntryMap = new Map<string, AnonymousEntry>();
+        this.contentIdToContentEntryMap = new Map<number, ContentEntry>();
+    }
+
         {
             this.userEntries = [];
         }
@@ -48,15 +61,25 @@ export default class MapEntry
         }
     }
 
-    /*
-    public getUserIds (contentId: number): number[]
+    public getContentEntries (): ParsableContentEntry[]
     {
+        const contentEntries = Array.from(this.contentIdToContentEntryMap.values());
 
+        const parsableContentEntries: ParsableContentEntry[] = [];
+
+        // Convert the content entries' set of user IDs to an array for it being parsable:
+        for (const contentEntry of contentEntries)
+        {
+            const userIds = Array.from(contentEntry.userIds.values());
+
+            const parsableContentEntry: ParsableContentEntry = {
+                ...contentEntry,
+                userIds: userIds,
+            };
+
+            parsableContentEntries.push(parsableContentEntry);
+        }
+
+        return parsableContentEntries;
     }
-
-    public getContents (userId: number): number[]
-    {
-
-    }
-    */
 }

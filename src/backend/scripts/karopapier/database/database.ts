@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import MapEntryAnonymousTable from './tables/mapEntryAnonymousTable';
+import MapEntryUserTable from './tables/mapEntryUserTable';
 import { MapTable } from './tables/mapTable';
 import Sqlite = require('better-sqlite3');
 import SessionTable from './tables/sessionTable';
@@ -204,6 +206,27 @@ export default class Database
         statement.run(sessionId);
     }
 
+    public hasMap (mapId: number): boolean
+    {
+        const statement = this.database.prepare(
+            `SELECT
+                CASE
+                    WHEN EXISTS
+                        (SELECT 1 FROM map WHERE id = ? LIMIT 1)
+                    THEN 1
+                    ELSE 0
+                END`
+        );
+
+        // Will make the get method to return the value of the first column instead of an object for all
+        // columns. Since we only want one value this makes it much easier:
+        statement.pluck(true);
+
+        const result: boolean = statement.get(mapId);
+
+        return result;
+    }
+
     public hasMapPublicIdentifier (publicIdentifier: string): boolean
     {
         const statement = this.database.prepare(
@@ -270,18 +293,25 @@ export default class Database
         return maps;
     }
 
-    /**
-     * Get all currently active maps (isActive == true).
-     * @returns The list of active maps.
-     */
-    public getActiveMaps (): MapTable[]
+    public getAnonymousMapEntries (mapId: number): MapEntryAnonymousTable[]
     {
         const statement = this.database.prepare(
-            'SELECT * FROM map WHERE isActive = 1'
+            'SELECT * FROM mapEntryAnonymous WHERE mapId = ?'
         );
 
-        const activeMaps: MapTable[] = statement.all();
+        const mapEntries: MapEntryAnonymousTable[] = statement.all(mapId);
 
-        return activeMaps;
+        return mapEntries;
+    }
+
+    public getUserMapEntries (mapId: number): MapEntryUserTable[]
+    {
+        const statement = this.database.prepare(
+            'SELECT * FROM mapEntryUser WHERE mapId = ?'
+        );
+
+        const mapEntries: MapEntryUserTable[] = statement.all(mapId);
+
+        return mapEntries;
     }
 }

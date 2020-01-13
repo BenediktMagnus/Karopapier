@@ -1,6 +1,8 @@
 import * as FunctionNames from '../../shared/functionNames';
 import Database from '../database/database';
-import MapDescriber from '../../shared/mapDescriber';
+import { LoadMapResponseFunction } from '../../shared/functionDefinitions';
+import { MapDescriber } from '../../shared/map';
+import MapHolder from './mapHolder';
 import Server from '../server';
 import socketIo from 'socket.io';
 import User from '../user/user';
@@ -14,11 +16,15 @@ export default class MapHandler
 
     protected userHandler: UserHandler;
 
+    protected mapIdToMapHolderMap: Map<number, MapHolder>;
+
     constructor (server: Server, database: Database, userHandler: UserHandler)
     {
         this.io = server.socketIo;
         this.database = database;
         this.userHandler = userHandler;
+
+        this.mapIdToMapHolderMap = new Map<number, MapHolder>();
 
         this.io.on('connection', (socket) => this.onConnection(socket));
     }
@@ -31,12 +37,17 @@ export default class MapHandler
 
         socket.on(FunctionNames.listMaps, this.onListMaps.bind(this));
         socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
-        socket.on(FunctionNames.loadMap, this.onLoadMap.bind(this));
+        socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
 
     protected onListMaps (reply: (activeMaps: MapDescriber[]) => void): void
     {
+        if (!Validation.isCallable(reply))
+        {
+            return;
+        }
+
         const activeMaps = this.database.getMaps();
 
         const mapDescribers: MapDescriber[] = [];
@@ -81,16 +92,35 @@ export default class MapHandler
 
         user.selectedMapId = map.id;
 
-        // TODO: Should this event return map meta data like name, description and tools instead of onLoadMap?
+        // TODO: Should this event return map meta data like name, description and tools?
     }
 
-    protected onLoadMap (reply: () => void): void
+    protected onLoadMap (user: User, reply: LoadMapResponseFunction): void
     {
         // TODO: We need at least every user and anonymous entries here.
         //       Calculated map meta data like the highest number of people voting for a content on an entry
         //       is optional and should only be send if it is already calculated/known.
 
-        reply();
+        if (!Validation.isCallable(reply))
+        {
+            return;
+        }
+
+        if (user.selectedMapId === undefined)
+        {
+            return; // TODO: Should we inform the user about this?
+        }
+
+        let mapHolder = this.mapIdToMapHolderMap.get(user.selectedMapId);
+
+        if (mapHolder === undefined)
+        {
+            mapHolder = new MapHolder(this.database, user.selectedMapId);
+        }
+
+        const mapEntries = mapHolder.getEntries();
+
+        reply(mapEntries);
     }
 
     protected onSetMapEntry (user: User, x: number, y: number, content: number): void
