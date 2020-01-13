@@ -152,7 +152,7 @@ export default class MapHandler
         {
             const user = this.userHandler.getUserFromSocket(socket);
 
-            callable(user, args);
+            callable(user, ...args);
         };
 
         return arrowFunction;
