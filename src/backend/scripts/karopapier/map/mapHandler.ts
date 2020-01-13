@@ -79,7 +79,7 @@ export default class MapHandler
 
         user.socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
 
-        user.selectedMap = map.id;
+        user.selectedMapId = map.id;
 
         // TODO: Should this event return map meta data like name, description and tools instead of onLoadMap?
     }
