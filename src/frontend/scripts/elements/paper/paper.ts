@@ -115,6 +115,26 @@ export default class Paper
         }
     }
 
+    public setMapEntry (x: number, y: number, userId: number|null, oldContentId: number|null, newContentId: number): void
+    {
+        const point = this.getPointAt(x, y);
+
+        if (point === null)
+        {
+            return;
+            // TODO: This should, theoretically, never happen. But couldn't we apply the same size increasing procedure as in loadMap?
+        }
+
+        if (userId === null)
+        {
+            point.setAnonymousEntry(oldContentId, newContentId);
+        }
+        else
+        {
+            point.setUserEntry(userId, oldContentId, newContentId);
+        }
+    }
+
     protected getPointAt (x: number, y: number): Point|null
     {
         // TODO: We could build the automatic size increasing procedure in here and give back a point in every case.

@@ -91,6 +91,9 @@ class Main
     {
         if (this.paper !== undefined)
         {
+            // Map events, we only need to listen to them as soon as the map is loaded:
+            this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
+
             this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
         }
     }

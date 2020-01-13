@@ -80,6 +80,69 @@ export default class Point
             }
         }
     }
+
+    public setUserEntry (userId: number, oldContentId: number|null, newContentId: number): void
+    {
+        if (oldContentId !== null)
+        {
+            const oldEntry = this.contentIdToContentEntryMap.get(oldContentId);
+
+            if (oldEntry !== undefined)
+            {
+                oldEntry.userIds.delete(userId);
+            }
+        }
+
+        let newEntry = this.contentIdToContentEntryMap.get(newContentId);
+
+        if (newEntry !== undefined)
+        {
+            newEntry.userIds.add(userId);
+        }
+        else
+        {
+            const userIds = new Set([userId]);
+
+            newEntry = {
+                contentId: newContentId,
+                userIds: userIds,
+                anonymousCount: 0,
+            };
+
+            this.contentIdToContentEntryMap.set(newContentId, newEntry);
+        }
+    }
+
+    public setAnonymousEntry (oldContentId: number|null, newContentId: number): void
+    {
+        if (oldContentId !== null)
+        {
+            const oldEntry = this.contentIdToContentEntryMap.get(oldContentId);
+
+            if (oldEntry !== undefined)
+            {
+                oldEntry.anonymousCount--;
+            }
+        }
+
+        let newEntry = this.contentIdToContentEntryMap.get(newContentId);
+
+        if (newEntry !== undefined)
+        {
+            newEntry.anonymousCount++;
+        }
+        else
+        {
+            newEntry = {
+                contentId: newContentId,
+                userIds: new Set(),
+                anonymousCount: 1,
+            };
+
+            this.contentIdToContentEntryMap.set(newContentId, newEntry);
+        }
+    }
+
     protected resetContent (): void
     {
         this.contentId = Constants.emptyContentId;
