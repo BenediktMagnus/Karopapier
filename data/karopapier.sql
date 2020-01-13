@@ -78,4 +78,10 @@ INSERT INTO
 VALUES
 	(0, 'anonymous', '', 0);
 
+-- The default map content, here to go sure the ID is zero and the first entry;
+INSERT INTO
+	`content` (`id`, `publicIdentifier`, `name`)
+VALUES
+	(0, 'empty', 'Empty');
+
 COMMIT;
