@@ -14,7 +14,7 @@ CREATE TABLE `session` (
 	`userId`	INTEGER NOT NULL,
 	`token`	TEXT NOT NULL UNIQUE,
 	`lastAccess`	INTEGER NOT NULL,
-	FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
+	FOREIGN KEY(`userId`) REFERENCES `user`(`id`)
 );
 
 -- Maps and their meta data:
