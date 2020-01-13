@@ -10,7 +10,7 @@ import Validation from '../../utility/validation';
 
 export default class UserHandler
 {
-    public readonly anonymousUserId = 0;
+    protected readonly anonymousUserId = 0;
 
     protected io: socketIo.Server;
     protected database: Database;
@@ -42,6 +42,18 @@ export default class UserHandler
         }
 
         return user;
+    }
+
+    /**
+     * Checks wether the given user is logged in or anonymous.
+     * @param user The user to check.
+     * @returns True if the user is logged in, false if he is anonymous
+     */
+    public isLoggedIn (user: User): boolean
+    {
+        const isLoggedIn = user.id !== this.anonymousUserId;
+
+        return isLoggedIn;
     }
 
     /**

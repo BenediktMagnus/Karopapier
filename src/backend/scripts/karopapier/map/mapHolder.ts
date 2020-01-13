@@ -37,6 +37,55 @@ export default class MapHolder
         this.loadEntries();
     }
 
+    public setUserEntry (x: number, y: number, userId: number, contentId: number): void
+    {
+        const mapEntry = this.getMapEntry(x, y);
+
+        const entryStatus = mapEntry.setUserEntry(userId, contentId);
+
+        const userMapEntry: MapEntryUserTable = {
+            mapId: this.map.id,
+            userId: userId,
+            x: x,
+            y: y,
+            contentId: contentId,
+        };
+
+        if (entryStatus == MapEntryStatus.New)
+        {
+            this.database.insertUserMapEntry(userMapEntry);
+        }
+        else
+        {
+            this.database.updateUserMapEntry(userMapEntry);
+        }
+    }
+
+    public setAnonymousEntry (x: number, y: number, ip: string, contentId: number): void
+    {
+        const mapEntry = this.getMapEntry(x, y);
+
+        const entryStatus = mapEntry.setAnonymousEntry(ip, contentId);
+
+        const anonymousMapEntry: MapEntryAnonymousTable = {
+            mapId: this.map.id,
+            ip: ip,
+            x: x,
+            y: y,
+            contentId: contentId,
+        };
+
+        if (entryStatus == MapEntryStatus.New)
+        {
+            this.database.insertAnonymousMapEntry(anonymousMapEntry);
+        }
+        else
+        {
+            this.database.updateAnonymousMapEntry(anonymousMapEntry);
+        }
+    }
+
+    /**
      * Get all entries as a list of elements containing the x and y coordinates and a list of all content entries for the coordinate pair.
      */
     public getEntries (): ContentEntryListElement[]

@@ -304,6 +304,39 @@ export default class Database
         return mapEntries;
     }
 
+    public insertAnonymousMapEntry (anonymousMapEntry: MapEntryAnonymousTable): void
+    {
+        const statement = this.database.prepare(
+            `INSERT INTO
+                mapEntryAnonymous (mapId, ip, x, y, contentId)
+            VALUES
+                (:mapId, :ip, :x, :y, :contentId)`
+        );
+
+        const insertObject = this.getBindablesFromObject(anonymousMapEntry);
+
+        statement.run(insertObject);
+    }
+
+    public updateAnonymousMapEntry (anonymousMapEntry: MapEntryAnonymousTable): void
+    {
+        const statement = this.database.prepare(
+            `UPDATE
+                mapEntryAnonymous
+            SET
+                contentId = :contentId
+            WHERE
+                mapId = :mapId
+                AND x = :x
+                AND y = :y
+                AND ip = :ip`
+        );
+
+        const updateObject = this.getBindablesFromObject(anonymousMapEntry);
+
+        statement.run(updateObject);
+    }
+
     public getUserMapEntries (mapId: number): MapEntryUserTable[]
     {
         const statement = this.database.prepare(
@@ -313,5 +346,38 @@ export default class Database
         const mapEntries: MapEntryUserTable[] = statement.all(mapId);
 
         return mapEntries;
+    }
+
+    public insertUserMapEntry (userMapEntry: MapEntryUserTable): void
+    {
+        const statement = this.database.prepare(
+            `INSERT INTO
+                mapEntryUser (mapId, userId, x, y, contentId)
+            VALUES
+                (:mapId, :userId, :x, :y, :contentId)`
+        );
+
+        const insertObject = this.getBindablesFromObject(userMapEntry);
+
+        statement.run(insertObject);
+    }
+
+    public updateUserMapEntry (userMapEntry: MapEntryUserTable): void
+    {
+        const statement = this.database.prepare(
+            `UPDATE
+                mapEntryUser
+            SET
+                contentId = :contentId
+            WHERE
+                mapId = :mapId
+                AND x = :x
+                AND y = :y
+                AND userId = :userId`
+        );
+
+        const updateObject = this.getBindablesFromObject(userMapEntry);
+
+        statement.run(updateObject);
     }
 }

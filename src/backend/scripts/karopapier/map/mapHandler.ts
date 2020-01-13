@@ -123,10 +123,36 @@ export default class MapHandler
         reply(mapEntries);
     }
 
-    protected onSetMapEntry (user: User, x: number, y: number, content: number): void
+    protected onSetMapEntry (user: User, x: number, y: number, contentId: number): void
     {
-        // TODO: Implement.
-        console.log(user.name, x, y, content);
+        if (!Number.isSafeInteger(x)
+            || !Number.isSafeInteger(y)
+            || !Number.isSafeInteger(contentId))
+        {
+            return;
+        }
+
+        if (user.selectedMapId === undefined)
+        {
+            return; // TODO: Should we inform the user about this?
+        }
+
+        let mapHolder = this.mapIdToMapHolderMap.get(user.selectedMapId);
+
+        if (mapHolder === undefined)
+        {
+            // This should never happen, but it cannot hurt to catch this case:
+            mapHolder = new MapHolder(this.database, user.selectedMapId);
+        }
+
+        if (this.userHandler.isLoggedIn(user))
+        {
+            mapHolder.setUserEntry(x, y, user.id, contentId);
+        }
+        else
+        {
+            mapHolder.setAnonymousEntry(x, y, user.ip, contentId);
+        }
     }
 
     protected mapIdToRoomName (mapId: number): string
