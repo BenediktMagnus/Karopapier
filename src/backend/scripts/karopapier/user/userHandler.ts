@@ -79,7 +79,9 @@ export default class UserHandler
         reply: FunctionDefinitions.LoginResponseFunction
     ): Promise<void>
     {
-        if (!Validation.isNonEmptyString(name) || !Validation.isNonEmptyString(password))
+        if (!Validation.isNonEmptyString(name)
+            || !Validation.isNonEmptyString(password)
+            || !Validation.isCallable(reply))
         {
             return;
         }
@@ -108,7 +110,9 @@ export default class UserHandler
         reply: FunctionDefinitions.AuthenticateResponseFunction
     ): void
     {
-        if (!Validation.isValidId(sessionId) || !Validation.isNonEmptyString(sessionToken))
+        if (!Validation.isValidId(sessionId)
+            || !Validation.isNonEmptyString(sessionToken)
+            || !Validation.isCallable(reply))
         {
             return;
         }

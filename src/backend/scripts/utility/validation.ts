@@ -17,4 +17,16 @@ export default abstract class Validation
 
         return result;
     }
+
+    public static isCallable (given: CallableFunction): boolean
+    {
+        if (!given)
+        {
+            return false;
+        }
+
+        const isCallable = typeof(given) === 'function';
+
+        return isCallable;
+    }
 }
