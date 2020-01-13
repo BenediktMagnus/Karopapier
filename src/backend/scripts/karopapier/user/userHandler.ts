@@ -17,7 +17,7 @@ export default class UserHandler
 
     protected sessionManager: SessionManager;
 
-    protected socketIdToUserIdMap: Map<string, number>;
+    protected socketIdToUserMap: Map<string, User>;
 
     constructor (server: Server, database: Database)
     {
@@ -26,18 +26,38 @@ export default class UserHandler
 
         this.sessionManager = new SessionManager(database);
 
-        this.socketIdToUserIdMap = new Map<string, number>();
+        this.socketIdToUserMap = new Map<string, User>();
 
         this.io.on('connection', this.onConnection.bind(this));
     }
 
     public getUserFromSocket (socket: socketIo.Socket): User
     {
-        let userId = this.socketIdToUserIdMap.get(socket.id);
+        let user = this.socketIdToUserMap.get(socket.id);
 
-        if (userId === undefined)
+        if (user === undefined)
         {
-            userId = this.anonymousUserId;
+            // If there can no user be found in the map, he has not logged in yet, so he becomes an anonymous user:
+            user = this.loadUser(this.anonymousUserId, socket);
+        }
+
+        return user;
+    }
+
+    /**
+     * Load a user from the database into the socketIdToUser map.
+     * @param userId The ID of the user to load.
+     * @param socket The socket to associate the user with.
+     * @returns The loaded user.
+     */
+    protected loadUser (userId: number, socket: SocketIO.Socket): User
+    {
+        if (this.socketIdToUserMap.has(socket.id))
+        {
+            // Remove existing users for this socket.
+            // This can theoretically be the case if a socket logs in as a user after he has chosen a map.
+            // -> Catches weird behaviour or custom clients.
+            this.socketIdToUserMap.delete(socket.id);
         }
 
         const userTable = this.database.getUser(userId);
@@ -46,6 +66,8 @@ export default class UserHandler
             ...userTable,
             socket: socket
         };
+
+        this.socketIdToUserMap.set(socket.id, user);
 
         return user;
     }
@@ -65,8 +87,8 @@ export default class UserHandler
 
     protected onDisconnect (socket: socketIo.Socket): void
     {
-        // Remove the socket from the user list as soon as there is a disconnect:
-        this.socketIdToUserIdMap.delete(socket.id);
+        // Remove the user from the user/socket list as soon as there is a disconnect:
+        this.socketIdToUserMap.delete(socket.id);
     }
 
     /**
@@ -94,7 +116,7 @@ export default class UserHandler
         }
         else
         {
-            this.socketIdToUserIdMap.set(socket.id, session.userId);
+            this.loadUser(session.userId, socket);
 
             reply(true, session.id, session.token);
         }
@@ -125,7 +147,7 @@ export default class UserHandler
         }
         else
         {
-            this.socketIdToUserIdMap.set(socket.id, session.userId);
+            this.loadUser(session.userId, socket);
 
             reply(true);
         }
