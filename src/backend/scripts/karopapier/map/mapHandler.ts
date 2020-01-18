@@ -1,7 +1,7 @@
+import * as FunctionDefinitions from '../../shared/functionDefinitions';
 import * as FunctionNames from '../../shared/functionNames';
+import { MapData } from '../../shared/map';
 import Database from '../database/database';
-import { LoadMapResponseFunction } from '../../shared/functionDefinitions';
-import { MapDescriber } from '../../shared/map';
 import { MapEntrySetResult } from './mapEntry';
 import MapEntryStatus from './mapEntryStatus';
 import MapHolder from './mapHolder';
@@ -37,13 +37,14 @@ export default class MapHandler
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
         // 2. Inject the user (get via socket) if needd for us to know which user does the action.
 
-        socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
         // We need to add the disconnect event to the beginning of the list to
         // go sure that the userHandler hasn't removed the user yet.
         // TODO: Does this really work for socket.io EventEmitters?
         socket.prependListener('disconnect', this.wrapSocketAsUser(socket, this.onDisconnect.bind(this)));
 
+        socket.on(FunctionNames.getMapData, this.wrapSocketAsUser(socket, this.onGetMapData.bind(this)));
         socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
+        socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
 
@@ -108,7 +109,26 @@ export default class MapHandler
         }
     }
 
-    protected onLoadMap (user: User, reply: LoadMapResponseFunction): void
+    protected onGetMapData (user: User, reply: FunctionDefinitions.GetMapDataResponseFunction): void
+    {
+        if (!Validation.isCallable(reply))
+        {
+            return;
+        }
+
+        if (user.selectedMapId === undefined)
+        {
+            return; // TODO: Should we inform the user about this?
+        }
+
+        const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
+
+        const mapData = new MapData(mapHolder.mapInfo);
+
+        reply(mapData);
+    }
+
+    protected onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
     {
         // TODO: We need at least every user and anonymous entries here.
         //       Calculated map meta data like the highest number of people voting for a content on an entry

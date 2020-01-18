@@ -33,6 +33,21 @@ export default class Row
         }
     }
 
+    /**
+     * Destroys the row by removing it's element from it's parent.
+     */
+    public destroy (): void
+    {
+        for (const point of this.points.values())
+        {
+            point.destroy();
+        }
+
+        this.points.clear();
+
+        this.element.parentNode?.removeChild(this.element);
+    }
+
     public getPoint (x: number): Point|null
     {
         const point = this.points.get(x);

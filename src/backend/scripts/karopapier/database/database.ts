@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { ContentTable } from './tables/contentTable';
 import MapEntryAnonymousTable from './tables/mapEntryAnonymousTable';
 import MapEntryUserTable from './tables/mapEntryUserTable';
 import { MapTable } from './tables/mapTable';
@@ -309,6 +310,25 @@ export default class Database
         const result = this.hasSomething(selectQuery, [mapId, contentId]);
 
         return result;
+    }
+
+    public getContentsForMap (mapId: number): ContentTable[]
+    {
+        const statement = this.database.prepare(
+            `SELECT
+                content.*
+            FROM
+                mapContent
+            LEFT JOIN
+                content ON mapContent.contentId = content.id
+            WHERE
+                mapContent.mapId = ?
+            `
+        );
+
+        const contents: ContentTable[] = statement.all(mapId);
+
+        return contents;
     }
 
     public getAnonymousMapEntries (mapId: number): MapEntryAnonymousTable[]

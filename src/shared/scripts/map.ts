@@ -1,4 +1,21 @@
-export class MapDescriber
+export class MapData
+{
+    public name: string;
+    public height: number;
+    public width: number;
+
+    constructor (mapData: MapData)
+    {
+        // With this constructor everything that can be considered a MapData (in it's function as an
+        // interface) is being converted into a MapData (in it's function as a class) without any
+        // unrelated properties or methods.
+
+        this.name = mapData.name;
+        this.height = mapData.height;
+        this.width = mapData.width;
+    }
+}
+
 {
     public id: number;
     public name: string;

@@ -1,6 +1,7 @@
+import { ContentEntryListElement, MapData } from "../../shared/map";
 import Point, { PointEvent, PointEvents } from "./point";
 import Boundaries from "../../utility/boundaries";
-import { ContentEntryListElement } from "../../shared/map";
+import MapUtility from "../../shared/mapUtility";
 import Row from "./row";
 
 type RowMap = Map<number, Row>;
@@ -12,6 +13,8 @@ export default class Paper
     protected clickListeners: PointEvent[];
     protected mouseOverListeners: PointEvent[];
 
+    protected events: PointEvents;
+
     /**
      * A map of rows with the y coordinates as key and the row instance as value.
      */
@@ -22,11 +25,8 @@ export default class Paper
         return this.element;
     }
 
-    constructor (width: number, height: number)
+    constructor ()
     {
-        this.clickListeners = [];
-        this.mouseOverListeners = [];
-
         const element = document.getElementById('paper') as HTMLTableElement;
 
         if (element === null)
@@ -40,7 +40,10 @@ export default class Paper
 
         this.rows = new Map<number, Row>();
 
-        const events: PointEvents = {
+        this.clickListeners = [];
+        this.mouseOverListeners = [];
+
+        this.events = {
             onClick: this.onPointClick.bind(this),
             onMouseOver: this.onPointMouseOver.bind(this),
         };
@@ -76,18 +79,37 @@ export default class Paper
         this.removePointEventListener(listener, this.mouseOverListeners);
     }
 
-    public loadMap (contentEntryListElements: ContentEntryListElement[]): void
+    /**
+     * Create a map by deleting all existing entries and creating new ones for the given mapData's width and height.
+     * @param mapData The map data containing width and height.
+     */
+    public createMap (mapData: MapData): void
     {
-        // NOTE: We can asume a y-x order of the list here.
+        this.clearMap();
+
+        const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.width);
+        const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.height);
+
+        for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
+        {
+            const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.element);
+
+            this.rows.set(y, row);
+        }
+    }
+
+    public loadMap (mapEntries: ContentEntryListElement[]): void
+    {
+        // NOTE: We can asume a y-x order of the mapEntries here.
 
         let y = Number.NEGATIVE_INFINITY;
         let row: Row|undefined;
 
-        for (const contentEntryListElement of contentEntryListElements)
+        for (const mapEntry of mapEntries)
         {
-            if (contentEntryListElement.y !== y)
+            if (mapEntry.y !== y)
             {
-                y = contentEntryListElement.y;
+                y = mapEntry.y;
 
                 row = this.rows.get(y);
             }
@@ -97,14 +119,14 @@ export default class Paper
                 continue; // TODO: Should we do something here like making the paper bigger?
             }
 
-            const point = row.getPoint(contentEntryListElement.x);
+            const point = row.getPoint(mapEntry.x);
 
             if (point === null)
             {
                 continue; // TODO: Should we do something here like making the paper bigger?
             }
 
-            point.loadContentEntries(contentEntryListElement.contentEntries);
+            point.loadContentEntries(mapEntry.contentEntries);
         }
     }
 
@@ -126,6 +148,16 @@ export default class Paper
         {
             point.setUserEntry(userId, oldContentId, newContentId);
         }
+    }
+
+    protected clearMap (): void
+    {
+        for (const row of this.rows.values())
+        {
+            row.destroy();
+        }
+
+        this.rows.clear();
     }
 
     protected getPointAt (x: number, y: number): Point|null

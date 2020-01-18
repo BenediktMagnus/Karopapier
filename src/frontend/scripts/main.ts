@@ -1,4 +1,3 @@
-import * as Constants from "./shared/constants";
 import * as FunctionNames from "./shared/functionNames";
 import Coordinates from "./elements/coordinates";
 import Palette from "./elements/palette/palette";
@@ -61,7 +60,7 @@ class Main
 
     protected onDocumentLoaded (): void
     {
-        this.paper = new Paper(Constants.mapWidth, Constants.mapHeight);
+        this.paper = new Paper();
         this.palette = new Palette(this.paper.boundaries);
 
         this.paper.addClickListener(this.palette.onPaperClick.bind(this.palette));
@@ -91,6 +90,8 @@ class Main
     {
         if (this.paper !== undefined)
         {
+            this.socket.emit(FunctionNames.getMapData, this.paper.createMap.bind(this.paper));
+
             // Map events, we only need to listen to them as soon as the map is loaded:
             this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
 

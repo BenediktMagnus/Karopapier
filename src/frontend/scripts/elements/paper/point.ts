@@ -59,6 +59,18 @@ export default class Point
     }
 
     /**
+     * Destroys the point by removing it's element from it's parent.
+     */
+    public destroy (): void
+    {
+        // Remove event listeners from the element to prevent any thinkable memory leaks:
+        this.element.onclick = null;
+        this.element.onmouseover = null;
+
+        this.element.parentNode?.removeChild(this.element);
+    }
+
+    /**
      * Load a parsable content entry list into the point, overwriting every previous content.
      * @param parsableCntentEntries The list of parsable content entries.
      */
