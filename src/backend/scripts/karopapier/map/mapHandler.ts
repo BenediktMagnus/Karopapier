@@ -2,6 +2,8 @@ import * as FunctionNames from '../../shared/functionNames';
 import Database from '../database/database';
 import { LoadMapResponseFunction } from '../../shared/functionDefinitions';
 import { MapDescriber } from '../../shared/map';
+import { MapEntrySetResult } from './mapEntry';
+import MapEntryStatus from './mapEntryStatus';
 import MapHolder from './mapHolder';
 import Server from '../server';
 import socketIo from 'socket.io';
@@ -134,13 +136,45 @@ export default class MapHandler
 
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
+        let mapEntrySetResult: MapEntrySetResult;
+
         if (this.userHandler.isLoggedIn(user))
         {
-            mapHolder.setUserEntry(x, y, user.id, contentId);
+            mapEntrySetResult = mapHolder.setUserEntry(x, y, user.id, contentId);
         }
         else
         {
-            mapHolder.setAnonymousEntry(x, y, user.ip, contentId);
+            mapEntrySetResult = mapHolder.setAnonymousEntry(x, y, user.ip, contentId);
+        }
+
+        // We only need to inform the users if something has actually changed:
+        if (mapEntrySetResult.status != MapEntryStatus.Unchanged)
+        {
+            // TODO: This could lead to a bad user experience if the load is too high.
+            //       Even if users do not change the vote rapidly, there could happen a lot of these changes if there are a couple of
+            //       users active with the load growing exponentially.
+            //       Maybe we should only inform the user if the entry really changes, meaning if the content the most users/sockets vote
+            //       for change. This could reduce the load by a lot, but we would need a possibility for the user to get all votes
+            //       for a specific entry.
+            //       Furthermore, this would reduce client choices about vote weightings... but do we really need that?
+
+            const roomName = this.mapIdToRoomName(user.selectedMapId);
+
+            // Send the user ID if he is logged in, otherwise null for anonymous:
+            const userId = this.userHandler.isLoggedIn(user) ? user.id : null;
+
+            // Inform every other user in the room (on the map) about the change:
+            // The user who made the change will not be notified.
+            user.socket.to(roomName).emit(
+                FunctionNames.setMapEntry,
+                x, y,
+                userId,
+                mapEntrySetResult.oldContentId,
+                mapEntrySetResult.newContentId
+            );
+        }
+    }
+
     protected getOrCreateMapHolder (mapId: number): MapHolder
     {
         let mapHolder = this.mapIdToMapHolderMap.get(mapId);

@@ -1,6 +1,6 @@
+import MapEntry, { MapEntrySetResult } from "./mapEntry";
 import { ContentEntryListElement } from "../../shared/map";
 import Database from "../database/database";
-import MapEntry from "./mapEntry";
 import MapEntryAnonymousTable from "../database/tables/mapEntryAnonymousTable";
 import MapEntryStatus from "./mapEntryStatus";
 import MapEntryUserTable from "../database/tables/mapEntryUserTable";
@@ -12,7 +12,6 @@ export default class MapHolder
 {
     protected database: Database;
 
-    protected map: MapTable;
 
     /**
      * Structured as y-x (row-column), not x-y!
@@ -25,6 +24,11 @@ export default class MapHolder
      */
     protected highestVotingCount: number;
 
+    /**
+     * Additional information about the map.
+     */
+    public readonly mapInfo: MapTable;
+
     constructor (database: Database, mapId: number)
     {
         this.database = database;
@@ -32,57 +36,61 @@ export default class MapHolder
         this.highestVotingCount = 0;
         this.coordinates = new Map<number, MapEntryMap>();
 
-        this.map = this.database.getMap(mapId);
+        this.mapInfo = this.database.getMap(mapId);
 
         this.loadEntries();
     }
 
-    public setUserEntry (x: number, y: number, userId: number, contentId: number): void
+    public setUserEntry (x: number, y: number, userId: number, contentId: number): MapEntrySetResult
     {
         const mapEntry = this.getMapEntry(x, y);
 
-        const entryStatus = mapEntry.setUserEntry(userId, contentId);
+        const entrySetResult = mapEntry.setUserEntry(userId, contentId);
 
         const userMapEntry: MapEntryUserTable = {
-            mapId: this.map.id,
+            mapId: this.mapInfo.id,
             userId: userId,
             x: x,
             y: y,
             contentId: contentId,
         };
 
-        if (entryStatus == MapEntryStatus.New)
+        if (entrySetResult.status == MapEntryStatus.New)
         {
             this.database.insertUserMapEntry(userMapEntry);
         }
-        else
+        else if (entrySetResult.status == MapEntryStatus.Updated)
         {
             this.database.updateUserMapEntry(userMapEntry);
         }
+
+        return entrySetResult;
     }
 
-    public setAnonymousEntry (x: number, y: number, ip: string, contentId: number): void
+    public setAnonymousEntry (x: number, y: number, ip: string, contentId: number): MapEntrySetResult
     {
         const mapEntry = this.getMapEntry(x, y);
 
-        const entryStatus = mapEntry.setAnonymousEntry(ip, contentId);
+        const entrySetResult = mapEntry.setAnonymousEntry(ip, contentId);
 
         const anonymousMapEntry: MapEntryAnonymousTable = {
-            mapId: this.map.id,
+            mapId: this.mapInfo.id,
             ip: ip,
             x: x,
             y: y,
             contentId: contentId,
         };
 
-        if (entryStatus == MapEntryStatus.New)
+        if (entrySetResult.status == MapEntryStatus.New)
         {
             this.database.insertAnonymousMapEntry(anonymousMapEntry);
         }
-        else
+        else if (entrySetResult.status == MapEntryStatus.Updated)
         {
             this.database.updateAnonymousMapEntry(anonymousMapEntry);
         }
+
+        return entrySetResult;
     }
 
     /**
@@ -114,7 +122,7 @@ export default class MapHolder
 
     protected loadEntries (): void
     {
-        const userMapEntries = this.database.getUserMapEntries(this.map.id);
+        const userMapEntries = this.database.getUserMapEntries(this.mapInfo.id);
 
         for (const userMapEntry of userMapEntries)
         {
@@ -123,7 +131,7 @@ export default class MapHolder
             mapEntry.setUserEntry(userMapEntry.userId, userMapEntry.contentId);
         }
 
-        const anonymousMapEntries = this.database.getAnonymousMapEntries(this.map.id);
+        const anonymousMapEntries = this.database.getAnonymousMapEntries(this.mapInfo.id);
 
         for (const anonymousMapEntry of anonymousMapEntries)
         {
