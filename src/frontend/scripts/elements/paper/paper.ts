@@ -45,19 +45,12 @@ export default class Paper
             onMouseOver: this.onPointMouseOver.bind(this),
         };
 
-        const xDistanceFromZero = (width - 1) / 2;
-        const xLow = -Math.floor(xDistanceFromZero);
-        const xHigh = Math.ceil(xDistanceFromZero);
+        const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.width);
+        const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.height);
 
-        const yDistanceFromZero = (height - 1) / 2;
-        const yLow = -Math.floor(yDistanceFromZero);
-        const yHigh = Math.ceil(yDistanceFromZero);
-
-        for(let y = yLow; y <= yHigh; y++)
+        for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
         {
-            const row = new Row(y, xLow, xHigh, events);
-
-            this.element.appendChild(row.element);
+            const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.element);
 
             this.rows.set(y, row);
         }
