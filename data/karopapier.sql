@@ -22,7 +22,9 @@ CREATE TABLE `map` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`publicIdentifier`	TEXT NOT NULL UNIQUE,
 	`name`	TEXT NOT NULL,
-	`isActive`	INTEGER NOT NULL DEFAULT 1
+	`isActive`	INTEGER NOT NULL DEFAULT 1,
+	`width`	INTEGER NOT NULL,
+	`height`	INTEGER NOT NULL
 );
 
 -- The collection of anonymous entries:

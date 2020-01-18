@@ -13,6 +13,14 @@ export interface MapTableInsert
      * True if it is allowed to load the map and view or change it's content.
      */
     isActive: boolean;
+    /**
+     * The width of the map, defining the minimum and maximum x coordinates.
+     */
+    width: number;
+    /**
+     * The height of the map, defining the minimum and maximum y coordinates.
+     */
+    height: number;
 }
 
 export interface MapTable extends MapTableInsert
