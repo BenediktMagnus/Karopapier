@@ -5,6 +5,7 @@ import MapEntryAnonymousTable from "../database/tables/mapEntryAnonymousTable";
 import MapEntryStatus from "./mapEntryStatus";
 import MapEntryUserTable from "../database/tables/mapEntryUserTable";
 import { MapTable } from "../database/tables/mapTable";
+import MapUtility from "../../shared/mapUtility";
 
 type MapEntryMap = Map<number, MapEntry>;
 
@@ -12,6 +13,10 @@ export default class MapHolder
 {
     protected database: Database;
 
+    protected minX: number;
+    protected maxX: number;
+    protected minY: number;
+    protected maxY: number;
 
     /**
      * Structured as y-x (row-column), not x-y!
@@ -43,6 +48,13 @@ export default class MapHolder
         this.coordinates = new Map<number, MapEntryMap>();
 
         this.mapInfo = this.database.getMap(mapId);
+
+        const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(this.mapInfo.width);
+        const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(this.mapInfo.height);
+        this.minX = xLowAndHigh.low;
+        this.maxX = xLowAndHigh.high;
+        this.minY = yLowAndHigh.low;
+        this.maxY = yLowAndHigh.high;
 
         this.loadEntries();
     }
@@ -124,6 +136,22 @@ export default class MapHolder
         }
 
         return contentEntryList;
+    }
+
+    /**
+     * Checks if the coordinates are inside the map boundaries.
+     * @param x
+     * @param y
+     * @returns True if they are, false if not.
+     */
+    public isPointInsideMap (x: number, y: number): boolean
+    {
+        const result = (x >= this.minX)
+                       && (x <= this.maxX)
+                       && (y >= this.minY)
+                       && (y <= this.maxY);
+
+        return result;
     }
 
     protected loadEntries (): void

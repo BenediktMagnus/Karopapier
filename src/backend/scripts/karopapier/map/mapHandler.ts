@@ -182,6 +182,11 @@ export default class MapHandler
 
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
+        if (!mapHolder.isPointInsideMap(x, y))
+        {
+            return;
+        }
+
         let mapEntrySetResult: MapEntrySetResult;
 
         if (this.userHandler.isLoggedIn(user))
