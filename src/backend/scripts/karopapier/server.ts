@@ -21,10 +21,25 @@ export default class Server
         // Middleware for gzip compression:
         this.server.use(compression());
 
+        if (process.argv.includes('--serveMapFiles'))
+        {
+            // If explicitely stated in command line (probably by the debugger) serve map and Typescript
+            // source files for the Javascript scripts, making debugging in the browser easier:
+            this.server.use('/scripts', express.static('./build/frontend', {extensions: ['js', 'js.map']}));
+            this.server.use(
+                '/src/frontend/scripts',
+                express.static('./src/frontend/scripts', {extensions: ['ts']})
+            );
+        }
+        else
+        {
+            // If not stated in command line, only serve script files from the build directory.
+            // We do not want map and source files in a production environment!
+            this.server.use('/scripts', express.static('./build/frontend', {extensions: ['js']}));
+        }
+
         // Serving of html files on root level without extension:
         this.server.use('/', express.static('./files/html', {extensions: ['html']}));
-        // Serving of script files from the build directory:
-        this.server.use('/scripts', express.static('./build/frontend', {extensions: ['js']}));
         // Serving of static resources:
         this.server.use('/css', express.static('./files/css'));
         this.server.use('/images', express.static('./files/images'));
