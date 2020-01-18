@@ -111,12 +111,7 @@ export default class MapHandler
             return; // TODO: Should we inform the user about this?
         }
 
-        let mapHolder = this.mapIdToMapHolderMap.get(user.selectedMapId);
-
-        if (mapHolder === undefined)
-        {
-            mapHolder = new MapHolder(this.database, user.selectedMapId);
-        }
+        const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
         const mapEntries = mapHolder.getEntries();
 
@@ -137,13 +132,7 @@ export default class MapHandler
             return; // TODO: Should we inform the user about this?
         }
 
-        let mapHolder = this.mapIdToMapHolderMap.get(user.selectedMapId);
-
-        if (mapHolder === undefined)
-        {
-            // This should never happen, but it cannot hurt to catch this case:
-            mapHolder = new MapHolder(this.database, user.selectedMapId);
-        }
+        const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
         if (this.userHandler.isLoggedIn(user))
         {
@@ -152,7 +141,18 @@ export default class MapHandler
         else
         {
             mapHolder.setAnonymousEntry(x, y, user.ip, contentId);
+    protected getOrCreateMapHolder (mapId: number): MapHolder
+    {
+        let mapHolder = this.mapIdToMapHolderMap.get(mapId);
+
+        if (mapHolder === undefined)
+        {
+            mapHolder = new MapHolder(this.database, mapId);
+
+            this.mapIdToMapHolderMap.set(mapId, mapHolder);
         }
+
+        return mapHolder;
     }
 
     protected mapIdToRoomName (mapId: number): string
