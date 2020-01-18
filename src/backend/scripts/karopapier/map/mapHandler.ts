@@ -47,8 +47,6 @@ export default class MapHandler
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
 
-    protected onSelectMap (user: User, publicIdentifier: string): void
-
     protected onDisconnect (user: User): void
     {
         // On disconnect, check if there are no sockets left for the selected map and unload it.
@@ -70,19 +68,19 @@ export default class MapHandler
         }
     }
 
+    protected onSelectMap (user: User, mapPublicIdentifier: string): void
     {
-        if (!Validation.isNonEmptyString(publicIdentifier))
+        if (!Validation.isNonEmptyString(mapPublicIdentifier))
         {
             return;
         }
 
-        const hasMap = this.database.hasMapPublicIdentifier(publicIdentifier);
-        if (!hasMap) // FIXME: The booleans are numbers! Must be fixed in database.
+        if (!this.database.hasMapPublicIdentifier(mapPublicIdentifier))
         {
             return; // TODO: Should we inform the user about this?
         }
 
-        const map = this.database.getMapByPublicIdentifier(publicIdentifier);
+        const map = this.database.getMapByPublicIdentifier(mapPublicIdentifier);
         if (!map.isActive)
         {
             return; // TODO: Should we inform the user about this?
