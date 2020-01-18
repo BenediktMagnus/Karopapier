@@ -296,6 +296,21 @@ export default class Database
         return maps;
     }
 
+    /**
+     * Checks if the given content ID is available for the given map.
+     * @param contentId The ID of the content to search for.
+     * @param mapId The ID of the map to search in.
+     * @returns True if found, otherwise false.
+     */
+    public hasContent (contentId: number, mapId: number): boolean
+    {
+        const selectQuery = 'SELECT 1 FROM mapContent WHERE mapId = ? AND contentId = ?';
+
+        const result = this.hasSomething(selectQuery, [mapId, contentId]);
+
+        return result;
+    }
+
     public getAnonymousMapEntries (mapId: number): MapEntryAnonymousTable[]
     {
         const statement = this.database.prepare(

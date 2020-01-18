@@ -73,6 +73,8 @@ CREATE UNIQUE INDEX `mapPublicIdentifier` ON `map` (`publicIdentifier`);
 CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`, `ip`);
 -- Speeding up tile searches:
 CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`, `userId`);
+-- Speeding up content searches:
+CREATE UNIQUE INDEX `mapContentAssociation` ON `mapContent` (`mapId`, `contentId`);
 
 -- The default anonymous user, here to go sure the ID is zero and the first entry:
 INSERT INTO

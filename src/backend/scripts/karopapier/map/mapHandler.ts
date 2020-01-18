@@ -174,6 +174,12 @@ export default class MapHandler
             return; // TODO: Should we inform the user about this?
         }
 
+        if (!this.database.hasContent(contentId, user.selectedMapId))
+        {
+            return;
+            // TODO: Should we inform the user? We should only do this if it is possible with the UI.
+        }
+
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
         let mapEntrySetResult: MapEntrySetResult;
