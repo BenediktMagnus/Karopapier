@@ -37,7 +37,6 @@ export default class MapHandler
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
         // 2. Inject the user (get via socket) if needd for us to know which user does the action.
 
-        socket.on(FunctionNames.listMaps, this.onListMaps.bind(this));
         socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
         // We need to add the disconnect event to the beginning of the list to
         // go sure that the userHandler hasn't removed the user yet.
@@ -46,32 +45,6 @@ export default class MapHandler
 
         socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
-    }
-
-    protected onListMaps (reply: (activeMaps: MapDescriber[]) => void): void
-    {
-        if (!Validation.isCallable(reply))
-        {
-            return;
-        }
-
-        const activeMaps = this.database.getMaps();
-
-        const mapDescribers: MapDescriber[] = [];
-
-        // Convert MapTable[] to MapDescriber[]:
-        for (const map of activeMaps)
-        {
-            const mapDescriber = new MapDescriber(map);
-
-            mapDescribers.push(mapDescriber);
-        }
-
-        reply(mapDescribers);
-
-        // TODO: Should only admins be allowed to list the maps?
-        // TODO: Should this list all maps instead? With the information about them being active?
-        // TODO: If we do that, we need to ship the mapDescriber information in onLoadMap.
     }
 
     protected onSelectMap (user: User, publicIdentifier: string): void
