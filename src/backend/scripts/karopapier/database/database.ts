@@ -111,6 +111,33 @@ export default class Database
     }
 
     /**
+     * Returns if the database has something with the given value for the given select query.
+     * @param selectQuery The query to select something in the database to check if it exists.
+     * @param value The value that will be given to the statement as execution parameter.
+     * @returns True if something is found, otherwise false.
+     */
+    protected hasSomething (selectQuery: string, value: any): boolean
+    {
+        const statement = this.database.prepare(
+            `SELECT
+                CASE
+                    WHEN EXISTS
+                        (${selectQuery} LIMIT 1)
+                    THEN 1
+                    ELSE 0
+                END`
+        );
+
+        // Will make the get method to return the value of the first column instead of an object for all
+        // columns. Since we only want one value this makes it much easier:
+        statement.pluck(true);
+
+        const result: boolean = statement.get(value); // FIXME: The booleans are numbers inside the database!
+
+        return result;
+    }
+
+    /**
      * Close the database connection.
      */
     public close (): void
@@ -208,42 +235,18 @@ export default class Database
 
     public hasMap (mapId: number): boolean
     {
-        const statement = this.database.prepare(
-            `SELECT
-                CASE
-                    WHEN EXISTS
-                        (SELECT 1 FROM map WHERE id = ? LIMIT 1)
-                    THEN 1
-                    ELSE 0
-                END`
-        );
+        const selectQuery = 'SELECT 1 FROM map WHERE id = ?';
 
-        // Will make the get method to return the value of the first column instead of an object for all
-        // columns. Since we only want one value this makes it much easier:
-        statement.pluck(true);
-
-        const result: boolean = statement.get(mapId);
+        const result = this.hasSomething(selectQuery, mapId);
 
         return result;
     }
 
     public hasMapPublicIdentifier (publicIdentifier: string): boolean
     {
-        const statement = this.database.prepare(
-            `SELECT
-                CASE
-                    WHEN EXISTS
-                        (SELECT 1 FROM map WHERE publicIdentifier = ? LIMIT 1)
-                    THEN 1
-                    ELSE 0
-                END`
-        );
+        const selectQuery = 'SELECT 1 FROM map WHERE publicIdentifier = ?';
 
-        // Will make the get method to return the value of the first column instead of an object for all
-        // columns. Since we only want one value this makes it much easier:
-        statement.pluck(true);
-
-        const result: boolean = statement.get(publicIdentifier);
+        const result = this.hasSomething(selectQuery, publicIdentifier);
 
         return result;
     }
