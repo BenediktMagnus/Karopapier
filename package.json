@@ -31,8 +31,16 @@
     "peerDependencies": {
         "node": "^12.14.1"
     },
+    "files": [
+        "build",
+        "config",
+        "data",
+        "files"
+    ],
     "main": "build/backend/main.js",
     "scripts": {
-        "prestart": "tsc src/frontend && tsc src/backend"
-    }
+        "prestart": "tsc src/backend && tsc src/frontend",
+        "prepack": "rm -r build && tsc -p src/backend/tsconfig.release.json && tsc -p src/frontend/tsconfig.release.json"
+    },
+    "private": true
 }
