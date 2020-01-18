@@ -1,6 +1,6 @@
 import * as FunctionDefinitions from '../../shared/functionDefinitions';
 import * as FunctionNames from '../../shared/functionNames';
-import { MapData } from '../../shared/map';
+import { MapContent, MapData } from '../../shared/map';
 import Database from '../database/database';
 import { MapEntrySetResult } from './mapEntry';
 import MapEntryStatus from './mapEntryStatus';
@@ -42,6 +42,7 @@ export default class MapHandler
         // TODO: Does this really work for socket.io EventEmitters?
         socket.prependListener('disconnect', this.wrapSocketAsUser(socket, this.onDisconnect.bind(this)));
 
+        socket.on(FunctionNames.getMapContents, this.wrapSocketAsUser(socket, this.onGetMapContents.bind(this)));
         socket.on(FunctionNames.getMapData, this.wrapSocketAsUser(socket, this.onGetMapData.bind(this)));
         socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
         socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
@@ -93,7 +94,6 @@ export default class MapHandler
 
         user.selectedMapId = map.id;
 
-        // TODO: Should this event return map meta data like name, description and tools?
         let mapHolder = this.mapIdToMapHolderMap.get(map.id);
 
         if (mapHolder !== undefined)
@@ -126,6 +126,32 @@ export default class MapHandler
         const mapData = new MapData(mapHolder.mapInfo);
 
         reply(mapData);
+    }
+
+    protected onGetMapContents (user: User, reply: FunctionDefinitions.GetMapContentsResponseFunction): void
+    {
+        if (!Validation.isCallable(reply))
+        {
+            return;
+        }
+
+        if (user.selectedMapId === undefined)
+        {
+            return; // TODO: Should we inform the user about this?
+        }
+
+        const contentTableList = this.database.getContentsForMap(user.selectedMapId);
+
+        const mapContents: MapContent[] = [];
+
+        for (const contentTableEntry of contentTableList)
+        {
+            const mapContent = new MapContent(contentTableEntry);
+
+            mapContents.push(mapContent);
+        }
+
+        reply(mapContents);
     }
 
     protected onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
