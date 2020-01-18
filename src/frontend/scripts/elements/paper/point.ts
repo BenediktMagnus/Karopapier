@@ -12,10 +12,10 @@ export class PointEvents
 
 export default class Point
 {
-    public readonly element: HTMLTableDataCellElement;
-
     public readonly x: number;
     public readonly y: number;
+
+    protected element: HTMLTableDataCellElement;
 
     protected events: PointEvents;
 
@@ -31,7 +31,14 @@ export default class Point
         return this.element;
     }
 
-    constructor (x: number, y: number, events: PointEvents)
+    /**
+     * Create a point for the given coordinates.
+     * @param x
+     * @param y
+     * @param events The events to forward to when a point event is fired.
+     * @param parentElement The parent element to attach the point to.
+     */
+    constructor (x: number, y: number, events: PointEvents, parentElement: HTMLTableRowElement)
     {
         this.contentId = Constants.emptyContentId;
         this.anonymousContentVote = Constants.emptyContentId;
@@ -45,6 +52,7 @@ export default class Point
         this.contentIdToContentEntryMap = new Map<number, ContentEntry>();
 
         this.element = document.createElement('td');
+        parentElement.appendChild(this.element);
 
         this.element.onclick = (): void => { this.events.onClick?.(this); };
         this.element.onmouseover = (): void => { this.events.onMouseOver?.(this); };

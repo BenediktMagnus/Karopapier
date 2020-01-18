@@ -9,25 +9,25 @@ export default class Row
      */
     protected points: PointMap;
 
-    public readonly element: HTMLTableRowElement;
+    protected element: HTMLTableRowElement;
 
     /**
      * Create a row of points at y, going from low to high.
      * @param y The y coordinate of this row.
      * @param low The lower limit (including) of the row.
      * @param high The higher limit (including) of this row.
+     * @param parentElement The parent element to attach the row to.
      */
-    constructor (y: number, low: number, high: number, events: PointEvents)
+    constructor (y: number, low: number, high: number, events: PointEvents, parentElement: HTMLTableElement)
     {
         this.points = new Map<number, Point>();
 
         this.element = document.createElement('tr');
+        parentElement.appendChild(this.element);
 
         for(let x = low; x <= high; x++)
         {
-            const point = new Point(x, y, events);
-
-            this.element.appendChild(point.element);
+            const point = new Point(x, y, events, this.element);
 
             this.points.set(x, point);
         }
