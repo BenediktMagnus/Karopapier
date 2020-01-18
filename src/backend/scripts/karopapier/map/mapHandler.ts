@@ -39,6 +39,11 @@ export default class MapHandler
 
         socket.on(FunctionNames.listMaps, this.onListMaps.bind(this));
         socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
+        // We need to add the disconnect event to the beginning of the list to
+        // go sure that the userHandler hasn't removed the user yet.
+        // TODO: Does this really work for socket.io EventEmitters?
+        socket.prependListener('disconnect', this.wrapSocketAsUser(socket, this.onDisconnect.bind(this)));
+
         socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
@@ -70,6 +75,28 @@ export default class MapHandler
     }
 
     protected onSelectMap (user: User, publicIdentifier: string): void
+
+    protected onDisconnect (user: User): void
+    {
+        // On disconnect, check if there are no sockets left for the selected map and unload it.
+
+        if (user.selectedMapId !== undefined)
+        {
+            const mapHolder = this.mapIdToMapHolderMap.get(user.selectedMapId);
+
+            if (mapHolder !== undefined)
+            {
+                mapHolder.socketCount--;
+
+                if (mapHolder.socketCount <= 0)
+                {
+                    // Unload map:
+                    this.mapIdToMapHolderMap.delete(user.selectedMapId);
+                }
+            }
+        }
+    }
+
     {
         if (!Validation.isNonEmptyString(publicIdentifier))
         {
@@ -95,6 +122,19 @@ export default class MapHandler
         user.selectedMapId = map.id;
 
         // TODO: Should this event return map meta data like name, description and tools?
+        let mapHolder = this.mapIdToMapHolderMap.get(map.id);
+
+        if (mapHolder !== undefined)
+        {
+            // Increase the number of sockets using this map for us to later know when we can unload it again:
+            mapHolder.socketCount++;
+        }
+        else
+        {
+            // This should never happen, but it cannot hurt to catch this case:
+            mapHolder = new MapHolder(this.database, map.id);
+            this.mapIdToMapHolderMap.set(map.id, mapHolder);
+        }
     }
 
     protected onLoadMap (user: User, reply: LoadMapResponseFunction): void

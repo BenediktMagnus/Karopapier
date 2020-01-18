@@ -29,11 +29,17 @@ export default class MapHolder
      */
     public readonly mapInfo: MapTable;
 
+    /**
+     * The number of sockets currently using this map.
+     */
+    public socketCount: number;
+
     constructor (database: Database, mapId: number)
     {
         this.database = database;
 
         this.highestVotingCount = 0;
+        this.socketCount = 1;
         this.coordinates = new Map<number, MapEntryMap>();
 
         this.mapInfo = this.database.getMap(mapId);
