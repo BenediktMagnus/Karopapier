@@ -23,13 +23,13 @@
         "@types/socket.io-client": "^1.4.32",
         "@types/better-sqlite3": "^5.4.0",
         "@types/bcrypt": "^3.0.0",
-        "typescript": "^3.7.2",
-        "eslint": "^6.7.1",
-        "@typescript-eslint/parser": "^2.9.0",
-        "@typescript-eslint/eslint-plugin": "^2.9.0"
+        "typescript": "^3.7.5",
+        "eslint": "^6.8.0",
+        "@typescript-eslint/parser": "^2.16.0",
+        "@typescript-eslint/eslint-plugin": "^2.16.0"
     },
     "peerDependencies": {
-        "node": "^12.13.1"
+        "node": "^12.14.1"
     },
     "main": "build/backend/main.js",
     "scripts": {
