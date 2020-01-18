@@ -91,11 +91,13 @@ export default class Point
 
             if (parsableContentEntry.userIds.length > this.highestUserCount)
             {
+                this.highestUserCount = parsableContentEntry.userIds.length;
                 this.contentId = parsableContentEntry.contentId;
             }
 
             if (parsableContentEntry.anonymousCount > this.highestAnonymousCount)
             {
+                this.highestAnonymousCount = parsableContentEntry.anonymousCount;
                 this.anonymousContentVote = parsableContentEntry.contentId;
             }
         }
@@ -131,6 +133,13 @@ export default class Point
 
             this.contentIdToContentEntryMap.set(newContentId, newEntry);
         }
+
+        // Set new content ID if the new entry has a higher user vote count now:
+        if (newEntry.userIds.size > this.highestUserCount)
+        {
+            this.highestUserCount = newEntry.userIds.size;
+            this.contentId = newEntry.contentId;
+        }
     }
 
     public setAnonymousEntry (oldContentId: number|null, newContentId: number): void
@@ -160,6 +169,13 @@ export default class Point
             };
 
             this.contentIdToContentEntryMap.set(newContentId, newEntry);
+        }
+
+        // Set new anonymous vote if the new entry has a higher anonymous voter count now:
+        if (newEntry.anonymousCount > this.highestAnonymousCount)
+        {
+            this.highestAnonymousCount = newEntry.anonymousCount;
+            this.anonymousContentVote = newEntry.contentId;
         }
     }
 
