@@ -47,16 +47,6 @@ export default class Paper
             onClick: this.onPointClick.bind(this),
             onMouseOver: this.onPointMouseOver.bind(this),
         };
-
-        const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.width);
-        const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.height);
-
-        for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
-        {
-            const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.element);
-
-            this.rows.set(y, row);
-        }
     }
 
     public addClickListener (listener: PointEvent): void

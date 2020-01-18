@@ -11,6 +11,8 @@ import User from '../user/user';
 import UserHandler from '../user/userHandler';
 import Validation from '../../utility/validation';
 
+// TODO: We could use a z axis to allow multiple contents on the same x-y field!
+
 export default class MapHandler
 {
     protected io: socketIo.Server;
