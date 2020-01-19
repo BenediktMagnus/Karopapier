@@ -27,6 +27,6 @@ export default class Coordinates
      */
     public onChange (point: Point): void
     {
-        this.element.textContent = point.x.toString() + ':' + point.y.toString();
+        this.element.textContent = `${point.x}:${point.y}`;
     }
 }

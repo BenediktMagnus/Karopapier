@@ -263,7 +263,7 @@ export default class MapHandler
     {
         // TODO: Is this really necessary? Couldn't we simply use the mapId without a prefix?
 
-        const result = 'map-' + mapId.toString();
+        const result = `map-${mapId}`;
 
         return result;
     }

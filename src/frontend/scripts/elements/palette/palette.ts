@@ -58,8 +58,8 @@ export default class Palette
             y = document.body.clientHeight - this.element.clientHeight;
         }
 
-        this.element.style.left = x.toString() + 'px';
-        this.element.style.top = y.toString() + 'px';
+        this.element.style.left = `${x}px`;
+        this.element.style.top = `${y}px`;
 
         this.coordinates.onChange(point);
     }
