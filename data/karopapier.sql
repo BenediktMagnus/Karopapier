@@ -82,10 +82,23 @@ INSERT INTO
 VALUES
 	(0, 'anonymous', '', 0);
 
--- The default map content, here to go sure the ID is zero and the first entry;
+-- The standard map contents for generic use:
 INSERT INTO
 	`content` (`id`, `publicIdentifier`, `name`)
 VALUES
-	(0, 'empty', 'Empty');
+	(0, '', 'Empty'),
+	(1, '', 'Transparent'),
+	(2, '', 'Path'),
+	(3, '', 'Door top'),
+	(4, '', 'Door down'),
+	(5, '', 'Door left'),
+	(6, '', 'Door right'),
+	(7, '', 'Stairs up'),
+	(8, '', 'Stairs down'),
+	(9, '', 'Plate'),
+	(10, '', 'Arrow top'),
+	(11, '', 'Arrow down'),
+	(12, '', 'Arrow left'),
+	(13, '', 'Arrow right');
 
 COMMIT;
