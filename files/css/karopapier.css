@@ -35,8 +35,10 @@ td:hover {
 
 #palette {
     position: absolute;
-    width: 5.8vh;
-    height: 16.7vh;
+
+    width: 5.8vh; /* TODO: This should be dynamic, maybe the same way as the paper table? */
+    height: 16.7vh; /* TODO: This should be dynamic, maybe the same way as the paper table? */
+
     background-color: #888;
 }
 
@@ -47,25 +49,48 @@ td:hover {
     float: left;
 }
 
-#tools div {
+.tool {
     /* TODO: This should be dynamic, maybe the same way as the paper table? */
     width: 2.5vh;
     height: 2.5vh;
     margin: 0.2vh;
     float: left;
+
+    position: relative;
 }
 
-#tools img {
+.tool img {
     width: 100%;
     height: 100%;
 }
 
-#tools img:hover {
+.tool img:hover {
     opacity: 0.5;
 }
 
-#tools span {
+.toolHoverText {
+    visibility: hidden;
+    opacity: 0;
+
+    position: absolute;
+
     width: max-content;
-    height: max-content;
-    color: white; /* TODO: This must look better! */
+    bottom: 125%;
+    left: 50%;
+
+    padding: 0.4em 0.5em;
+
+    border-radius: 0.5em;
+
+    background-color: #444;
+    color: white;
+
+    text-align: center;
+
+    transition: opacity 0.3s;
+}
+
+.tool:hover .toolHoverText{
+    visibility: visible;
+    opacity: 1;
 }

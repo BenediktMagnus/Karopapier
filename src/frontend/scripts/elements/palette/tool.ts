@@ -19,6 +19,7 @@ export default class Tool
         this.name = name;
 
         this.mainElement = document.createElement('div');
+        this.mainElement.classList.add('tool');
         parentElement.appendChild(this.mainElement);
 
         this.imageElement = document.createElement('img');
@@ -26,14 +27,11 @@ export default class Tool
         this.mainElement.appendChild(this.imageElement);
 
         this.hoverTextElement = document.createElement('span');
+        this.hoverTextElement.classList.add('toolHoverText');
         this.hoverTextElement.textContent = name;
         this.mainElement.appendChild(this.hoverTextElement);
 
-        this.hideHoverText();
-
-        //this.element.onclick = (): void => { this.events.onClick?.(this); };
-        this.mainElement.onmouseover = this.showHoverText.bind(this);
-        this.mainElement.onmouseout = this.hideHoverText.bind(this);
+        //this.mainElement.onclick = this.onClick.bind(this);
     }
 
     /**
@@ -47,15 +45,5 @@ export default class Tool
         this.mainElement.onmouseout = null;
 
         this.mainElement.parentNode?.removeChild(this.mainElement);
-    }
-
-    private showHoverText (): void
-    {
-        this.hoverTextElement.style.display = 'block';
-    }
-
-    private hideHoverText (): void
-    {
-        this.hoverTextElement.style.display = 'none';
     }
 }
