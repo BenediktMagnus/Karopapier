@@ -15,16 +15,16 @@ export default class Point
     public readonly x: number;
     public readonly y: number;
 
-    protected element: HTMLTableDataCellElement;
+    private element: HTMLTableDataCellElement;
 
-    protected events: PointEvents;
+    private events: PointEvents;
 
-    protected contentIdToContentEntryMap: Map<number, ContentEntry>;
+    private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
     protected contentId: number;
-    protected highestUserCount: number;
+    private highestUserCount: number;
     protected anonymousContentVote: number;
-    protected highestAnonymousCount: number;
+    private highestAnonymousCount: number;
 
     public get boundaries (): Boundaries
     {
@@ -179,7 +179,7 @@ export default class Point
         }
     }
 
-    protected resetContent (): void
+    private resetContent (): void
     {
         this.contentId = Constants.emptyContentId;
         this.anonymousContentVote = Constants.emptyContentId;

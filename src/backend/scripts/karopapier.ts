@@ -7,8 +7,8 @@ const httpPort = 8031;
 
 export default class Karopapier
 {
-    protected readonly database: Database;
-    protected readonly server: Server;
+    private readonly database: Database;
+    private readonly server: Server;
     protected readonly userHandler: UserHandler;
     protected readonly mapHandler: MapHandler;
 
@@ -30,7 +30,7 @@ export default class Karopapier
      * Call a method safely without throwing errors and write to the error log if one occurs.
      * @param method The method to call.
      */
-    protected callSafely (method: () => void): void
+    private callSafely (method: () => void): void
     {
         try
         {

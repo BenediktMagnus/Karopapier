@@ -5,7 +5,7 @@ import Point from "./paper/point";
  */
 export default class Coordinates
 {
-    protected element: HTMLElement;
+    private element: HTMLElement;
 
     constructor (elementId: string)
     {

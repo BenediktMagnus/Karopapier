@@ -32,10 +32,10 @@ export type MapEntrySetResult = InitialisedMapEntrySetResult;
 
 export default class MapEntry
 {
-    protected userIdToUserEntryMap: Map<number, UserEntry>;
-    protected ipToAnonymousEntryMap: Map<string, AnonymousEntry>;
+    private userIdToUserEntryMap: Map<number, UserEntry>;
+    private ipToAnonymousEntryMap: Map<string, AnonymousEntry>;
 
-    protected contentIdToContentEntryMap: Map<number, ContentEntry>;
+    private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
     constructor ()
     {
@@ -177,7 +177,7 @@ export default class MapEntry
      * created and inserted into the content ID to content entry map before returning.
      * @param contentId The ID of the content to get/create.
      */
-    protected getOrCreateContentEntry (contentId: number): ContentEntry
+    private getOrCreateContentEntry (contentId: number): ContentEntry
     {
         let contentEntry = this.contentIdToContentEntryMap.get(contentId);
 

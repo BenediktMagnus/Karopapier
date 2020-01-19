@@ -11,17 +11,17 @@ type MapEntryMap = Map<number, MapEntry>;
 
 export default class MapHolder
 {
-    protected database: Database;
+    private database: Database;
 
-    protected minX: number;
-    protected maxX: number;
-    protected minY: number;
-    protected maxY: number;
+    private minX: number;
+    private maxX: number;
+    private minY: number;
+    private maxY: number;
 
     /**
      * Structured as y-x (row-column), not x-y!
      */
-    protected coordinates: Map<number, MapEntryMap>;
+    private coordinates: Map<number, MapEntryMap>;
 
     /**
      * The highest number of anonymous voters for a content on an entry. \
@@ -154,7 +154,7 @@ export default class MapHolder
         return result;
     }
 
-    protected loadEntries (): void
+    private loadEntries (): void
     {
         const userMapEntries = this.database.getUserMapEntries(this.mapInfo.id);
 
@@ -178,7 +178,7 @@ export default class MapHolder
     /**
      * Tries to get a map entry at the given coordinates. If there is none, a map entry will be created.
      */
-    protected getMapEntry (x: number, y: number): MapEntry
+    private getMapEntry (x: number, y: number): MapEntry
     {
         let row = this.coordinates.get(y);
         let mapEntry: MapEntry|undefined;

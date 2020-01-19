@@ -5,12 +5,12 @@ import Paper from "./elements/paper/paper";
 
 class Main
 {
-    protected readonly socket: SocketIOClient.Socket;
+    private readonly socket: SocketIOClient.Socket;
 
-    protected mapPublicIdentifier: string|null;
-    protected paper?: Paper;
-    protected palette?: Palette;
-    protected coordinates?: Coordinates;
+    private mapPublicIdentifier: string|null;
+    private paper?: Paper;
+    private palette?: Palette;
+    private coordinates?: Coordinates;
 
     constructor ()
     {
@@ -33,7 +33,7 @@ class Main
         this.socket.connect();
     }
 
-    protected onConnect (): void
+    private onConnect (): void
     {
         if (this.mapPublicIdentifier === null)
         {
@@ -51,14 +51,14 @@ class Main
         this.callOnReadyIfReady();
     }
 
-    protected onReconnect (): void
+    private onReconnect (): void
     {
         // TODO: Authenticate.
 
         this.socket.emit(FunctionNames.selectMap, this.mapPublicIdentifier);
     }
 
-    protected onDocumentLoaded (): void
+    private onDocumentLoaded (): void
     {
         this.paper = new Paper();
         this.palette = new Palette(this.paper.boundaries);
@@ -75,7 +75,7 @@ class Main
      * Will check wether everything is read i.e. the document is completely loaded, the socket is connected etc.
      * and if yes it will call the associated event.
      */
-    protected callOnReadyIfReady (): void
+    private callOnReadyIfReady (): void
     {
         if (this.socket.connected && (document.readyState != 'loading'))
         {
@@ -86,7 +86,7 @@ class Main
     /**
      * Called when everything is ready, i.e. the document is completely loaded, the socket is connected etc.
      */
-    protected onReady (): void
+    private onReady (): void
     {
         if (this.paper !== undefined)
         {

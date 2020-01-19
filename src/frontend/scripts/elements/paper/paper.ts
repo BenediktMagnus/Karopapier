@@ -8,17 +8,17 @@ type RowMap = Map<number, Row>;
 
 export default class Paper
 {
-    protected element: HTMLTableElement;
+    private element: HTMLTableElement;
 
-    protected clickListeners: PointEvent[];
-    protected mouseOverListeners: PointEvent[];
+    private clickListeners: PointEvent[];
+    private mouseOverListeners: PointEvent[];
 
-    protected events: PointEvents;
+    private events: PointEvents;
 
     /**
      * A map of rows with the y coordinates as key and the row instance as value.
      */
-    protected rows: RowMap;
+    private rows: RowMap;
 
     public get boundaries (): Boundaries
     {
@@ -140,7 +140,7 @@ export default class Paper
         }
     }
 
-    protected clearMap (): void
+    private clearMap (): void
     {
         for (const row of this.rows.values())
         {
@@ -150,7 +150,7 @@ export default class Paper
         this.rows.clear();
     }
 
-    protected getPointAt (x: number, y: number): Point|null
+    private getPointAt (x: number, y: number): Point|null
     {
         // TODO: We could build the automatic size increasing procedure in here and give back a point in every case.
 
@@ -171,7 +171,7 @@ export default class Paper
      * @param listener The listener to add.
      * @param list The list of point events to add the listener to.
      */
-    protected addPointEventListener (listener: PointEvent, list: PointEvent[]): void
+    private addPointEventListener (listener: PointEvent, list: PointEvent[]): void
     {
         if (!list.includes(listener))
         {
@@ -184,7 +184,7 @@ export default class Paper
      * @param listener The listener to renove.
      * @param list The list of point events to remove the listener from.
      */
-    protected removePointEventListener (listener: PointEvent, list: PointEvent[]): void
+    private removePointEventListener (listener: PointEvent, list: PointEvent[]): void
     {
         const position = list.indexOf(listener);
 
@@ -198,7 +198,7 @@ export default class Paper
      * Called if a point is clicked. Will call all listeners of the click event.
      * @param point The point that has been clicked.
      */
-    protected onPointClick (point: Point): void
+    private onPointClick (point: Point): void
     {
         for (const listener of this.clickListeners)
         {
@@ -210,7 +210,7 @@ export default class Paper
      * Called if a mouse over on a point has happened. Will call all listeners of the mouse over event.
      * @param point The point the mouse is at.
      */
-    protected onPointMouseOver (point: Point): void
+    private onPointMouseOver (point: Point): void
     {
         for (const listener of this.mouseOverListeners)
         {

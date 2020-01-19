@@ -10,13 +10,13 @@ import Utils from '../../utility/utils';
 
 export default class Database
 {
-    protected readonly databaseDescriberFileName = 'karopapier';
-    protected readonly dataPath = './data/';
+    private readonly databaseDescriberFileName = 'karopapier';
+    private readonly dataPath = './data/';
 
     /**
      * The database containing all tables.
      */
-    protected database: Sqlite.Database;
+    private database: Sqlite.Database;
 
     /**
      * Initialises the database connection.
@@ -26,7 +26,7 @@ export default class Database
         this.database = this.openOrCreateDatabase(databaseFileName, this.databaseDescriberFileName, inMemory);
     }
 
-    protected openOrCreateDatabase (databaseName: string, describerFileName: string, inMemory: boolean): Sqlite.Database
+    private openOrCreateDatabase (databaseName: string, describerFileName: string, inMemory: boolean): Sqlite.Database
     {
         const databaseFilePath = this.dataPath + databaseName + '.sqlite';
 
@@ -89,7 +89,7 @@ export default class Database
      * Copies all bindable properties from an object, returning a bindable object
      * that can be used as binding parameters when running SQLite statements.
      */
-    protected getBindablesFromObject (object: any): any
+    private getBindablesFromObject (object: any): any
     {
         // Objects can contain data that is not bindable for SQLite, for
         // example constructors, methods etc.
@@ -117,7 +117,7 @@ export default class Database
      * @param value The value that will be given to the statement as execution parameter.
      * @returns True if something is found, otherwise false.
      */
-    protected hasSomething (selectQuery: string, value: any): boolean
+    private hasSomething (selectQuery: string, value: any): boolean
     {
         const statement = this.database.prepare(
             `SELECT

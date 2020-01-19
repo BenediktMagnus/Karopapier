@@ -7,10 +7,10 @@ export default class Server
 {
     public static readonly defaultHttpPort = 80;
 
-    protected readonly server: express.Express;
-    protected readonly http: http.Server;
+    private readonly server: express.Express;
+    private readonly http: http.Server;
 
-    protected readonly io: socketIo.Server;
+    private readonly io: socketIo.Server;
 
     public httpPort: number;
 

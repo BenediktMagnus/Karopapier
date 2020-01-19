@@ -15,12 +15,12 @@ import Validation from '../../utility/validation';
 
 export default class MapHandler
 {
-    protected io: socketIo.Server;
-    protected database: Database;
+    private io: socketIo.Server;
+    private database: Database;
 
-    protected userHandler: UserHandler;
+    private userHandler: UserHandler;
 
-    protected mapIdToMapHolderMap: Map<number, MapHolder>;
+    private mapIdToMapHolderMap: Map<number, MapHolder>;
 
     constructor (server: Server, database: Database, userHandler: UserHandler)
     {
@@ -33,7 +33,7 @@ export default class MapHandler
         this.io.on('connection', (socket) => this.onConnection(socket));
     }
 
-    protected onConnection (socket: socketIo.Socket): void
+    private onConnection (socket: socketIo.Socket): void
     {
         // We have to do the following here:
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
@@ -51,7 +51,7 @@ export default class MapHandler
         socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
 
-    protected onDisconnect (user: User): void
+    private onDisconnect (user: User): void
     {
         // On disconnect, check if there are no sockets left for the selected map and unload it.
 
@@ -72,7 +72,7 @@ export default class MapHandler
         }
     }
 
-    protected onSelectMap (user: User, mapPublicIdentifier: string): void
+    private onSelectMap (user: User, mapPublicIdentifier: string): void
     {
         if (!Validation.isNonEmptyString(mapPublicIdentifier))
         {
@@ -111,7 +111,7 @@ export default class MapHandler
         }
     }
 
-    protected onGetMapData (user: User, reply: FunctionDefinitions.GetMapDataResponseFunction): void
+    private onGetMapData (user: User, reply: FunctionDefinitions.GetMapDataResponseFunction): void
     {
         if (!Validation.isCallable(reply))
         {
@@ -130,7 +130,7 @@ export default class MapHandler
         reply(mapData);
     }
 
-    protected onGetMapContents (user: User, reply: FunctionDefinitions.GetMapContentsResponseFunction): void
+    private onGetMapContents (user: User, reply: FunctionDefinitions.GetMapContentsResponseFunction): void
     {
         if (!Validation.isCallable(reply))
         {
@@ -156,7 +156,7 @@ export default class MapHandler
         reply(mapContents);
     }
 
-    protected onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
+    private onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
     {
         // TODO: We need at least every user and anonymous entries here.
         //       Calculated map meta data like the highest number of people voting for a content on an entry
@@ -179,7 +179,7 @@ export default class MapHandler
         reply(mapEntries);
     }
 
-    protected onSetMapEntry (user: User, x: number, y: number, contentId: number): void
+    private onSetMapEntry (user: User, x: number, y: number, contentId: number): void
     {
         if (!Number.isSafeInteger(x)
             || !Number.isSafeInteger(y)
@@ -245,7 +245,7 @@ export default class MapHandler
         }
     }
 
-    protected getOrCreateMapHolder (mapId: number): MapHolder
+    private getOrCreateMapHolder (mapId: number): MapHolder
     {
         let mapHolder = this.mapIdToMapHolderMap.get(mapId);
 
@@ -259,7 +259,7 @@ export default class MapHandler
         return mapHolder;
     }
 
-    protected mapIdToRoomName (mapId: number): string
+    private mapIdToRoomName (mapId: number): string
     {
         // TODO: Is this really necessary? Couldn't we simply use the mapId without a prefix?
 
@@ -273,7 +273,7 @@ export default class MapHandler
      * @param socket The socket that shall be automatically converted.
      * @param callable The function/method that needs a user as parameter.
      */
-    protected wrapSocketAsUser (
+    private wrapSocketAsUser (
         socket: socketIo.Socket,
         callable: (user: User, ...args: any[]) => void
     ): (...args: any[]) => void

@@ -7,9 +7,9 @@ export default class Row
     /**
      * A map of points, with the x coordinate as key and the point instance as value.
      */
-    protected points: PointMap;
+    private points: PointMap;
 
-    protected element: HTMLTableRowElement;
+    private element: HTMLTableRowElement;
 
     /**
      * Create a row of points at y, going from low to high.

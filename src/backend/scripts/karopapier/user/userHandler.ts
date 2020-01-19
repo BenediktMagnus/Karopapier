@@ -10,14 +10,14 @@ import Validation from '../../utility/validation';
 
 export default class UserHandler
 {
-    protected readonly anonymousUserId = 0;
+    private readonly anonymousUserId = 0;
 
-    protected io: socketIo.Server;
-    protected database: Database;
+    private io: socketIo.Server;
+    private database: Database;
 
-    protected sessionManager: SessionManager;
+    private sessionManager: SessionManager;
 
-    protected socketIdToUserMap: Map<string, User>;
+    private socketIdToUserMap: Map<string, User>;
 
     constructor (server: Server, database: Database)
     {
@@ -62,7 +62,7 @@ export default class UserHandler
      * @param socket The socket to associate the user with.
      * @returns The loaded user.
      */
-    protected loadUser (userId: number, socket: SocketIO.Socket): User
+    private loadUser (userId: number, socket: SocketIO.Socket): User
     {
         if (this.socketIdToUserMap.has(socket.id))
         {
@@ -86,7 +86,7 @@ export default class UserHandler
         return user;
     }
 
-    protected onConnection (socket: socketIo.Socket): void
+    private onConnection (socket: socketIo.Socket): void
     {
         // We have to do three things here for every event:
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
@@ -99,7 +99,7 @@ export default class UserHandler
         socket.on(FunctionNames.authenticate, this.onAuthenticate.bind(this, socket));
     }
 
-    protected onDisconnect (socket: socketIo.Socket): void
+    private onDisconnect (socket: socketIo.Socket): void
     {
         // Remove the user from the user/socket list as soon as there is a disconnect:
         this.socketIdToUserMap.delete(socket.id);
@@ -108,7 +108,7 @@ export default class UserHandler
     /**
      * Login with user name and password.
      */
-    protected async onLogin (
+    private async onLogin (
         socket: socketIo.Socket,
         name: string,
         password: string,
@@ -139,7 +139,7 @@ export default class UserHandler
     /**
      * Authentication via session (ID and token).
      */
-    protected onAuthenticate (
+    private onAuthenticate (
         socket: socketIo.Socket,
         sessionId: number,
         sessionToken: string,

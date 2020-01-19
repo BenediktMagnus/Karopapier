@@ -17,9 +17,9 @@ interface Session
 
 export default class SessionManager
 {
-    protected database: Database;
+    private database: Database;
 
-    protected counter = 0;
+    private counter = 0;
 
     constructor (database: Database)
     {
@@ -31,7 +31,7 @@ export default class SessionManager
      * For example, a 4 bit long number must be between (including) 1000 and 1111. \
      * NOTE: This could be replaced with String.padStart().
      */
-    protected getRandom32BitInt (): number
+    private getRandom32BitInt (): number
     {
         let result = Math.random() * (max32BitInt - min32BitInt) + min32BitInt;
         result = Math.floor(result);
@@ -39,7 +39,7 @@ export default class SessionManager
         return result;
     }
 
-    protected generateSessionToken (): string
+    private generateSessionToken (): string
     {
         this.counter++;
 
@@ -59,7 +59,7 @@ export default class SessionManager
         return sessionToken;
     }
 
-    protected sessionIsExpired (lastAccess: number): boolean
+    private sessionIsExpired (lastAccess: number): boolean
     {
         const currentTime = Utils.getCurrentUnixTime();
 

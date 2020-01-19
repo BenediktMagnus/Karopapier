@@ -4,11 +4,11 @@ import Point from "../paper/point";
 
 export default class Palette
 {
-    protected element: HTMLDivElement;
+    private element: HTMLDivElement;
 
-    protected coordinates: Coordinates;
+    private coordinates: Coordinates;
 
-    protected boundaries: Boundaries;
+    private boundaries: Boundaries;
 
     /**
      * @param boundaries The element that restricts the position of the palette; it will not show
@@ -64,12 +64,12 @@ export default class Palette
         this.coordinates.onChange(point);
     }
 
-    protected show (): void
+    private show (): void
     {
         this.element.style.display = 'inline';
     }
 
-    protected hide (): void
+    private hide (): void
     {
         this.element.style.display = 'none';
     }
