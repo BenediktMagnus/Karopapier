@@ -24,12 +24,6 @@ export default class MapHolder
     private coordinates: Map<number, MapEntryMap>;
 
     /**
-     * The highest number of anonymous voters for a content on an entry. \
-     * Used as a scaling measurement for the "value" of such a vote.
-     */
-    protected highestVotingCount: number;
-
-    /**
      * Additional information about the map.
      */
     public readonly mapInfo: MapTable;
@@ -43,7 +37,6 @@ export default class MapHolder
     {
         this.database = database;
 
-        this.highestVotingCount = 0;
         this.socketCount = 1;
         this.coordinates = new Map<number, MapEntryMap>();
 
