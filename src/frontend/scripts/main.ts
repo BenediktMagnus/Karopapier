@@ -97,6 +97,13 @@ class Main
 
             this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
         }
+        // TODO: Should we otherwise do something? It would mean a big error...
+
+        if (this.palette !== undefined)
+        {
+            this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
+        }
+        // TODO: Should we otherwise do something? It would mean a big error...
 
         // TODO:
         //       mapData: Name for the name display.

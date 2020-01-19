@@ -1,14 +1,19 @@
 import Boundaries from "../../utility/boundaries";
 import Coordinates from "../coordinates";
+import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
+import Tool from "./tool";
 
 export default class Palette
 {
-    private element: HTMLDivElement;
+    private mainElement: HTMLDivElement;
+    private toolsElement: HTMLDivElement;
 
     private coordinates: Coordinates;
 
     private boundaries: Boundaries;
+
+    private tools: Tool[];
 
     /**
      * @param boundaries The element that restricts the position of the palette; it will not show
@@ -18,15 +23,28 @@ export default class Palette
     {
         this.boundaries = boundaries;
 
-        const element = document.getElementById('palette') as HTMLDivElement;
+        this.tools = [];
 
-        if (element === null)
+        const mainElement = document.getElementById('palette') as HTMLDivElement;
+
+        if (mainElement === null)
         {
             throw new ReferenceError('The palette element could not be found.');
         }
         else
         {
-            this.element = element;
+            this.mainElement = mainElement;
+        }
+
+        const toolsElement = document.getElementById('tools') as HTMLDivElement;
+
+        if (toolsElement === null)
+        {
+            throw new ReferenceError('The palette tools element could not be found.');
+        }
+        else
+        {
+            this.toolsElement = toolsElement;
         }
 
         this.coordinates = new Coordinates('paletteCoordinates');
@@ -39,6 +57,20 @@ export default class Palette
     }
 
     /**
+     * Loads contents as tools into the palette.
+     * @param mapContents The list of contents to load.
+     */
+    public loadContents (mapContents: MapContent[]): void
+    {
+        for (const mapContent of mapContents)
+        {
+            const tool = new Tool(mapContent.id, mapContent.name, this.toolsElement);
+
+            this.tools.push(tool);
+        }
+    }
+
+    /**
      * Called if there is a click on a point of the paper.
      * @param point The point that has been clicked.
      */
@@ -47,30 +79,30 @@ export default class Palette
         this.show();
 
         let x = this.boundaries.offsetLeft + point.boundaries.offsetLeft + point.boundaries.clientWidth;
-        if (x + this.element.clientWidth > document.body.clientWidth)
+        if (x + this.mainElement.clientWidth > document.body.clientWidth)
         {
-            x = document.body.clientWidth - this.element.clientWidth;
+            x = document.body.clientWidth - this.mainElement.clientWidth;
         }
 
         let y = this.boundaries.offsetTop + point.boundaries.offsetTop;
-        if (y + this.element.clientHeight > document.body.clientHeight)
+        if (y + this.mainElement.clientHeight > document.body.clientHeight)
         {
-            y = document.body.clientHeight - this.element.clientHeight;
+            y = document.body.clientHeight - this.mainElement.clientHeight;
         }
 
-        this.element.style.left = `${x}px`;
-        this.element.style.top = `${y}px`;
+        this.mainElement.style.left = `${x}px`;
+        this.mainElement.style.top = `${y}px`;
 
         this.coordinates.onChange(point);
     }
 
     private show (): void
     {
-        this.element.style.display = 'inline';
+        this.mainElement.style.display = 'inline';
     }
 
     private hide (): void
     {
-        this.element.style.display = 'none';
+        this.mainElement.style.display = 'none';
     }
 }

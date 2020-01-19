@@ -49,13 +49,23 @@ td:hover {
 
 #tools div {
     /* TODO: This should be dynamic, maybe the same way as the paper table? */
-    background-size: 100%;
     width: 2.5vh;
     height: 2.5vh;
     margin: 0.2vh;
     float: left;
 }
 
-#tools div:hover {
+#tools img {
+    width: 100%;
+    height: 100%;
+}
+
+#tools img:hover {
     opacity: 0.5;
+}
+
+#tools span {
+    width: max-content;
+    height: max-content;
+    color: white; /* TODO: This must look better! */
 }
