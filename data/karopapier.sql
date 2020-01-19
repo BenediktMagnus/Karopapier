@@ -20,8 +20,8 @@ CREATE TABLE `session` (
 -- Maps and their meta data:
 CREATE TABLE `map` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`publicIdentifier`	TEXT NOT NULL UNIQUE,
-	`name`	TEXT NOT NULL,
+	`publicIdentifier`	TEXT NOT NULL UNIQUE, -- Valid URL query string, used to identify the map in URLs as human readable as possible.
+	`name`	TEXT NOT NULL, -- Human readable name for the map.
 	`isActive`	INTEGER NOT NULL DEFAULT 1,
 	`width`	INTEGER NOT NULL,
 	`height`	INTEGER NOT NULL
@@ -53,8 +53,8 @@ CREATE TABLE `mapEntryUser` (
 -- The collection of possible contents (tools) for a map tile:
 CREATE TABLE `content` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`publicIdentifier`	TEXT NOT NULL,
-	`name`	TEXT NOT NULL
+	`publicIdentifier`	TEXT NOT NULL, -- Machine readable identifier for the content used in contact with other programmes.
+	`name`	TEXT NOT NULL -- Human readable name for the content.
 );
 
 -- Containts which contents (tools) are allowed in a maps:
