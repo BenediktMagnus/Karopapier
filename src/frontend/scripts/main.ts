@@ -56,6 +56,8 @@ class Main
         // TODO: Authenticate.
 
         this.socket.emit(FunctionNames.selectMap, this.mapPublicIdentifier);
+
+        // TODO: Reload entries and palette.
     }
 
     private onDocumentLoaded (): void
@@ -79,6 +81,7 @@ class Main
     {
         if (this.socket.connected && (document.readyState != 'loading'))
         {
+            // FIXME: This does not work! It is fired twice!
             this.onReady();
         }
     }
