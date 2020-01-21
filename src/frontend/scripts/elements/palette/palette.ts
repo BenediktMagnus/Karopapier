@@ -51,9 +51,7 @@ export default class Palette
 
         // If there is a click on anything, close the palette:
         // TODO: What does the capture option exactly do? Is it associated with clicking on another point?
-        document.body.addEventListener('onclick', this.hide.bind(this), {capture: true});
-
-        // TODO: Tools: The server should define the toolset.
+        document.body.addEventListener('click', this.hide.bind(this), {capture: true});
     }
 
     /**
