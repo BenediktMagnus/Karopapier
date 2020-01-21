@@ -61,6 +61,7 @@ CREATE TABLE `content` (
 CREATE TABLE `mapContent` (
 	`mapId`	INTEGER NOT NULL,
 	`contentId`	INTEGER NOT NULL,
+	`groupNumber`	INTEGER NOT NULL, -- The number of the group this content is associated with. Used to structure the toolbox.
 	FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
 	FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
 );

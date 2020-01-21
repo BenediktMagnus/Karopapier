@@ -20,6 +20,7 @@ export class MapContent
 {
     public id: number;
     public name: string;
+    public groupNumber: number;
 
     constructor (mapContent: MapContent)
     {
@@ -29,6 +30,7 @@ export class MapContent
 
         this.id = mapContent.id;
         this.name = mapContent.name;
+        this.groupNumber = mapContent.groupNumber;
     }
 
 }

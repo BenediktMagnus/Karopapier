@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { ContentTable } from './tables/contentTable';
+import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryAnonymousTable from './tables/mapEntryAnonymousTable';
 import MapEntryUserTable from './tables/mapEntryUserTable';
 import { MapTable } from './tables/mapTable';
@@ -312,21 +313,24 @@ export default class Database
         return result;
     }
 
-    public getContentsForMap (mapId: number): ContentTable[]
+    public getContentsForMap (mapId: number): (ContentTable & MapContentGroupNumber)[]
     {
         const statement = this.database.prepare(
             `SELECT
-                content.*
+                content.*, mapContent.groupNumber
             FROM
                 mapContent
             LEFT JOIN
                 content ON mapContent.contentId = content.id
             WHERE
                 mapContent.mapId = ?
+            ORDER BY
+                mapContent.groupNumber ASC,
+                content.id ASC
             `
         );
 
-        const contents: ContentTable[] = statement.all(mapId);
+        const contents: (ContentTable & MapContentGroupNumber)[] = statement.all(mapId);
 
         return contents;
     }

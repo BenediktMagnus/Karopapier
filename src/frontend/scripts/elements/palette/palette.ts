@@ -62,9 +62,21 @@ export default class Palette
      */
     public loadContents (mapContents: MapContent[]): void
     {
+        let lastGroupNumber: number = Number.NEGATIVE_INFINITY;
+        let rowElement: HTMLTableRowElement|null = null;
+
         for (const mapContent of mapContents)
         {
-            const tool = new Tool(mapContent.id, mapContent.name, this.toolsElement);
+            // For every group a new row:
+            if ((rowElement === null) || (lastGroupNumber !== mapContent.groupNumber))
+            {
+                rowElement = document.createElement('tr');
+                this.toolsElement.appendChild(rowElement);
+
+                lastGroupNumber = mapContent.groupNumber;
+            }
+
+            const tool = new Tool(mapContent.id, mapContent.name, rowElement);
 
             this.tools.push(tool);
         }

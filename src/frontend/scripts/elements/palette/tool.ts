@@ -1,6 +1,6 @@
 export default class Tool
 {
-    private mainElement: HTMLDivElement;
+    private mainElement: HTMLTableCellElement;
     private imageElement: HTMLImageElement;
     private hoverTextElement: HTMLSpanElement;
 
@@ -11,14 +11,14 @@ export default class Tool
      * Create a point for the given coordinates.
      * @param id The id of the tool.
      * @param name The name of the tool.
-     * @param parentElement The parent element to attach the tool to (meaning the palette).
+     * @param parentElement The parent element to attach the tool to (meaning the palette row).
      */
-    constructor (id: number, name: string, parentElement: HTMLDivElement)
+    constructor (id: number, name: string, parentElement: HTMLTableRowElement)
     {
         this.id = id;
         this.name = name;
 
-        this.mainElement = document.createElement('div');
+        this.mainElement = document.createElement('td');
         this.mainElement.classList.add('tool');
         parentElement.appendChild(this.mainElement);
 
