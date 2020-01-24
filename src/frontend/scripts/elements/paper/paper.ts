@@ -1,6 +1,7 @@
 import { ContentEntryListElement, MapData } from "../../shared/map";
 import Point, { PointEvent, PointEvents } from "./point";
 import Boundaries from "../../utility/boundaries";
+import CoordinateController from "../coordinateController";
 import MapUtility from "../../shared/mapUtility";
 import Row from "./row";
 
@@ -9,6 +10,8 @@ type RowMap = Map<number, Row>;
 export default class Paper
 {
     private element: HTMLTableElement;
+
+    private coordinates: CoordinateController;
 
     private clickListeners: PointEvent[];
     private mouseOverListeners: PointEvent[];
@@ -40,6 +43,8 @@ export default class Paper
 
         this.rows = new Map<number, Row>();
 
+        this.coordinates = new CoordinateController('paperCoordinates');
+
         this.clickListeners = [];
         this.mouseOverListeners = [];
 
@@ -47,6 +52,8 @@ export default class Paper
             onClick: this.onPointClick.bind(this),
             onMouseOver: this.onPointMouseOver.bind(this),
         };
+
+        this.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
     }
 
     public addClickListener (listener: PointEvent): void
@@ -80,6 +87,7 @@ export default class Paper
         const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.width);
         const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.height);
 
+        // TODO: The lowest value must be at the bottom!
         for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
         {
             const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.element);

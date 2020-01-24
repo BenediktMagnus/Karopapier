@@ -1,5 +1,4 @@
 import * as FunctionNames from "./shared/functionNames";
-import Coordinates from "./elements/coordinates";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
 
@@ -10,7 +9,6 @@ class Main
     private mapPublicIdentifier: string|null;
     private paper?: Paper;
     private palette?: Palette;
-    private coordinates?: Coordinates;
 
     constructor ()
     {
@@ -67,9 +65,6 @@ class Main
 
         this.paper.addClickListener(this.palette.onPaperClick.bind(this.palette));
 
-        this.coordinates = new Coordinates('coordinates');
-        this.paper.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
-
         this.callOnReadyIfReady();
     }
 
@@ -112,7 +107,7 @@ class Main
         //       mapData: Name for the name display.
         //    X  mapData: Height and width for the paper to be created.
         //    X  mapEntries: For the paper to load the map entries.
-        //       mapContents: For the toolbox to load and show the tools.
+        //    X  mapContents: For the toolbox to load and show the tools.
     }
 }
 

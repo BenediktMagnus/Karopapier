@@ -27,7 +27,7 @@ export default class Tool
         this.mainElement.appendChild(this.imageElement);
 
         this.hoverTextElement = document.createElement('span');
-        this.hoverTextElement.classList.add('toolHoverText');
+        this.hoverTextElement.classList.add('tooltip', 'toolHoverText');
         this.hoverTextElement.textContent = name;
         this.mainElement.appendChild(this.hoverTextElement);
 
