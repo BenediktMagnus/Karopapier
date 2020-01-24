@@ -1,6 +1,7 @@
 import * as http from 'http';
 import compression from 'compression';
 import express from 'express';
+import serveFavicon from 'serve-favicon';
 import socketIo from 'socket.io';
 
 export default class Server
@@ -21,6 +22,10 @@ export default class Server
         // Middleware for gzip compression:
         this.server.use(compression());
 
+        // Favicon with cache-control set to seven days:
+        this.server.use(serveFavicon('./files/favicon.ico', { maxAge: 1000 * 60 * 60 * 24 * 7 }));
+
+        // Map and source files:
         if (process.argv.includes('--serveMapFiles'))
         {
             // If explicitely stated in command line (probably by the debugger) serve map and Typescript

@@ -11,6 +11,7 @@
     "dependencies": {
         "express": "^4.17.1",
         "compression": "^1.7.4",
+        "serve-favicon": "2.5.0",
         "socket.io": "^2.3.0",
         "better-sqlite3": "^5.4.3",
         "bcrypt": "^3.0.7"
@@ -19,6 +20,7 @@
         "@types/node": "^12.12.14",
         "@types/express": "^4.17.2",
         "@types/compression": "^1.0.1",
+        "@types/serve-favicon": "2.2.30",
         "@types/socket.io": "^2.1.4",
         "@types/socket.io-client": "^1.4.32",
         "@types/better-sqlite3": "^5.4.0",
