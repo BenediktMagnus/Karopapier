@@ -15,6 +15,8 @@ export default class Palette
 
     private tools: Tool[];
 
+    protected selectedPoint: Point|null;
+
     /**
      * @param boundaries The element that restricts the position of the palette; it will not show
      *                   completely outside this given element (probably the paper).
@@ -24,6 +26,7 @@ export default class Palette
         this.boundaries = boundaries;
 
         this.tools = [];
+        this.selectedPoint = null;
 
         const mainElement = document.getElementById('palette') as HTMLDivElement;
 
@@ -65,6 +68,8 @@ export default class Palette
         let lastGroupNumber: number = Number.NEGATIVE_INFINITY;
         let rowElement: HTMLTableRowElement|null = null;
 
+        // NOTE: We can assume a list ordered by the group number here.
+
         for (const mapContent of mapContents)
         {
             // For every group a new row:
@@ -88,6 +93,8 @@ export default class Palette
      */
     public onPaperClick (point: Point): void
     {
+        this.selectedPoint = point;
+
         this.show();
 
         let x = this.boundaries.offsetLeft + point.boundaries.offsetLeft + point.boundaries.offsetWidth;
@@ -111,10 +118,16 @@ export default class Palette
     private show (): void
     {
         this.paletteElement.style.display = 'inline';
+
+        this.selectedPoint?.select();
     }
 
     private hide (): void
     {
         this.paletteElement.style.display = 'none';
+
+        this.selectedPoint?.unselect();
+
+        this.selectedPoint = null;
     }
 }

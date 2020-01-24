@@ -15,7 +15,7 @@ export default class Point
     public readonly x: number;
     public readonly y: number;
 
-    private element: HTMLTableDataCellElement;
+    private mainElement: HTMLTableDataCellElement;
 
     private events: PointEvents;
 
@@ -28,7 +28,7 @@ export default class Point
 
     public get boundaries (): Boundaries
     {
-        return this.element;
+        return this.mainElement;
     }
 
     /**
@@ -51,11 +51,11 @@ export default class Point
 
         this.contentIdToContentEntryMap = new Map<number, ContentEntry>();
 
-        this.element = document.createElement('td');
-        parentElement.appendChild(this.element);
+        this.mainElement = document.createElement('td');
+        parentElement.appendChild(this.mainElement);
 
-        this.element.onclick = (): void => { this.events.onClick?.(this); };
-        this.element.onmouseover = (): void => { this.events.onMouseOver?.(this); };
+        this.mainElement.onclick = (): void => { this.events.onClick?.(this); };
+        this.mainElement.onmouseover = (): void => { this.events.onMouseOver?.(this); };
     }
 
     /**
@@ -64,10 +64,10 @@ export default class Point
     public destroy (): void
     {
         // Remove event listeners from the element to prevent any thinkable memory leaks:
-        this.element.onclick = null;
-        this.element.onmouseover = null;
+        this.mainElement.onclick = null;
+        this.mainElement.onmouseover = null;
 
-        this.element.parentNode?.removeChild(this.element);
+        this.mainElement.parentNode?.removeChild(this.mainElement);
     }
 
     /**
@@ -177,6 +177,22 @@ export default class Point
             this.highestAnonymousCount = newEntry.anonymousCount;
             this.anonymousContentVote = newEntry.contentId;
         }
+    }
+
+    /**
+     * Select this point visually.
+     */
+    public select (): void
+    {
+        this.mainElement.style.opacity = '0.5';
+    }
+
+    /**
+     * Remove the visual selection from this point.
+     */
+    public unselect (): void
+    {
+        this.mainElement.style.opacity = '1';
     }
 
     private resetContent (): void
