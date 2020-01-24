@@ -6,7 +6,7 @@ import Tool from "./tool";
 
 export default class Palette
 {
-    private mainElement: HTMLDivElement;
+    private paletteElement: HTMLDivElement;
     private toolsElement: HTMLDivElement;
 
     private coordinates: CoordinateController;
@@ -33,7 +33,7 @@ export default class Palette
         }
         else
         {
-            this.mainElement = mainElement;
+            this.paletteElement = mainElement;
         }
 
         const toolsElement = document.getElementById('tools') as HTMLDivElement;
@@ -52,6 +52,8 @@ export default class Palette
         // If there is a click on anything, close the palette:
         // TODO: What does the capture option exactly do? Is it associated with clicking on another point?
         document.body.addEventListener('click', this.hide.bind(this), {capture: true});
+
+        this.hide();
     }
 
     /**
@@ -88,31 +90,31 @@ export default class Palette
     {
         this.show();
 
-        let x = this.boundaries.offsetLeft + point.boundaries.offsetLeft + point.boundaries.clientWidth;
-        if (x + this.mainElement.clientWidth > document.body.clientWidth)
+        let x = this.boundaries.offsetLeft + point.boundaries.offsetLeft + point.boundaries.offsetWidth;
+        if (x + this.paletteElement.offsetWidth > document.body.offsetWidth)
         {
-            x = document.body.clientWidth - this.mainElement.clientWidth;
+            x = document.body.offsetWidth - this.paletteElement.offsetWidth;
         }
 
         let y = this.boundaries.offsetTop + point.boundaries.offsetTop;
-        if (y + this.mainElement.clientHeight > document.body.clientHeight)
+        if (y + this.paletteElement.offsetHeight > document.body.offsetHeight)
         {
-            y = document.body.clientHeight - this.mainElement.clientHeight;
+            y = document.body.offsetHeight - this.paletteElement.offsetHeight;
         }
 
-        this.mainElement.style.left = `${x}px`;
-        this.mainElement.style.top = `${y}px`;
+        this.paletteElement.style.left = `${x}px`;
+        this.paletteElement.style.top = `${y}px`;
 
         this.coordinates.onChange(point);
     }
 
     private show (): void
     {
-        this.mainElement.style.display = 'inline';
+        this.paletteElement.style.display = 'inline';
     }
 
     private hide (): void
     {
-        this.mainElement.style.display = 'none';
+        this.paletteElement.style.display = 'none';
     }
 }

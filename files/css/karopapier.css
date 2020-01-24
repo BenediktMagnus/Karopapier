@@ -5,6 +5,10 @@
     --paper-width: calc(var(--paper-height) * 1.5);
 }
 
+html, body {
+    overflow: hidden;
+}
+
 body {
     margin: 0;
     padding: var(--default-element-spacing);
