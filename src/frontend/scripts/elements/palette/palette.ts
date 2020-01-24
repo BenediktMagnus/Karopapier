@@ -1,5 +1,5 @@
 import Boundaries from "../../utility/boundaries";
-import Coordinates from "../coordinates";
+import CoordinateController from "../coordinateController";
 import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
@@ -9,7 +9,7 @@ export default class Palette
     private mainElement: HTMLDivElement;
     private toolsElement: HTMLDivElement;
 
-    private coordinates: Coordinates;
+    private coordinates: CoordinateController;
 
     private boundaries: Boundaries;
 
@@ -47,7 +47,7 @@ export default class Palette
             this.toolsElement = toolsElement;
         }
 
-        this.coordinates = new Coordinates('paletteCoordinates');
+        this.coordinates = new CoordinateController('paletteCoordinates');
 
         // If there is a click on anything, close the palette:
         // TODO: What does the capture option exactly do? Is it associated with clicking on another point?

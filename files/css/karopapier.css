@@ -19,6 +19,18 @@ body {
     color: #FFF;
 }
 
+.textAlignLeft {
+    text-align: left;
+}
+
+.textAlignCentre {
+    text-align: center;
+}
+
+.textAlignRight {
+    text-align: right;
+}
+
 .contentHolder img {
     width: 100%;
     height: 100%;
@@ -55,8 +67,6 @@ body {
 }
 
 #paletteCoordinates {
-    display: block;
-
     margin: 0.2rem;
 }
 
