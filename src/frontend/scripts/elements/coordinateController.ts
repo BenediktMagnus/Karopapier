@@ -5,40 +5,31 @@ import Point from "./paper/point";
  */
 export default class CoordinateController
 {
-    private element: HTMLElement;
-    private spans: HTMLSpanElement[];
+    private parentElement: HTMLElement;
+    private xSpan: HTMLSpanElement;
+    private ySpan: HTMLSpanElement;
 
-    constructor (elementId: string)
+    constructor (parentElementId: string)
     {
-        const element = document.getElementById(elementId);
+        const parentElement = document.getElementById(parentElementId);
 
-        if (element === null)
+        if (parentElement === null)
         {
-            throw new ReferenceError('The given coordinates element could not be found.');
+            throw new ReferenceError('The given coordinates parent element could not be found.');
         }
         else
         {
-            this.element = element;
+            this.parentElement = parentElement;
         }
 
-        this.spans = [];
+        const template = document.getElementById('coordinatesTemplate') as HTMLTemplateElement;
 
-        // Three spans, one for each coordinate and one for the splitter colon:
-        while (this.spans.length < 3)
-        {
-            const span = document.createElement('span');
-            this.element.appendChild(span);
-            this.spans.push(span);
-        }
+        const clone = template.content.cloneNode(true) as DocumentFragment;
 
-        this.spans[0].textContent = '0';
-        this.spans[0].classList.add('textAlignRight');
+        this.xSpan = clone.firstElementChild as HTMLSpanElement;
+        this.ySpan = clone.lastElementChild as HTMLSpanElement;
 
-        this.spans[1].textContent = ':';
-        this.spans[1].classList.add('coordinatesSplitter', 'textAlignCentre');
-
-        this.spans[2].textContent = '0';
-        this.spans[2].classList.add('textAlignLeft');
+        this.parentElement.appendChild(clone);
     }
 
     /**
@@ -47,7 +38,7 @@ export default class CoordinateController
      */
     public onChange (point: Point): void
     {
-        this.spans[0].textContent = `${point.x}`;
-        this.spans[2].textContent = `${point.y}`;
+        this.xSpan.textContent = `${point.x}`;
+        this.ySpan.textContent = `${point.y}`;
     }
 }
