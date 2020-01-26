@@ -1,5 +1,5 @@
 import { ContentEntryListElement, MapData } from "../../shared/map";
-import Point, { PointEvent, PointEvents } from "./point";
+import Point, { PointEvents } from "./point";
 import Boundaries from "../../utility/boundaries";
 import CoordinateController from "../coordinateController";
 import MapUtility from "../../shared/mapUtility";
@@ -13,10 +13,7 @@ export default class Paper
 
     private coordinates: CoordinateController;
 
-    private clickListeners: PointEvent[];
-    private mouseOverListeners: PointEvent[];
-
-    private events: PointEvents;
+    public readonly events: PointEvents;
 
     /**
      * A map of rows with the y coordinates as key and the row instance as value.
@@ -45,35 +42,9 @@ export default class Paper
 
         this.coordinates = new CoordinateController('paperCoordinates');
 
-        this.clickListeners = [];
-        this.mouseOverListeners = [];
+        this.events = new PointEvents();
 
-        this.events = {
-            onClick: this.onPointClick.bind(this),
-            onMouseOver: this.onPointMouseOver.bind(this),
-        };
-
-        this.addMouseOverListener(this.coordinates.onChange.bind(this.coordinates));
-    }
-
-    public addClickListener (listener: PointEvent): void
-    {
-        this.addPointEventListener(listener, this.clickListeners);
-    }
-
-    public removeClickListener (listener: PointEvent): void
-    {
-        this.removePointEventListener(listener, this.clickListeners);
-    }
-
-    public addMouseOverListener (listener: PointEvent): void
-    {
-        this.addPointEventListener(listener, this.mouseOverListeners);
-    }
-
-    public removeMouseOverListener (listener: PointEvent): void
-    {
-        this.removePointEventListener(listener, this.mouseOverListeners);
+        this.events.onMouseOver.addEventListener(this.coordinates.onChange.bind(this.coordinates));
     }
 
     /**
@@ -172,57 +143,5 @@ export default class Paper
         const point = row.getPoint(x);
 
         return point;
-    }
-
-    /**
-     * Add a listener to a point event list.
-     * @param listener The listener to add.
-     * @param list The list of point events to add the listener to.
-     */
-    private addPointEventListener (listener: PointEvent, list: PointEvent[]): void
-    {
-        if (!list.includes(listener))
-        {
-            list.push(listener);
-        }
-    }
-
-    /**
-     * Remove a listener from a point event list.
-     * @param listener The listener to renove.
-     * @param list The list of point events to remove the listener from.
-     */
-    private removePointEventListener (listener: PointEvent, list: PointEvent[]): void
-    {
-        const position = list.indexOf(listener);
-
-        if (position > -1)
-        {
-            list.splice(position, 1);
-        }
-    }
-
-    /**
-     * Called if a point is clicked. Will call all listeners of the click event.
-     * @param point The point that has been clicked.
-     */
-    private onPointClick (point: Point): void
-    {
-        for (const listener of this.clickListeners)
-        {
-            listener(point);
-        }
-    }
-
-    /**
-     * Called if a mouse over on a point has happened. Will call all listeners of the mouse over event.
-     * @param point The point the mouse is at.
-     */
-    private onPointMouseOver (point: Point): void
-    {
-        for (const listener of this.mouseOverListeners)
-        {
-            listener(point);
-        }
     }
 }

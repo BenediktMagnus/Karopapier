@@ -1,13 +1,20 @@
 import * as Constants from "../../shared/constants";
 import { ContentEntry, ParsableContentEntry } from "../../shared/map";
 import Boundaries from "../../utility/boundaries";
+import EventHandler from "../../utility/eventHandler";
 
-export type PointEvent = (point: Point) => void;
+type PointEvent = (point: Point) => void;
 
 export class PointEvents
 {
-    public onClick?: PointEvent;
-    public onMouseOver?: PointEvent;
+    public readonly onClick: EventHandler<PointEvent>;
+    public readonly onMouseOver: EventHandler<PointEvent>;
+
+    constructor ()
+    {
+        this.onClick = new EventHandler<PointEvent>();
+        this.onMouseOver = new EventHandler<PointEvent>();
+    }
 }
 
 export default class Point
@@ -54,8 +61,8 @@ export default class Point
         this.mainElement = document.createElement('td');
         parentElement.appendChild(this.mainElement);
 
-        this.mainElement.onclick = (): void => { this.events.onClick?.(this); };
-        this.mainElement.onmouseover = (): void => { this.events.onMouseOver?.(this); };
+        this.mainElement.onclick = (): void => { this.events.onClick.dispatchEvent(this); };
+        this.mainElement.onmouseover = (): void => { this.events.onMouseOver.dispatchEvent(this); };
     }
 
     /**

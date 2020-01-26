@@ -63,7 +63,7 @@ class Main
         this.paper = new Paper();
         this.palette = new Palette(this.paper.boundaries);
 
-        this.paper.addClickListener(this.palette.onPaperClick.bind(this.palette));
+        this.paper.events.onClick.addEventListener(this.palette.onPaperClick.bind(this.palette));
 
         this.callOnReadyIfReady();
     }
