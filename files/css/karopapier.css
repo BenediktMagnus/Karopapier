@@ -1,8 +1,7 @@
 :root {
     --default-element-spacing: 0.3rem;
+
     --header-height: 1rem;
-    --paper-height: calc(100vh - var(--header-height) - 3 * var(--default-element-spacing));
-    --paper-width: calc(var(--paper-height) * 1.5);
 }
 
 html, body {
@@ -61,8 +60,23 @@ body {
 }
 
 #paper {
+    --defaulted-y-count: var(--paper-y-count, 10);
+    --defaulted-x-count: var(--paper-x-count, 15);
+
+    --border-spacing: 2px;
+    --border-space-y: calc(var(--border-spacing) * (var(--defaulted-y-count) + 1));
+    --border-space-x: calc(var(--border-spacing) * (var(--defaulted-x-count) + 1));
+
+    --paper-height: calc(100vh - var(--header-height) - 3 * var(--default-element-spacing));
+    --paper-height-without-spacing: calc(var(--paper-height) - var(--border-space-y));
+
+    --paper-width-without-spacing: calc(var(--paper-height-without-spacing) / var(--defaulted-y-count, 1) * var(--defaulted-x-count, 1.5));
+    --paper-width: calc(var(--paper-width-without-spacing) + var(--border-space-x));
+
     width: var(--paper-width);
     height: var(--paper-height);
+
+    border-spacing: var(--border-spacing);
 
     font-size: 0;
 

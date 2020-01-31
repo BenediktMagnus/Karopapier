@@ -65,6 +65,10 @@ export default class Paper
 
             this.rows.set(y, row);
         }
+
+        // The styles need to now the exact map height and width to calculate the pixel values:
+        this.element.style.setProperty('--paper-x-count', `${mapData.width}`);
+        this.element.style.setProperty('--paper-y-count', `${mapData.height}`);
     }
 
     public loadMap (mapEntries: ContentEntryListElement[]): void
