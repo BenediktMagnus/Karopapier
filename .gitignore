@@ -1,18 +1,28 @@
-#Module von node.js gehören nicht ins Repository:
+# No node_modules:
 node_modules/
 
-#VS-Code nicht ins Repository einpflegen:
-.vscode/
-# IntelliJ auch nicht
+# No package-lock.json (package manager specific):
+package-lock.json
+
+# No browser specific configs:
+.vscode
 .idea
 
-dist/**/*.css
-dist/**/*.html
-dist/**/*.js
-
-speicher/*.karo
-config/*.conf
-
-#Macdateien ignorieren:
+# Ignore Mac files:
 .DS_Store
 *.DS_Store
+
+# No databases:
+data/*.sqlite
+
+# No user config:
+config/**/*
+
+# Allow default config files:
+!config/*.default
+
+# No builds:
+build/**/*
+
+# Allow all keep files:
+!**/.keep

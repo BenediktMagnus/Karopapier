@@ -1,0 +1,14 @@
+{
+    "env": {
+        "browser": true
+    },
+    "root": true,
+    "parserOptions": {
+        "project": "src/frontend/tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": 5
+    },
+    "extends": [
+        "../../eslintrc.default.jsonc"
+    ]
+}
