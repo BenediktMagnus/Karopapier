@@ -23,7 +23,7 @@ export default class Tool
         parentElement.appendChild(this.mainElement);
 
         this.imageElement = document.createElement('img');
-        this.imageElement.src = `/images/${id}.png`;
+        this.imageElement.src = `/images/${id}.svg`;
         this.mainElement.appendChild(this.imageElement);
 
         this.hoverTextElement = document.createElement('span');
