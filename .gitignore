@@ -7,6 +7,7 @@ package-lock.json
 # No browser specific configs:
 .vscode
 .idea
+*.code-workspace
 
 # Ignore Mac files:
 .DS_Store
