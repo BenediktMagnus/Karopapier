@@ -1,7 +1,7 @@
 import * as http from 'http';
 import compression from 'compression';
 import express from 'express';
-import socketIo from 'socket.io';
+import * as socketIo from 'socket.io';
 
 export default class Server
 {
@@ -52,7 +52,7 @@ export default class Server
 
         this.http = new http.Server(this.server);
 
-        this.io = socketIo(this.http);
+        this.io = new socketIo.Server(this.http);
     }
 
     public get socketIo (): socketIo.Server
@@ -68,7 +68,7 @@ export default class Server
     public async stop (): Promise<void>
     {
         // Transformation of a callback to a promise for the async function:
-        const promise = new Promise(
+        const promise = new Promise<void>(
             (resolve, reject) =>
             {
                 this.http.close(

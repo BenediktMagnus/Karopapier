@@ -129,16 +129,21 @@ export default class SessionManager
     {
         let ipAddress: string;
 
-        const xForwardedForHeader: string|undefined = socket.handshake.headers['x-forwarded-for'];
+        // The headers typings are incomplete. 'x-forwarded-for' is always a string or undefined and never a string array:
+        const xForwardedForHeader = socket.handshake.headers['x-forwarded-for'] as string|undefined;
 
-        if (xForwardedForHeader)
+        if (xForwardedForHeader != undefined)
         {
             const ipAddresses = xForwardedForHeader.split(',');
             ipAddress = ipAddresses[0].trim();
         }
+        else if (socket.request.connection.remoteAddress != undefined)
+        {
+            ipAddress = socket.request.connection.remoteAddress
+        }
         else
         {
-            ipAddress = socket.request.connection.remoteAddress;
+            throw new Error("Could not identify the client's IP address.")
         }
 
         return ipAddress;

@@ -29,15 +29,11 @@ export default class Database
 
     private openOrCreateDatabase (databaseName: string, describerFileName: string, inMemory: boolean): Sqlite.Database
     {
-        const databaseFilePath = this.dataPath + databaseName + '.sqlite';
+        const databaseFilePath = inMemory ? ':memory:' : this.dataPath + databaseName + '.sqlite';
 
-        const fileCreated = !fs.existsSync(databaseFilePath);
+        const fileCreated = inMemory || !fs.existsSync(databaseFilePath);
 
-        const options: Sqlite.Options = {
-            memory: inMemory
-        };
-
-        const database = Sqlite(databaseFilePath, options);
+        const database = Sqlite(databaseFilePath);
 
         // WAL journal mode for better performance:
         database.pragma('journal_mode = WAL');
@@ -65,7 +61,7 @@ export default class Database
 
                 database.close();
 
-                if (fs.existsSync(databaseFilePath))
+                if (!inMemory && fs.existsSync(databaseFilePath))
                 {
                     fs.unlinkSync(databaseFilePath);
                 }

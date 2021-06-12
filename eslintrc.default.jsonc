@@ -2,20 +2,19 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "sourceType": "module",
-        "createDefaultProgram": true // This is a needed workaround, see https://github.com/typescript-eslint/typescript-eslint/issues/864
+        "sourceType": "module"
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
-        "@typescript-eslint/no-unused-vars": "off", // Set in TSConfig.
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": "off", // Provided by the tsconfig.json
         "spaced-comment": "warn",
         "no-multi-spaces": "warn",
         "no-whitespace-before-property": "warn",
@@ -71,7 +70,7 @@
             "always"
         ],
         "@typescript-eslint/promise-function-async": "error",
-        "@typescript-eslint/class-name-casing": "error",
+        "@typescript-eslint/switch-exhaustiveness-check": "error",
         "@typescript-eslint/restrict-plus-operands": "error",
         "@typescript-eslint/semi": [
             "error",
@@ -84,6 +83,27 @@
                 "overrides": {
                     "constructors": "off"
                 }
+            }
+        ],
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "default",
+                "format": ["camelCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            {
+                "selector": "typeLike",
+                "format": ["PascalCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            {
+                "selector": "enumMember",
+                "format": ["PascalCase"],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
             }
         ],
         "@typescript-eslint/explicit-function-return-type": "error"

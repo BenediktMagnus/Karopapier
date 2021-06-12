@@ -3,7 +3,7 @@ import * as FunctionNames from '../../shared/functionNames';
 import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
-import socketIo from 'socket.io';
+import * as socketIo from 'socket.io';
 import User from './user';
 import Utils from '../../utility/utils';
 import Validation from '../../utility/validation';
@@ -62,7 +62,7 @@ export default class UserHandler
      * @param socket The socket to associate the user with.
      * @returns The loaded user.
      */
-    private loadUser (userId: number, socket: SocketIO.Socket): User
+    private loadUser (userId: number, socket: socketIo.Socket): User
     {
         if (this.socketIdToUserMap.has(socket.id))
         {
