@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
 
--- The classical user table with their credentials:
+-- The classical user table with credentials:
 CREATE TABLE `user` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`name`	TEXT NOT NULL UNIQUE,
@@ -57,7 +57,7 @@ CREATE TABLE `content` (
 	`name`	TEXT NOT NULL -- Human readable name for the content.
 );
 
--- Containts which contents (tools) are allowed in a maps:
+-- Contains which contents (tools) are allowed in a map:
 CREATE TABLE `mapContent` (
 	`mapId`	INTEGER NOT NULL,
 	`contentId`	INTEGER NOT NULL,
