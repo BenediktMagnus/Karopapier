@@ -66,7 +66,9 @@ class Main
     private onDocumentLoaded (): void
     {
         this.paper = new Paper();
-        this.palette = new Palette(this.paper.boundaries);
+        // TODO: The following is not elegant... we should abstract it, maybe with addSelectedListener or something?
+        //       Because client side we need to do at least SOMETHING, too. The user must see a quick response.
+        this.palette = new Palette(this.socket.emit.bind(this.socket, FunctionNames.setMapEntry));
 
         this.paper.events.onClick.addEventListener(this.palette.onPaperClick.bind(this.palette));
 

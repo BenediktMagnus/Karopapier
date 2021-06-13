@@ -31,12 +31,26 @@
     </div>
 
     <div class="sideDiv">
+        <div class="header"></div>
     </div>
 
     <div id="palette">
         <div id="paletteCoordinates" class="displayFlexEqualGrow"></div>
         <table id="tools" class="contentHolder"></table>
     </div>
+
+    <template id="pointTemplate">
+        <td>
+            <div></div>
+        </td>
+    </template>
+
+    <template id="toolTemplate">
+        <td class="tool">
+            <img>
+            <span class="tooltip toolHoverText"></span>
+        </td>
+    </template>
 
     <template id="coordinatesTemplate">
         <span class="textAlignRight">0</span>

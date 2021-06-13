@@ -2,6 +2,8 @@
     --default-element-spacing: 0.3rem;
 
     --header-height: 1rem;
+
+    --semi-transparent-opacity-value: 0.5;
 }
 
 html, body {
@@ -79,11 +81,35 @@ body {
 }
 
 #paper td {
+    position: relative;
+
+    padding: 0;
+
     background-color: #000;
 }
 
+#paper td div {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    opacity: calc(var(--voting-count, var(--highest-voting-count, 1)) / var(--highest-voting-count, 1));
+}
+
 #paper td:hover {
-    opacity: 0.5;
+    opacity: var(--semi-transparent-opacity-value);
+}
+
+#paper td.selectedPoint {
+    opacity: var(--semi-transparent-opacity-value);
 }
 
 .sideDiv {
@@ -115,7 +141,7 @@ body {
 }
 
 .tool img:hover {
-    opacity: 0.5;
+    opacity: var(--semi-transparent-opacity-value);
 }
 
 .tooltip {

@@ -1,8 +1,9 @@
-import Boundaries from "../../utility/boundaries";
 import CoordinateController from "../coordinateController";
 import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
+
+export type PaletteEvent = (x: number, y: number, contentId: number) => void; // TODO: Change this to Point.
 
 export default class Palette
 {
@@ -11,19 +12,19 @@ export default class Palette
 
     private coordinates: CoordinateController;
 
-    private boundaries: Boundaries;
-
     private tools: Tool[];
 
     protected selectedPoint: Point|null;
+
+    private onToolSelected: PaletteEvent; // TODO: This is not elegant and the naming scheme is ambiguous.
 
     /**
      * @param boundaries The element that restricts the position of the palette; it will not show
      *                   completely outside this given element (probably the paper).
      */
-    constructor (boundaries: Boundaries)
+    constructor (onToolSelected: PaletteEvent)
     {
-        this.boundaries = boundaries;
+        this.onToolSelected = onToolSelected;
 
         this.tools = [];
         this.selectedPoint = null;
@@ -52,11 +53,9 @@ export default class Palette
 
         this.coordinates = new CoordinateController('paletteCoordinates');
 
-        // If there is a click on anything, close the palette:
-        // TODO: What does the capture option exactly do? Is it associated with clicking on another point?
-        document.body.addEventListener('click', this.hide.bind(this), {capture: true});
-
         this.hide();
+
+        // TODO: Hide button for the palette.
     }
 
     /**
@@ -81,7 +80,7 @@ export default class Palette
                 lastGroupNumber = mapContent.groupNumber;
             }
 
-            const tool = new Tool(mapContent.id, mapContent.name, rowElement);
+            const tool = new Tool(mapContent.id, mapContent.name, this.onToolClick.bind(this), rowElement);
 
             this.tools.push(tool);
         }
@@ -93,17 +92,19 @@ export default class Palette
      */
     public onPaperClick (point: Point): void
     {
+        this.hide();
+
         this.selectedPoint = point;
 
         this.show();
 
-        let x = this.boundaries.offsetLeft + point.boundaries.offsetLeft + point.boundaries.offsetWidth;
+        let x = point.boundaries.offsetLeft + point.boundaries.offsetWidth;
         if (x + this.paletteElement.offsetWidth > document.body.offsetWidth)
         {
             x = document.body.offsetWidth - this.paletteElement.offsetWidth;
         }
 
-        let y = this.boundaries.offsetTop + point.boundaries.offsetTop;
+        let y = point.boundaries.offsetTop;
         if (y + this.paletteElement.offsetHeight > document.body.offsetHeight)
         {
             y = document.body.offsetHeight - this.paletteElement.offsetHeight;
@@ -113,6 +114,20 @@ export default class Palette
         this.paletteElement.style.top = `${y}px`;
 
         this.coordinates.onChange(point);
+    }
+
+    /**
+     * Called when one of the tools has been clicked/selected.
+     * @param contentId The content ID of the clicked tool.
+     */
+    private onToolClick (contentId: number): void
+    {
+        if (this.selectedPoint !== null)
+        {
+            this.onToolSelected(this.selectedPoint.x, this.selectedPoint.y, contentId);
+        }
+
+        this.hide();
     }
 
     private show (): void

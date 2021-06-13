@@ -2,14 +2,16 @@ body {
     background-color: #589c00;
 }
 
-table {
+#paper {
     background-color: #589c00;
 }
 
-td {
+#paper td {
     background-color: #589c00;
+
+    opacity: 1;
 }
 
-.PLeer {
-    background-image: url('/images/LeerTrans.png');
+#paper td div {
+    opacity: 1;
 }

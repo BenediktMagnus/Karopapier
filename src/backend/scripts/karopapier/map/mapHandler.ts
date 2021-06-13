@@ -234,8 +234,9 @@ export default class MapHandler
             const userId = this.userHandler.isLoggedIn(user) ? user.id : null;
 
             // Inform every other user in the room (on the map) about the change:
-            // The user who made the change will not be notified.
-            user.socket.to(roomName).emit(
+            // The user who made the change will ALSO be notified because only the server knows if the content has changed.
+            // TODO: Is this really necessary? Couldn't we abstract or better this client side?
+            this.io.in(roomName).emit(
                 FunctionNames.setMapEntry,
                 x, y,
                 userId,

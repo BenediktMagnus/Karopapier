@@ -1,3 +1,5 @@
+export type ToolEvent = (contentId: number) => void;
+
 export default class Tool
 {
     private mainElement: HTMLTableCellElement;
@@ -13,7 +15,7 @@ export default class Tool
      * @param name The name of the tool.
      * @param parentElement The parent element to attach the tool to (meaning the palette row).
      */
-    constructor (contentId: number, name: string, parentElement: HTMLTableRowElement)
+    constructor (contentId: number, name: string, onClick: ToolEvent, parentElement: HTMLTableRowElement)
     {
         this.contentId = contentId;
         this.name = name;
@@ -31,7 +33,7 @@ export default class Tool
         this.hoverTextElement.textContent = name;
         this.mainElement.appendChild(this.hoverTextElement);
 
-        //this.mainElement.onclick = this.onClick.bind(this);
+        this.mainElement.onclick = (): void => { onClick(this.contentId); };
     }
 
     /**

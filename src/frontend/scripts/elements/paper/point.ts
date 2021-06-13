@@ -22,7 +22,14 @@ export default class Point
     public readonly x: number;
     public readonly y: number;
 
+    /**
+     * The main element is the table data cell this point is represented by.
+     */
     private mainElement: HTMLTableDataCellElement;
+    /**
+     * The front element is the inner div, filling the main element completely and is being used as the front visual element.
+     */
+    private frontElement: HTMLDivElement;
 
     private events: PointEvents;
 
@@ -60,6 +67,11 @@ export default class Point
 
         this.mainElement = document.createElement('td');
         parentElement.appendChild(this.mainElement);
+
+        this.frontElement = document.createElement('div');
+        this.mainElement.appendChild(this.frontElement);
+
+        this.showContent();
 
         this.mainElement.onclick = (): void => { this.events.onClick.dispatchEvent(this); };
         this.mainElement.onmouseover = (): void => { this.events.onMouseOver.dispatchEvent(this); };
@@ -108,6 +120,8 @@ export default class Point
                 this.anonymousContentVote = parsableContentEntry.contentId;
             }
         }
+
+        this.showContent();
     }
 
     public setUserEntry (userId: number, oldContentId: number|null, newContentId: number): void
@@ -147,6 +161,8 @@ export default class Point
             this.highestUserCount = newEntry.userIds.size;
             this.contentId = newEntry.contentId;
         }
+
+        this.showContent();
     }
 
     public setAnonymousEntry (oldContentId: number|null, newContentId: number): void
@@ -184,6 +200,8 @@ export default class Point
             this.highestAnonymousCount = newEntry.anonymousCount;
             this.anonymousContentVote = newEntry.contentId;
         }
+
+        this.showContent();
     }
 
     /**
@@ -191,7 +209,7 @@ export default class Point
      */
     public select (): void
     {
-        this.mainElement.style.opacity = '0.5';
+        this.mainElement.classList.add('selectedPoint');
     }
 
     /**
@@ -199,7 +217,7 @@ export default class Point
      */
     public unselect (): void
     {
-        this.mainElement.style.opacity = '1';
+        this.mainElement.classList.remove('selectedPoint');
     }
 
     private resetContent (): void
@@ -210,5 +228,40 @@ export default class Point
         this.highestAnonymousCount = 0;
 
         this.contentIdToContentEntryMap.clear();
+
+        this.showContent();
+    }
+
+    private showContent (): void
+    {
+        let vote = 0;
+
+        if (this.highestUserCount > 0)
+        {
+            vote = this.contentId;
+
+            this.frontElement.style.removeProperty('--voting-count');
+        }
+        else if (this.highestAnonymousCount > 0)
+        {
+            vote = this.anonymousContentVote;
+
+            this.frontElement.style.setProperty('--voting-count', `${this.highestAnonymousCount}`);
+        }
+        else
+        {
+            vote = 0;
+
+            this.frontElement.style.removeProperty('--voting-count');
+        }
+
+        if (vote == 0)
+        {
+            this.frontElement.style.backgroundImage = 'none';
+        }
+        else
+        {
+            this.frontElement.style.backgroundImage = `url("/images/${vote}.svg")`;
+        }
     }
 }
