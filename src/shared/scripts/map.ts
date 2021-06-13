@@ -6,8 +6,8 @@ export class MapData
 
     constructor (mapData: MapData)
     {
-        // With this constructor everything that can be considered a MapData (in it's function as an
-        // interface) is being converted into a MapData (in it's function as a class) without any
+        // With this constructor everything that can be considered a MapData (in its function as an
+        // interface) is being converted into a MapData (in its function as a class) without any
         // unrelated properties or methods.
 
         this.name = mapData.name;
@@ -24,8 +24,8 @@ export class MapContent
 
     constructor (mapContent: MapContent)
     {
-        // With this constructor everything that can be considered a MapContent (in it's function as an
-        // interface) is being converted into a MapContent (in it's function as a class) without any
+        // With this constructor everything that can be considered a MapContent (in its function as an
+        // interface) is being converted into a MapContent (in its function as a class) without any
         // unrelated properties or methods.
 
         this.id = mapContent.id;

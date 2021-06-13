@@ -10,7 +10,7 @@ export interface MapTableInsert
      */
     name: string;
     /**
-     * True if it is allowed to load the map and view or change it's content.
+     * True if it is allowed to load the map and view or change its content.
      */
     isActive: boolean;
     /**

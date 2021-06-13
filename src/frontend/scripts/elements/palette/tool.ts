@@ -37,7 +37,7 @@ export default class Tool
     }
 
     /**
-     * Destroys the point by removing it's element from it's parent.
+     * Destroys the point by removing its element from its parent.
      */
     public destroy (): void
     {

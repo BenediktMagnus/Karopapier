@@ -7,7 +7,7 @@ interface AxisLogAndHigh
 export default abstract class MapUtility
 {
     /**
-     * Calculates the low and high values for an axis out of it's length.
+     * Calculates the low and high values for an axis out of its length.
      * @param length The axis length.
      * @returns The pair of low and high values for the axis.
      */

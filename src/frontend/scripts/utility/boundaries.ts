@@ -1,5 +1,5 @@
 /**
- * Describes the boundaries of something, meaning it's (DOM) position and size.
+ * Describes the boundaries of something, meaning its (DOM) position and size.
  */
 export default interface Boundaries
 {
@@ -14,11 +14,11 @@ export default interface Boundaries
      */
     readonly offsetWidth: number;
     /**
-     * Number of pixels the upper left corner of the element is offset to the left within it's parent node.
+     * Number of pixels the upper left corner of the element is offset to the left within its parent node.
      */
     readonly offsetLeft: number;
     /**
-     * Number of pixels the upper corner of the element is offset to the top within it's parent node.
+     * Number of pixels the upper corner of the element is offset to the top within its parent node.
      */
     readonly offsetTop: number;
 

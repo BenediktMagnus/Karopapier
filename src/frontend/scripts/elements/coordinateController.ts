@@ -1,7 +1,7 @@
 import Point from "./paper/point";
 
 /**
- * Used to manage a coordinates element by automatically updating it's content on changes.
+ * Used to manage a coordinates element by automatically updating its content on changes.
  */
 export default class CoordinateController
 {

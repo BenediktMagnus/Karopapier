@@ -45,7 +45,7 @@ export default class MapEntry
     }
 
     /**
-     * Set a user entry and return it's status.
+     * Set a user entry and return its status.
      * @param userId The ID of the user.
      * @param newContentId The ID of the entry's content to set.
      * @returns Wether the entry has been newly created or an existing entry updated.
@@ -98,7 +98,7 @@ export default class MapEntry
     }
 
     /**
-     * Set an anonymous entry and return it's status.
+     * Set an anonymous entry and return its status.
      * @param ip The IP of the anonymous user.
      * @param newContentId The ID of the entry's content to set.
      * @returns Wether the entry has been newly created or an existing entry updated.

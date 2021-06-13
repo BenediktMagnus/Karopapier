@@ -250,7 +250,7 @@ export default class Database
     }
 
     /**
-     * Get a map by it's ID.
+     * Get a map by its ID.
      * @returns The map.
      */
     public getMap (mapId: number): MapTable
@@ -265,7 +265,7 @@ export default class Database
     }
 
     /**
-     * Get a map by it's public identifier.
+     * Get a map by its public identifier.
      * @returns The map.
      */
     public getMapByPublicIdentifier (publicIdentifier: string): MapTable

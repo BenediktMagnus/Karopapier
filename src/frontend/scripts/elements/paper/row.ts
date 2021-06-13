@@ -34,7 +34,7 @@ export default class Row
     }
 
     /**
-     * Destroys the row by removing it's element from it's parent.
+     * Destroys the row by removing its element from its parent.
      */
     public destroy (): void
     {
