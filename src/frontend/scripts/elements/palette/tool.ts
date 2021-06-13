@@ -4,18 +4,18 @@ export default class Tool
     private imageElement: HTMLImageElement;
     private hoverTextElement: HTMLSpanElement;
 
-    protected readonly id: number;
+    protected readonly contentId: number;
     protected readonly name: string;
 
     /**
      * Create a point for the given coordinates.
-     * @param id The id of the tool.
+     * @param id The content id for the tool.
      * @param name The name of the tool.
      * @param parentElement The parent element to attach the tool to (meaning the palette row).
      */
-    constructor (id: number, name: string, parentElement: HTMLTableRowElement)
+    constructor (contentId: number, name: string, parentElement: HTMLTableRowElement)
     {
-        this.id = id;
+        this.contentId = contentId;
         this.name = name;
 
         this.mainElement = document.createElement('td');
@@ -23,7 +23,7 @@ export default class Tool
         parentElement.appendChild(this.mainElement);
 
         this.imageElement = document.createElement('img');
-        this.imageElement.src = `/images/${id}.svg`;
+        this.imageElement.src = `/images/${contentId}.svg`;
         this.mainElement.appendChild(this.imageElement);
 
         this.hoverTextElement = document.createElement('span');
