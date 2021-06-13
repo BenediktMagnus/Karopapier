@@ -38,8 +38,10 @@
     ],
     "main": "build/backend/main.js",
     "scripts": {
-        "prestart": "tsc src/backend && tsc src/frontend",
-        "prepack": "rm -r build && tsc -p src/backend/tsconfig.release.json && tsc -p src/frontend/tsconfig.release.json"
+        "build":"npx tsc --build src/backend/tsconfig.json && npx tsc --build src/frontend/tsconfig.json",
+        "prestart": "npm run build",
+        "prepack": "rm -r build && npx tsc -p src/backend/tsconfig.release.json && npx tsc -p src/frontend/tsconfig.release.json",
+        "start": "node build/backend/main.js"
     },
     "private": true
 }
