@@ -27,17 +27,14 @@
             <div id="paperCoordinates" class="displayFlexEqualGrow"></div>
             <div class="textAlignRight">1 Nutzer</div>
         </div>
-        <table id="paper" class="contentHolder"></table>
+        <table id="paper"></table>
     </div>
 
     <div class="sideDiv">
         <div class="header"></div>
-        <div id="voteList"></div>
-    </div>
-
-    <div id="palette">
-        <div id="paletteCoordinates" class="displayFlexEqualGrow"></div>
-        <table id="tools" class="contentHolder"></table>
+        <div id="palette">
+            <div id="tools"></div> <!-- TODO: Should be renamed as this includes votings, maybe "contents" all the way? -->
+        </div>
     </div>
 
     <template id="pointTemplate">
@@ -47,10 +44,11 @@
     </template>
 
     <template id="toolTemplate">
-        <td class="tool">
+        <div class="tool">
             <img>
+            <span><!-- Vote count --></span>
             <span class="tooltip toolHoverText"></span>
-        </td>
+        </div>
     </template>
 
     <template id="coordinatesTemplate">

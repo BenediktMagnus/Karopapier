@@ -59,11 +59,6 @@ body {
     margin: 0 0.2rem;
 }
 
-.contentHolder img {
-    width: 100%;
-    height: 100%;
-}
-
 #paper {
     --border-spacing: 2px;
 
@@ -123,28 +118,45 @@ body {
 }
 
 #palette {
-    position: absolute;
+    margin: 1rem;
+    padding: 0.5rem;
+}
 
-    border-radius: 2%;
+#tools {
+    display: grid;
+
+    grid-template-columns: repeat(4, auto);
+    grid-auto-rows: 3rem;
+}
+
+#tools > div {
+    position: relative;
+
+    padding: 0.5rem;
 
     background-color: var(--contrast-colour);
+
+    border-bottom: 0.2rem solid var(--background-colour);
+    border-right: 0.2rem solid var(--background-colour);
 }
 
-#paletteCoordinates {
-    margin: 0.2rem;
+.tool > * {
+    float: left;
 }
 
-.tool {
+.tool > img {
     width: 2rem;
     height: 2rem;
-
-    padding: 0 0.1rem;
-
-    position: relative;
 }
 
-.tool img:hover {
+.tool > img:hover {
     opacity: var(--semi-transparent-opacity-value);
+}
+
+.voteCount {
+    margin-left: 0.5rem;
+
+    line-height: 2rem;
 }
 
 .tooltip {
@@ -155,8 +167,8 @@ body {
     z-index: 1;
 
     width: max-content;
-    bottom: 125%;
-    left: 50%;
+    bottom: 75%;
+    left: 25%;
 
     padding: 0.4rem 0.5rem;
 

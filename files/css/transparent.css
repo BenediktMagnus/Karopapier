@@ -15,3 +15,7 @@ body {
 #paper td div {
     opacity: 1;
 }
+
+#palette {
+    visibility: hidden;
+}

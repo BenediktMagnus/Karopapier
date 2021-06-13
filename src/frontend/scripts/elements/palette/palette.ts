@@ -1,4 +1,3 @@
-import CoordinateController from "../coordinateController";
 import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
@@ -7,10 +6,7 @@ export type PaletteEvent = (x: number, y: number, contentId: number) => void; //
 
 export default class Palette
 {
-    private paletteElement: HTMLDivElement;
     private toolsElement: HTMLDivElement;
-
-    private coordinates: CoordinateController;
 
     private tools: Tool[];
 
@@ -29,17 +25,6 @@ export default class Palette
         this.tools = [];
         this.selectedPoint = null;
 
-        const mainElement = document.getElementById('palette') as HTMLDivElement;
-
-        if (mainElement === null)
-        {
-            throw new ReferenceError('The palette element could not be found.');
-        }
-        else
-        {
-            this.paletteElement = mainElement;
-        }
-
         const toolsElement = document.getElementById('tools') as HTMLDivElement;
 
         if (toolsElement === null)
@@ -51,11 +36,7 @@ export default class Palette
             this.toolsElement = toolsElement;
         }
 
-        this.coordinates = new CoordinateController('paletteCoordinates');
-
-        this.hide();
-
-        // TODO: Hide button for the palette.
+        this.unselectPoint();
     }
 
     /**
@@ -65,24 +46,27 @@ export default class Palette
     public loadContents (mapContents: MapContent[]): void
     {
         let lastGroupNumber: number = Number.NEGATIVE_INFINITY;
-        let rowElement: HTMLTableRowElement|null = null;
-
-        // NOTE: We can assume a list ordered by the group number here.
+        let rowNumber = 0;
+        let columnNumber = 1;
 
         for (const mapContent of mapContents)
         {
             // For every group a new row:
-            if ((rowElement === null) || (lastGroupNumber !== mapContent.groupNumber))
+            if (lastGroupNumber !== mapContent.groupNumber)
             {
-                rowElement = document.createElement('tr');
-                this.toolsElement.appendChild(rowElement);
+                rowNumber++;
+                columnNumber = 1;
 
                 lastGroupNumber = mapContent.groupNumber;
             }
 
-            const tool = new Tool(mapContent.id, mapContent.name, this.onToolClick.bind(this), rowElement);
+            const tool = new Tool(mapContent.id, mapContent.name, this.onToolClick.bind(this), this.toolsElement);
+
+            tool.setPosition(columnNumber, rowNumber);
 
             this.tools.push(tool);
+
+            columnNumber++;
         }
     }
 
@@ -92,28 +76,11 @@ export default class Palette
      */
     public onPaperClick (point: Point): void
     {
-        this.hide();
+        this.unselectPoint();
 
         this.selectedPoint = point;
 
-        this.show();
-
-        let x = point.boundaries.offsetLeft + point.boundaries.offsetWidth;
-        if (x + this.paletteElement.offsetWidth > document.body.offsetWidth)
-        {
-            x = document.body.offsetWidth - this.paletteElement.offsetWidth;
-        }
-
-        let y = point.boundaries.offsetTop;
-        if (y + this.paletteElement.offsetHeight > document.body.offsetHeight)
-        {
-            y = document.body.offsetHeight - this.paletteElement.offsetHeight;
-        }
-
-        this.paletteElement.style.left = `${x}px`;
-        this.paletteElement.style.top = `${y}px`;
-
-        this.coordinates.onChange(point);
+        this.selectPoint();
     }
 
     /**
@@ -127,22 +94,17 @@ export default class Palette
             this.onToolSelected(this.selectedPoint.x, this.selectedPoint.y, contentId);
         }
 
-        this.hide();
+        this.unselectPoint();
     }
 
-    private show (): void
+    private selectPoint (): void
     {
-        this.paletteElement.style.display = 'inline';
-
         this.selectedPoint?.select();
     }
 
-    private hide (): void
+    private unselectPoint (): void
     {
-        this.paletteElement.style.display = 'none';
-
         this.selectedPoint?.unselect();
-
         this.selectedPoint = null;
     }
 }
