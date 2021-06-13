@@ -2,9 +2,13 @@ import * as FunctionNames from "./shared/functionNames";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
 
+// FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
+import type * as socketIoClient from "socket.io-client";
+import type { io } from "socket.io-client";
+
 class Main
 {
-    private readonly socket: SocketIOClient.Socket;
+    private readonly socket: socketIoClient.Socket;
 
     private mapPublicIdentifier: string|null;
     private paper?: Paper;
@@ -19,6 +23,7 @@ class Main
         // DOM events:
         document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
 
+        // @ts-expect-error Error expected because of the import type hack.
         this.socket = io();
 
         // Socket.io events:
