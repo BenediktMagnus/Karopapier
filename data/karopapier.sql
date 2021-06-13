@@ -53,7 +53,7 @@ CREATE TABLE `mapEntryUser` (
 -- The collection of possible contents (tools) for a map tile:
 CREATE TABLE `content` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`publicIdentifier`	TEXT NOT NULL, -- Machine readable identifier for the content used in contact with other programmes.
+	`publicIdentifier`	TEXT NOT NULL UNIQUE, -- Machine readable identifier for the content used in contact with other programmes.
 	`name`	TEXT NOT NULL -- Human readable name for the content.
 );
 
@@ -66,10 +66,6 @@ CREATE TABLE `mapContent` (
 	FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
 );
 
--- Search by user name is important for logins:
-CREATE UNIQUE INDEX `userName` ON `user` (`name`);
--- Search by map's public identifier is needed for selecting maps via URL:
-CREATE UNIQUE INDEX `mapPublicIdentifier` ON `map` (`publicIdentifier`);
 -- Speeding up tile searches:
 CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`, `ip`);
 -- Speeding up tile searches:
