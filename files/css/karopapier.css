@@ -130,7 +130,7 @@ body {
     display: grid;
 
     grid-template-columns: repeat(4, auto);
-    grid-auto-rows: 3rem;
+    grid-auto-rows: calc(var(--tool-image-size) + 2 * var(--tool-spacing) + var(--tool-border-size));
 }
 
 #tools > div {
