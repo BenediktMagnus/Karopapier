@@ -1,12 +1,16 @@
 :root {
+    --background-colour: #000;
+    --contrast-colour: #444;
+
     --default-element-spacing: 0.3rem;
 
     --header-height: 1rem;
 
-    --semi-transparent-opacity-value: 0.5;
+    --tool-image-size: 2rem;
+    --tool-border-size: 0.2rem;
+    --tool-spacing: 0.5rem;
 
-    --background-colour: #000;
-    --contrast-colour: #444;
+    --semi-transparent-opacity-value: 0.5;
 }
 
 html, body {
@@ -132,12 +136,12 @@ body {
 #tools > div {
     position: relative;
 
-    padding: 0.5rem;
+    padding: var(--tool-spacing);
 
     background-color: var(--contrast-colour);
 
-    border-bottom: 0.2rem solid var(--background-colour);
-    border-right: 0.2rem solid var(--background-colour);
+    border-bottom: var(--tool-border-size) solid var(--background-colour);
+    border-right: var(--tool-border-size) solid var(--background-colour);
 }
 
 .tool > * {
@@ -145,8 +149,8 @@ body {
 }
 
 .tool > img {
-    width: 2rem;
-    height: 2rem;
+    width: var(--tool-image-size);
+    height: var(--tool-image-size);
 }
 
 .tool > img:hover {
@@ -154,9 +158,9 @@ body {
 }
 
 .voteCount {
-    margin-left: 0.5rem;
+    margin-left: var(--tool-spacing);
 
-    line-height: 2rem;
+    line-height: var(--tool-image-size);
 }
 
 .tooltip {
