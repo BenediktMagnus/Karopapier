@@ -190,6 +190,7 @@ body {
     text-align: center;
 
     transition: opacity 0.3s;
+    transition-delay: 0.2s;
 }
 
 .tool:hover .toolHoverText{
