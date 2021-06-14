@@ -9,7 +9,7 @@ type RowMap = Map<number, Row>;
 
 export default class Paper
 {
-    private element: HTMLTableElement;
+    private tableElement: HTMLTableElement;
 
     private coordinates: CoordinateController;
 
@@ -22,20 +22,20 @@ export default class Paper
 
     public get boundaries (): Boundaries
     {
-        return this.element;
+        return this.tableElement;
     }
 
     constructor ()
     {
-        const element = document.getElementById('paper') as HTMLTableElement;
+        const tableElement = document.getElementById('paper') as HTMLTableElement;
 
-        if (element === null)
+        if (tableElement === null)
         {
-            throw new ReferenceError('The paper element could not be found.');
+            throw new ReferenceError('The paper table element could not be found.');
         }
         else
         {
-            this.element = element;
+            this.tableElement = tableElement;
         }
 
         this.rows = new Map<number, Row>();
@@ -61,14 +61,14 @@ export default class Paper
         // TODO: The lowest value must be at the bottom!
         for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
         {
-            const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.element);
+            const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.tableElement);
 
             this.rows.set(y, row);
         }
 
         // The styles need to now the exact map height and width to calculate the pixel values:
-        this.element.style.setProperty('--paper-x-count', `${mapData.width}`);
-        this.element.style.setProperty('--paper-y-count', `${mapData.height}`);
+        this.tableElement.style.setProperty('--paper-x-count', `${mapData.width}`);
+        this.tableElement.style.setProperty('--paper-y-count', `${mapData.height}`);
     }
 
     public loadMap (mapEntries: ContentEntryListElement[]): void
