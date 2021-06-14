@@ -45,6 +45,8 @@ export default class Palette
      */
     public loadContents (mapContents: MapContent[]): void
     {
+        this.clearContents();
+
         let lastGroupNumber: number = Number.NEGATIVE_INFINITY;
         let rowNumber = 0;
         let columnNumber = 1;
@@ -68,6 +70,16 @@ export default class Palette
 
             columnNumber++;
         }
+    }
+
+    private clearContents (): void
+    {
+        for (const tool of this.tools)
+        {
+            tool.destroy();
+        }
+
+        this.tools = [];
     }
 
     /**
