@@ -153,8 +153,8 @@ body {
     height: var(--tool-image-size);
 }
 
-.tool > img:hover {
-    opacity: var(--semi-transparent-opacity-value);
+.tool:hover {
+    opacity: 0.75;
 }
 
 .voteCount {
