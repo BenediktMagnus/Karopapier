@@ -1,6 +1,5 @@
 import { ContentEntryListElement, MapData } from "../../shared/map";
 import Point, { PointEvents } from "./point";
-import Boundaries from "../../utility/boundaries";
 import CoordinateController from "../coordinateController";
 import MapUtility from "../../shared/mapUtility";
 import Row from "./row";
@@ -20,11 +19,6 @@ export default class Paper
      * A map of rows with the y coordinates as key and the row instance as value.
      */
     private rows: RowMap;
-
-    public get boundaries (): Boundaries
-    {
-        return this.tableElement;
-    }
 
     constructor ()
     {

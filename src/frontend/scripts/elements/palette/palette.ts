@@ -14,10 +14,6 @@ export default class Palette
 
     private onToolSelected: PaletteEvent; // TODO: This is not elegant and the naming scheme is ambiguous.
 
-    /**
-     * @param boundaries The element that restricts the position of the palette; it will not show
-     *                   completely outside this given element (probably the paper).
-     */
     constructor (onToolSelected: PaletteEvent)
     {
         this.onToolSelected = onToolSelected;

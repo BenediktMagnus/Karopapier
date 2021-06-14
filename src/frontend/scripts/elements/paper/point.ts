@@ -1,6 +1,5 @@
 import * as Constants from "../../shared/constants";
 import { ContentEntry, ParsableContentEntry } from "../../shared/map";
-import Boundaries from "../../utility/boundaries";
 import EventHandler from "../../utility/eventHandler";
 
 type PointEvent = (point: Point) => void;
@@ -39,11 +38,6 @@ export default class Point
     private highestUserCount: number;
     protected anonymousContentVote: number;
     private highestAnonymousCount: number;
-
-    public get boundaries (): Boundaries
-    {
-        return this.mainElement;
-    }
 
     /**
      * Create a point for the given coordinates.
