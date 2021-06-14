@@ -111,7 +111,7 @@ export default class MapHolder
     {
         const contentEntryList: ContentEntryListElement[] = [];
 
-        // NOTE: The following sort order of y-x must be kept for the client being able to efficient read in everything!
+        // NOTE: The following sort order of y-x must be kept for the client being able to efficiently read in everything!
         for (const [y, row] of this.coordinates)
         {
             for (const [x, mapEntry] of row)

@@ -49,7 +49,7 @@ export default class Tool // TODO: Should be renamed as this includes votings, m
     }
 
     /**
-     * Destroys the point by removing its element from its parent.
+     * Destroys the tool by removing its element from its parent.
      */
     public destroy (): void
     {
