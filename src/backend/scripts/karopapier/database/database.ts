@@ -133,7 +133,7 @@ export default class Database
         // columns. Since we only want one value this makes it much easier:
         statement.pluck(true);
 
-        const result = statement.get(value) as boolean; // FIXME: The booleans are numbers inside the database!
+        const result = !!statement.get(value);
 
         return result;
     }
