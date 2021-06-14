@@ -88,6 +88,8 @@ body {
     padding: 0;
 
     background-color: var(--background-colour);
+
+    cursor: pointer;
 }
 
 #paper td div {
@@ -142,6 +144,10 @@ body {
 
     border-bottom: var(--tool-border-size) solid var(--background-colour);
     border-right: var(--tool-border-size) solid var(--background-colour);
+}
+
+.tool {
+    cursor: pointer;
 }
 
 .tool > * {
