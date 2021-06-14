@@ -86,7 +86,7 @@ export default class Database
      * Copies all bindable properties from an object, returning a bindable object
      * that can be used as binding parameters when running SQLite statements.
      */
-    private getBindablesFromObject (object: any): any
+    private getBindablesFromObject<TObject> (object: TObject): TObject
     {
         // Objects can contain data that is not bindable for SQLite, for
         // example constructors, methods etc.
@@ -101,7 +101,10 @@ export default class Database
             if ((typeof value) === 'boolean')
             {
                 const valueAsNumber = value ? 1 : 0;
-                bindableObject[key] = valueAsNumber;
+
+                const indexedBindableObject = bindableObject as {[key: string]: any};
+
+                indexedBindableObject[key] = valueAsNumber;
             }
         }
 
@@ -130,7 +133,7 @@ export default class Database
         // columns. Since we only want one value this makes it much easier:
         statement.pluck(true);
 
-        const result: boolean = statement.get(value); // FIXME: The booleans are numbers inside the database!
+        const result = statement.get(value) as boolean; // FIXME: The booleans are numbers inside the database!
 
         return result;
     }
@@ -149,7 +152,7 @@ export default class Database
             'SELECT * FROM user WHERE id = ?'
         );
 
-        const user: UserTable = statement.get(userId);
+        const user = statement.get(userId) as UserTable;
 
         return user;
     }
@@ -160,7 +163,7 @@ export default class Database
             'SELECT * FROM user WHERE name = ?'
         );
 
-        const user: UserTable = statement.get(userName);
+        const user = statement.get(userName) as UserTable;
 
         return user;
     }
@@ -201,7 +204,7 @@ export default class Database
             'SELECT * FROM session WHERE id = ?'
         );
 
-        const session: SessionTable = statement.get(sessionId);
+        const session = statement.get(sessionId) as SessionTable;
 
         return session;
     }
@@ -259,7 +262,7 @@ export default class Database
             'SELECT * FROM map WHERE id = ?'
         );
 
-        const map: MapTable = statement.get(mapId);
+        const map = statement.get(mapId) as MapTable;
 
         return map;
     }
@@ -274,7 +277,7 @@ export default class Database
             'SELECT * FROM map WHERE publicIdentifier = ?'
         );
 
-        const map: MapTable = statement.get(publicIdentifier);
+        const map = statement.get(publicIdentifier) as MapTable;
 
         return map;
     }
@@ -289,7 +292,7 @@ export default class Database
             'SELECT * FROM map'
         );
 
-        const maps: MapTable[] = statement.all();
+        const maps = statement.all() as MapTable[];
 
         return maps;
     }
@@ -326,7 +329,7 @@ export default class Database
             `
         );
 
-        const contents: (ContentTable & MapContentGroupNumber)[] = statement.all(mapId);
+        const contents = statement.all(mapId) as (ContentTable & MapContentGroupNumber)[];
 
         return contents;
     }
@@ -337,7 +340,7 @@ export default class Database
             'SELECT * FROM mapEntryAnonymous WHERE mapId = ?'
         );
 
-        const mapEntries: MapEntryAnonymousTable[] = statement.all(mapId);
+        const mapEntries = statement.all(mapId) as MapEntryAnonymousTable[];
 
         return mapEntries;
     }
@@ -381,7 +384,7 @@ export default class Database
             'SELECT * FROM mapEntryUser WHERE mapId = ?'
         );
 
-        const mapEntries: MapEntryUserTable[] = statement.all(mapId);
+        const mapEntries = statement.all(mapId) as MapEntryUserTable[];
 
         return mapEntries;
     }
