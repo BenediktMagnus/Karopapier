@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import Database from '../database/database';
 import socketIo from 'socket.io';
 import Utils from '../../utility/utils';
+import Database from '../database/database';
 
 const min32BitInt = 1 << 30;
 const max32BitInt = 2 ** 32;

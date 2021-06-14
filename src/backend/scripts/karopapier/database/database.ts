@@ -4,10 +4,10 @@ import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryAnonymousTable from './tables/mapEntryAnonymousTable';
 import MapEntryUserTable from './tables/mapEntryUserTable';
 import { MapTable } from './tables/mapTable';
-import Sqlite = require('better-sqlite3');
 import SessionTable from './tables/sessionTable';
 import { UserTable } from './tables/userTable';
 import Utils from '../../utility/utils';
+import Sqlite = require('better-sqlite3');
 
 export default class Database
 {
