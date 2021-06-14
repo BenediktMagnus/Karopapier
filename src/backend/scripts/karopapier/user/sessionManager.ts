@@ -139,11 +139,11 @@ export default class SessionManager
         }
         else if (socket.request.connection.remoteAddress != undefined)
         {
-            ipAddress = socket.request.connection.remoteAddress
+            ipAddress = socket.request.connection.remoteAddress;
         }
         else
         {
-            throw new Error("Could not identify the client's IP address.")
+            throw new Error("Could not identify the client's IP address.");
         }
 
         return ipAddress;
