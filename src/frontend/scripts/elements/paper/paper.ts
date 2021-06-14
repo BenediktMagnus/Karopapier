@@ -10,6 +10,7 @@ type RowMap = Map<number, Row>;
 export default class Paper
 {
     private tableElement: HTMLTableElement;
+    private nameElement: HTMLDivElement;
 
     private coordinates: CoordinateController;
 
@@ -36,6 +37,17 @@ export default class Paper
         else
         {
             this.tableElement = tableElement;
+        }
+
+        const nameElement = document.getElementById('mapName') as HTMLDivElement;
+
+        if (nameElement === null)
+        {
+            throw new ReferenceError('The map name element could not be found.');
+        }
+        else
+        {
+            this.nameElement = nameElement;
         }
 
         this.rows = new Map<number, Row>();
@@ -69,6 +81,8 @@ export default class Paper
         // The styles need to now the exact map height and width to calculate the pixel values:
         this.tableElement.style.setProperty('--paper-x-count', `${mapData.width}`);
         this.tableElement.style.setProperty('--paper-y-count', `${mapData.height}`);
+
+        this.nameElement.textContent = mapData.name;
     }
 
     public loadMap (mapEntries: ContentEntryListElement[]): void
@@ -125,6 +139,8 @@ export default class Paper
 
     private clearMap (): void
     {
+        this.nameElement.textContent = 'Loading...';
+
         for (const row of this.rows.values())
         {
             row.destroy();
