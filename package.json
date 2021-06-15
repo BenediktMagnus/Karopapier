@@ -38,9 +38,12 @@
     ],
     "main": "build/backend/main.js",
     "scripts": {
-        "build":"npx tsc --build src/backend/tsconfig.json && npx tsc --build src/frontend/tsconfig.json",
+        "build": "npm run build:backend && npm run build:frontend",
+        "build:backend": "npx tsc --build src/backend/tsconfig.json",
+        "build:frontend": "npx tsc --build src/frontend/tsconfig.json",
+        "clean": "rm -r build",
         "prestart": "npm run build",
-        "prepack": "rm -r build && npx tsc -p src/backend/tsconfig.release.json && npx tsc -p src/frontend/tsconfig.release.json",
+        "prepack": "npm run clean && npx tsc -p src/backend/tsconfig.release.json && npx tsc -p src/frontend/tsconfig.release.json",
         "start": "node build/backend/main.js"
     },
     "private": true
