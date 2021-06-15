@@ -42,6 +42,9 @@
         "build:backend": "npx tsc --build src/backend/tsconfig.json",
         "build:frontend": "npx tsc --build src/frontend/tsconfig.json",
         "clean": "rm -r build",
+        "lint": "npm run lint:backend && npm run lint:frontend",
+        "lint:backend": "cd src/backend && npx eslint .",
+        "lint:frontend": "cd src/frontend && npx eslint .",
         "prestart": "npm run build",
         "prepack": "npm run clean && npx tsc -p src/backend/tsconfig.release.json && npx tsc -p src/frontend/tsconfig.release.json",
         "start": "node build/backend/main.js"
