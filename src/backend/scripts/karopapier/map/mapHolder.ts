@@ -1,11 +1,11 @@
 import MapEntry, { MapEntrySetResult } from "./mapEntry";
 import { ContentEntryListElement } from "../../shared/map";
 import Database from "../database/database";
-import MapEntryAnonymousTable from "../database/tables/mapEntryAnonymousTable";
 import MapEntryStatus from "./mapEntryStatus";
-import MapEntryUserTable from "../database/tables/mapEntryUserTable";
+import MapEntryTable from "../database/tables/mapEntryTable";
 import { MapTable } from "../database/tables/mapTable";
 import MapUtility from "../../shared/mapUtility";
+import User from "../user/user";
 
 type MapEntryMap = Map<number, MapEntry>;
 
@@ -59,15 +59,17 @@ export default class MapHolder
         this.loadEntries();
     }
 
-    public setUserEntry (x: number, y: number, userId: number, contentId: number): MapEntrySetResult
+    public setEntry (x: number, y: number, user: User, contentId: number): MapEntrySetResult
     {
         const mapEntry = this.getMapEntry(x, y);
 
-        const entrySetResult = mapEntry.setUserEntry(userId, contentId);
+        const entrySetResult = mapEntry.setEntry(user.id, user.sessionId, user.ip, contentId);
 
-        const userMapEntry: MapEntryUserTable = {
+        const mapEntryTable: MapEntryTable = {
             mapId: this.mapInfo.id,
-            userId: userId,
+            userId: user.id,
+            sessionId: user.sessionId,
+            ip: user.ip,
             x: x,
             y: y,
             contentId: contentId,
@@ -75,37 +77,11 @@ export default class MapHolder
 
         if (entrySetResult.status == MapEntryStatus.New)
         {
-            this.database.insertUserMapEntry(userMapEntry);
+            this.database.insertMapEntry(mapEntryTable);
         }
         else if (entrySetResult.status == MapEntryStatus.Updated)
         {
-            this.database.updateUserMapEntry(userMapEntry);
-        }
-
-        return entrySetResult;
-    }
-
-    public setAnonymousEntry (x: number, y: number, ip: string, contentId: number): MapEntrySetResult
-    {
-        const mapEntry = this.getMapEntry(x, y);
-
-        const entrySetResult = mapEntry.setAnonymousEntry(ip, contentId);
-
-        const anonymousMapEntry: MapEntryAnonymousTable = {
-            mapId: this.mapInfo.id,
-            ip: ip,
-            x: x,
-            y: y,
-            contentId: contentId,
-        };
-
-        if (entrySetResult.status == MapEntryStatus.New)
-        {
-            this.database.insertAnonymousMapEntry(anonymousMapEntry);
-        }
-        else if (entrySetResult.status == MapEntryStatus.Updated)
-        {
-            this.database.updateAnonymousMapEntry(anonymousMapEntry);
+            this.database.updateMapEntry(mapEntryTable);
         }
 
         return entrySetResult;
@@ -123,12 +99,12 @@ export default class MapHolder
         {
             for (const [x, mapEntry] of row)
             {
-                const parsableContentEntries = mapEntry.getContentEntries();
+                const contentEntries = mapEntry.getContentEntries();
 
                 const contentEntryListElement: ContentEntryListElement = {
                     x: x,
                     y: y,
-                    contentEntries: parsableContentEntries,
+                    contentEntries: contentEntries,
                 };
 
                 contentEntryList.push(contentEntryListElement);
@@ -156,22 +132,13 @@ export default class MapHolder
 
     private loadEntries (): void
     {
-        const userMapEntries = this.database.getUserMapEntries(this.mapInfo.id);
+        const mapEntryTables = this.database.getMapEntries(this.mapInfo.id);
 
-        for (const userMapEntry of userMapEntries)
+        for (const mapEntryTable of mapEntryTables)
         {
-            const mapEntry = this.getMapEntry(userMapEntry.x, userMapEntry.y);
+            const mapEntry = this.getMapEntry(mapEntryTable.x, mapEntryTable.y);
 
-            mapEntry.setUserEntry(userMapEntry.userId, userMapEntry.contentId);
-        }
-
-        const anonymousMapEntries = this.database.getAnonymousMapEntries(this.mapInfo.id);
-
-        for (const anonymousMapEntry of anonymousMapEntries)
-        {
-            const mapEntry = this.getMapEntry(anonymousMapEntry.x, anonymousMapEntry.y);
-
-            mapEntry.setAnonymousEntry(anonymousMapEntry.ip, anonymousMapEntry.contentId);
+            mapEntry.setEntry(mapEntryTable.userId, mapEntryTable.sessionId, mapEntryTable.ip, mapEntryTable.contentId);
         }
     }
 

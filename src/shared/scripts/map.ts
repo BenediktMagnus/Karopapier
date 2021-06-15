@@ -38,19 +38,7 @@ export class MapContent
 export interface ContentEntry
 {
     contentId: number;
-    userIds: Set<number>;
-    anonymousCount: number;
-}
-
-/**
- * A parsable version of MapEntry's ContentEntry. \
- * Contains the user IDs and the number of anonymous votes for a content ID.
- */
-export interface ParsableContentEntry
-{
-    contentId: number;
-    userIds: number[];
-    anonymousCount: number;
+    voteCount: number;
 }
 
 /**
@@ -61,5 +49,5 @@ export interface ContentEntryListElement
 {
     x: number;
     y: number;
-    contentEntries: ParsableContentEntry[];
+    contentEntries: ContentEntry[];
 }

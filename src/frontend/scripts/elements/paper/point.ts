@@ -1,5 +1,5 @@
 import * as Constants from "../../shared/constants";
-import { ContentEntry, ParsableContentEntry } from "../../shared/map";
+import { ContentEntry } from "../../shared/map";
 import EventHandler from "../../utility/eventHandler";
 
 type PointEvent = (point: Point) => void;
@@ -35,9 +35,7 @@ export default class Point
     private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
     private contentId: number;
-    private highestUserCount: number;
-    private anonymousContentVote: number;
-    private highestAnonymousCount: number;
+    private highestVoteCount: number;
 
     /**
      * Create a point for the given coordinates.
@@ -49,9 +47,7 @@ export default class Point
     constructor (x: number, y: number, events: PointEvents, parentElement: HTMLTableRowElement)
     {
         this.contentId = Constants.emptyContentId;
-        this.anonymousContentVote = Constants.emptyContentId;
-        this.highestUserCount = 0;
-        this.highestAnonymousCount = 0;
+        this.highestVoteCount = 0;
 
         this.x = x;
         this.y = y;
@@ -84,41 +80,28 @@ export default class Point
     }
 
     /**
-     * Load a parsable content entry list into the point, overwriting every previous content.
-     * @param parsableCntentEntries The list of parsable content entries.
+     * Load a content entry list into the point, overwriting every previous content.
+     * @param cntentEntries The list of content entries.
      */
-    public loadContentEntries (parsableContentEntries: ParsableContentEntry[]): void
+    public loadContentEntries (cntentEntries: ContentEntry[]): void
     {
         this.resetContent();
 
-        for (const parsableContentEntry of parsableContentEntries)
+        for (const contentEntry of cntentEntries)
         {
-            const userIds = new Set(parsableContentEntry.userIds);
-
-            const contentEntry: ContentEntry = {
-                ...parsableContentEntry,
-                userIds: userIds,
-            };
-
             this.contentIdToContentEntryMap.set(contentEntry.contentId, contentEntry);
 
-            if (parsableContentEntry.userIds.length > this.highestUserCount)
+            if (contentEntry.voteCount > this.highestVoteCount)
             {
-                this.highestUserCount = parsableContentEntry.userIds.length;
-                this.contentId = parsableContentEntry.contentId;
-            }
-
-            if (parsableContentEntry.anonymousCount > this.highestAnonymousCount)
-            {
-                this.highestAnonymousCount = parsableContentEntry.anonymousCount;
-                this.anonymousContentVote = parsableContentEntry.contentId;
+                this.highestVoteCount = contentEntry.voteCount;
+                this.contentId = contentEntry.contentId;
             }
         }
 
         this.showContent();
     }
 
-    public setUserEntry (userId: number, oldContentId: number|null, newContentId: number): void
+    public setEntry (oldContentId: number|null, newContentId: number): void
     {
         if (oldContentId !== null)
         {
@@ -126,7 +109,7 @@ export default class Point
 
             if (oldEntry !== undefined)
             {
-                oldEntry.userIds.delete(userId);
+                oldEntry.voteCount--;
             }
         }
 
@@ -134,65 +117,23 @@ export default class Point
 
         if (newEntry !== undefined)
         {
-            newEntry.userIds.add(userId);
+            newEntry.voteCount++;
         }
         else
         {
-            const userIds = new Set([userId]);
-
             newEntry = {
                 contentId: newContentId,
-                userIds: userIds,
-                anonymousCount: 0,
+                voteCount: 1,
             };
 
             this.contentIdToContentEntryMap.set(newContentId, newEntry);
         }
 
-        // Set new content ID if the new entry has a higher user vote count now:
-        if (newEntry.userIds.size > this.highestUserCount)
+        // Set the content ID of this point if the new entry has a higher voter count:
+        if (newEntry.voteCount > this.highestVoteCount)
         {
-            this.highestUserCount = newEntry.userIds.size;
+            this.highestVoteCount = newEntry.voteCount;
             this.contentId = newEntry.contentId;
-        }
-
-        this.showContent();
-    }
-
-    public setAnonymousEntry (oldContentId: number|null, newContentId: number): void
-    {
-        if (oldContentId !== null)
-        {
-            const oldEntry = this.contentIdToContentEntryMap.get(oldContentId);
-
-            if (oldEntry !== undefined)
-            {
-                oldEntry.anonymousCount--;
-            }
-        }
-
-        let newEntry = this.contentIdToContentEntryMap.get(newContentId);
-
-        if (newEntry !== undefined)
-        {
-            newEntry.anonymousCount++;
-        }
-        else
-        {
-            newEntry = {
-                contentId: newContentId,
-                userIds: new Set(),
-                anonymousCount: 1,
-            };
-
-            this.contentIdToContentEntryMap.set(newContentId, newEntry);
-        }
-
-        // Set new anonymous vote if the new entry has a higher anonymous voter count now:
-        if (newEntry.anonymousCount > this.highestAnonymousCount)
-        {
-            this.highestAnonymousCount = newEntry.anonymousCount;
-            this.anonymousContentVote = newEntry.contentId;
         }
 
         this.showContent();
@@ -217,9 +158,7 @@ export default class Point
     private resetContent (): void
     {
         this.contentId = Constants.emptyContentId;
-        this.anonymousContentVote = Constants.emptyContentId;
-        this.highestUserCount = 0;
-        this.highestAnonymousCount = 0;
+        this.highestVoteCount = 0;
 
         this.contentIdToContentEntryMap.clear();
 
@@ -228,28 +167,13 @@ export default class Point
 
     private showContent (): void
     {
-        let vote = 0;
-
-        if (this.highestUserCount > 0)
+        if (this.highestVoteCount > 0)
         {
-            vote = this.contentId;
-        }
-        else if (this.highestAnonymousCount > 0)
-        {
-            vote = this.anonymousContentVote;
+            this.frontElement.style.backgroundImage = `url("/images/${this.contentId}.svg")`;
         }
         else
-        {
-            vote = 0;
-        }
-
-        if (vote == 0)
         {
             this.frontElement.style.backgroundImage = 'none';
-        }
-        else
-        {
-            this.frontElement.style.backgroundImage = `url("/images/${vote}.svg")`;
         }
     }
 }

@@ -14,7 +14,7 @@ CREATE TABLE `session` (
     `userId` INTEGER NOT NULL,
     `token` TEXT NOT NULL UNIQUE,
     `lastAccess` INTEGER NOT NULL,
-    FOREIGN KEY(`userId`) REFERENCES `user`(`id`)
+    FOREIGN KEY(`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE
 );
 
 -- Maps and their meta data:
@@ -27,27 +27,19 @@ CREATE TABLE `map` (
     `height` INTEGER NOT NULL
 );
 
--- The collection of anonymous entries:
-CREATE TABLE `mapEntryAnonymous` (
+-- The collection of map entries (for every user and map tile):
+CREATE TABLE `mapEntry` (
     `mapId` INTEGER NOT NULL,
-    `ip` TEXT NOT NULL,
+    `userId` INTEGER NOT NULL DEFAULT 0,
+    `sessionId` INTEGER,
+    `ip` TEXT,
     `x` INTEGER NOT NULL,
     `y` INTEGER NOT NULL,
     `contentId` INTEGER NOT NULL,
-    FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
-    FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
-);
-
--- The collection of user entries:
-CREATE TABLE `mapEntryUser` (
-    `mapId` INTEGER NOT NULL,
-    `userId` INTEGER NOT NULL,
-    `x` INTEGER NOT NULL,
-    `y` INTEGER NOT NULL,
-    `contentId` INTEGER NOT NULL,
-    FOREIGN KEY(`mapId`) REFERENCES `map`(`id`),
-    FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
-    FOREIGN KEY(`contentId`) REFERENCES `content`(`id`)
+    FOREIGN KEY(`mapId`) REFERENCES `map`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY(`userId`) REFERENCES `user`(`id`) ON DELETE SET DEFAULT, -- On DELETE, set the userId to 0 which is the anonymous user.
+    FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY(`contentId`) REFERENCES `content`(`id`) ON DELETE CASCADE
 );
 
 -- The collection of possible contents (tools) for a map tile:
@@ -67,9 +59,7 @@ CREATE TABLE `mapContent` (
 );
 
 -- Speeding up tile searches:
-CREATE INDEX `mapEntryAnonymousCoordinates` ON `mapEntryAnonymous` (`mapId`, `x`, `y`, `ip`);
--- Speeding up tile searches:
-CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`, `userId`);
+CREATE INDEX `mapEntryCoordinates` ON `mapEntry` (`mapId`, `x`, `y`);
 -- Speeding up content searches:
 CREATE UNIQUE INDEX `mapContentAssociation` ON `mapContent` (`mapId`, `contentId`);
 

@@ -111,7 +111,7 @@ export default class Paper
         }
     }
 
-    public setMapEntry (x: number, y: number, userId: number|null, oldContentId: number|null, newContentId: number): void
+    public setMapEntry (x: number, y: number, oldContentId: number|null, newContentId: number): void
     {
         const point = this.getPointAt(x, y);
 
@@ -121,14 +121,7 @@ export default class Paper
             // TODO: This should, theoretically, never happen. But couldn't we apply the same size increasing procedure as in loadMap?
         }
 
-        if (userId === null)
-        {
-            point.setAnonymousEntry(oldContentId, newContentId);
-        }
-        else
-        {
-            point.setUserEntry(userId, oldContentId, newContentId);
-        }
+        point.setEntry(oldContentId, newContentId);
     }
 
     private clearMap (): void

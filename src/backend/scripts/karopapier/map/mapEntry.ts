@@ -1,15 +1,11 @@
-import { ContentEntry, ParsableContentEntry } from "../../shared/map";
+import { ContentEntry } from "../../shared/map";
 import MapEntryStatus from "./mapEntryStatus";
 
 interface UserEntry
 {
     userId: number;
-    contentEntry: ContentEntry;
-}
-
-interface AnonymousEntry
-{
-    ip: string;
+    sessionId: number|null;
+    ip: string|null;
     contentEntry: ContentEntry;
 }
 
@@ -32,144 +28,101 @@ export type MapEntrySetResult = InitialisedMapEntrySetResult;
 
 export default class MapEntry
 {
-    private userIdToUserEntryMap: Map<number, UserEntry>;
-    private ipToAnonymousEntryMap: Map<string, AnonymousEntry>;
+    private userIdToEntryMap: Map<number, UserEntry>;
+    private sessionIdToEntryMap: Map<number, UserEntry>;
+    private ipToEntryMap: Map<string, UserEntry>;
 
     private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
     constructor ()
     {
-        this.userIdToUserEntryMap = new Map<number, UserEntry>();
-        this.ipToAnonymousEntryMap = new Map<string, AnonymousEntry>();
+        this.userIdToEntryMap = new Map<number, UserEntry>();
+        this.sessionIdToEntryMap = new Map<number, UserEntry>();
+        this.ipToEntryMap = new Map<string, UserEntry>();
         this.contentIdToContentEntryMap = new Map<number, ContentEntry>();
     }
 
     /**
-     * Set a user entry and return its status.
+     * Set an entry and return its status.
      * @param userId The ID of the user.
+     * @param sessionId The session ID of the user.
+     * @param ip The ip of the user.
      * @param newContentId The ID of the entry's content to set.
      * @returns Wether the entry has been newly created or an existing entry updated.
      */
-    public setUserEntry (userId: number, newContentId: number): MapEntrySetResult
+    public setEntry (userId: number, sessionId: number|null, ip: string|null, newContentId: number): MapEntrySetResult
     {
         const result = new InitialisedMapEntrySetResult(newContentId);
 
         const newContentEntry = this.getOrCreateContentEntry(newContentId);
 
-        let userEntry = this.userIdToUserEntryMap.get(userId);
+        let entry = this.userIdToEntryMap.get(userId);
 
-        if (userEntry !== undefined)
+        if ((entry === undefined) && (sessionId !== null))
         {
-            const oldContentEntry = userEntry.contentEntry;
+            this.sessionIdToEntryMap.get(sessionId);
+        }
+
+        if ((entry === undefined) && (ip !== null))
+        {
+            this.ipToEntryMap.get(ip);
+        }
+
+        if (entry !== undefined)
+        {
+            const oldContentEntry = entry.contentEntry;
 
             result.oldContentId = oldContentEntry.contentId;
 
             if (newContentId === oldContentEntry.contentId)
             {
                 result.status = MapEntryStatus.Unchanged;
-
-                return result; // We return because we have nothing left to do here.
             }
             else
             {
-                // Remove the old entry in the content entry's user list:
-                oldContentEntry.userIds.delete(userId);
+                oldContentEntry.voteCount--;
 
                 result.status = MapEntryStatus.Updated;
 
-                userEntry.contentEntry = newContentEntry;
+                newContentEntry.voteCount++;
+
+                entry.contentEntry = newContentEntry;
             }
         }
         else
         {
-            userEntry = {
+            newContentEntry.voteCount++;
+
+            entry = {
                 userId: userId,
-                contentEntry: newContentEntry,
-            };
-
-            this.userIdToUserEntryMap.set(userId, userEntry);
-
-            // This is the result default, so we have to change nothing here.
-        }
-
-        newContentEntry.userIds.add(userId);
-
-        return result;
-    }
-
-    /**
-     * Set an anonymous entry and return its status.
-     * @param ip The IP of the anonymous user.
-     * @param newContentId The ID of the entry's content to set.
-     * @returns Wether the entry has been newly created or an existing entry updated.
-     */
-    public setAnonymousEntry (ip: string, newContentId: number): MapEntrySetResult
-    {
-        const result = new InitialisedMapEntrySetResult(newContentId);
-
-        const newContentEntry = this.getOrCreateContentEntry(newContentId);
-
-        let anonymousEntry = this.ipToAnonymousEntryMap.get(ip);
-
-        if (anonymousEntry !== undefined)
-        {
-            const oldContentEntry = anonymousEntry.contentEntry;
-
-            result.oldContentId = oldContentEntry.contentId;
-
-            if (newContentId === oldContentEntry.contentId)
-            {
-                result.status = MapEntryStatus.Unchanged;
-
-                return result; // We return because we have nothing left to do here.
-            }
-            else
-            {
-                // Decrease the old content entry's anonymous count:
-                oldContentEntry.anonymousCount--;
-
-                result.status = MapEntryStatus.Updated;
-
-                anonymousEntry.contentEntry = newContentEntry;
-            }
-        }
-        else
-        {
-            anonymousEntry = {
+                sessionId: sessionId,
                 ip: ip,
                 contentEntry: newContentEntry,
             };
 
-            this.ipToAnonymousEntryMap.set(ip, anonymousEntry);
-
             // This is the result default, so we have to change nothing here.
         }
 
-        newContentEntry.anonymousCount++;
+        // Update all maps in every case because one of the user properties (especially the IP) could have changed in the meantime:
+
+        this.userIdToEntryMap.set(userId, entry);
+        if (sessionId !== null)
+        {
+            this.sessionIdToEntryMap.set(sessionId, entry);
+        }
+        if (ip !== null)
+        {
+            this.ipToEntryMap.set(ip, entry);
+        }
 
         return result;
     }
 
-    public getContentEntries (): ParsableContentEntry[]
+    public getContentEntries (): ContentEntry[]
     {
         const contentEntries = Array.from(this.contentIdToContentEntryMap.values());
 
-        const parsableContentEntries: ParsableContentEntry[] = [];
-
-        // Convert the content entries' set of user IDs to an array for it being parsable:
-        for (const contentEntry of contentEntries)
-        {
-            const userIds = Array.from(contentEntry.userIds.values());
-
-            const parsableContentEntry: ParsableContentEntry = {
-                ...contentEntry,
-                userIds: userIds,
-            };
-
-            parsableContentEntries.push(parsableContentEntry);
-        }
-
-        return parsableContentEntries;
+        return contentEntries;
     }
 
     /**
@@ -185,8 +138,7 @@ export default class MapEntry
         {
             contentEntry = {
                 contentId: contentId,
-                userIds: new Set(),
-                anonymousCount: 0,
+                voteCount: 0,
             };
 
             this.contentIdToContentEntryMap.set(contentId, contentEntry);

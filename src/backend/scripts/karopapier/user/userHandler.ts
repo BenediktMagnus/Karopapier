@@ -10,8 +10,6 @@ import Validation from '../../utility/validation';
 
 export default class UserHandler
 {
-    private readonly anonymousUserId = 0;
-
     private io: socketIo.Server;
     private database: Database;
 
@@ -31,29 +29,16 @@ export default class UserHandler
         this.io.on('connection', this.onConnection.bind(this));
     }
 
-    public getUserFromSocket (socket: socketIo.Socket): User
+    public getUserFromSocket (socket: socketIo.Socket): User|null
     {
-        let user = this.socketIdToUserMap.get(socket.id);
+        const user = this.socketIdToUserMap.get(socket.id);
 
         if (user === undefined)
         {
-            // If no user can be found in the map, he has not logged in yet, so he becomes an anonymous user:
-            user = this.loadUser(this.anonymousUserId, socket);
+            return null;
         }
 
         return user;
-    }
-
-    /**
-     * Checks wether the given user is logged in or anonymous.
-     * @param user The user to check.
-     * @returns True if the user is logged in, false if he is anonymous
-     */
-    public isLoggedIn (user: User): boolean
-    {
-        const isLoggedIn = user.id !== this.anonymousUserId;
-
-        return isLoggedIn;
     }
 
     /**
@@ -62,7 +47,7 @@ export default class UserHandler
      * @param socket The socket to associate the user with.
      * @returns The loaded user.
      */
-    private loadUser (userId: number, socket: socketIo.Socket): User
+    private loadUser (userId: number, sessionId: number, socket: socketIo.Socket): User
     {
         if (this.socketIdToUserMap.has(socket.id))
         {
@@ -85,6 +70,7 @@ export default class UserHandler
             ...userTable,
             socket: socket,
             ip: ipAddress,
+            sessionId: sessionId,
         };
 
         this.socketIdToUserMap.set(socket.id, user);
@@ -122,7 +108,6 @@ export default class UserHandler
     ): Promise<void>
     {
         if (!Validation.isNonEmptyString(name)
-            || !Validation.isNonEmptyString(password)
             || !Validation.isCallable(reply))
         {
             return;
@@ -136,7 +121,7 @@ export default class UserHandler
         }
         else
         {
-            this.loadUser(session.userId, socket);
+            this.loadUser(session.userId, session.id, socket);
 
             reply(true, session.id, session.token);
         }
@@ -167,7 +152,7 @@ export default class UserHandler
         }
         else
         {
-            this.loadUser(session.userId, socket);
+            this.loadUser(session.userId, session.id, socket);
 
             reply(true);
         }

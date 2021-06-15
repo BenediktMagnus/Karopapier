@@ -1,3 +1,4 @@
+import * as Constants from "./shared/constants";
 import * as FunctionNames from "./shared/functionNames";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
@@ -5,6 +6,9 @@ import Paper from "./elements/paper/paper";
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
 import type * as socketIoClient from "socket.io-client";
 import type { io } from "socket.io-client";
+
+const sessionIdStorageKey = 'sessionId';
+const sessionTokenStorageKey = 'sessionToken';
 
 class Main
 {
@@ -14,8 +18,12 @@ class Main
     private paper?: Paper;
     private palette?: Palette;
 
+    private isLoggedIn: boolean;
+
     constructor ()
     {
+        this.isLoggedIn = false;
+
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
         this.mapPublicIdentifier = urlParameters.get('map');
@@ -56,11 +64,63 @@ class Main
 
     private onReconnect (): void
     {
-        // TODO: Authenticate.
+        this.authenticate();
 
         this.socket.emit(FunctionNames.selectMap, this.mapPublicIdentifier);
 
         // TODO: Reload entries and palette.
+    }
+
+    private authenticate (): void
+    {
+        const sessionId = localStorage.getItem(sessionIdStorageKey);
+        const sessionToken = localStorage.getItem(sessionTokenStorageKey);
+
+        if ((sessionId !== null) && (sessionToken !== null))
+        {
+            const sessionIdAsNumber = Number.parseInt(sessionId);
+            this.socket.emit(
+                FunctionNames.authenticate,
+                sessionIdAsNumber,
+                sessionToken,
+                (successful: boolean) =>
+                {
+                    if (successful)
+                    {
+                        this.isLoggedIn = true;
+                        this.callOnReadyIfReady();
+                    }
+                    else
+                    {
+                        localStorage.removeItem(sessionIdStorageKey);
+                        localStorage.removeItem(sessionTokenStorageKey);
+
+                        this.authenticate();
+                    }
+                }
+            );
+        }
+        else
+        {
+            this.socket.emit(
+                FunctionNames.login,
+                Constants.anonymousUserName,
+                '', // Empty password
+                (successful: boolean, sessionId: number, sessionToken: string) =>
+                {
+                    if (!successful)
+                    {
+                        throw Error('Could not login as Anonymous.');
+                    }
+
+                    localStorage.setItem(sessionIdStorageKey, `${sessionId}`);
+                    localStorage.setItem(sessionTokenStorageKey, sessionToken);
+
+                    this.isLoggedIn = true;
+                    this.callOnReadyIfReady();
+                }
+            );
+        }
     }
 
     private onDocumentLoaded (): void
@@ -81,7 +141,7 @@ class Main
      */
     private callOnReadyIfReady (): void
     {
-        if (this.socket.connected && (document.readyState != 'loading'))
+        if (this.socket.connected && (document.readyState != 'loading') && this.isLoggedIn)
         {
             // FIXME: This does not work! It is fired twice!
             this.onReady();

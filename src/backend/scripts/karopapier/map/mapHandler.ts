@@ -2,7 +2,6 @@ import * as FunctionDefinitions from '../../shared/functionDefinitions';
 import * as FunctionNames from '../../shared/functionNames';
 import { MapContent, MapData } from '../../shared/map';
 import Database from '../database/database';
-import { MapEntrySetResult } from './mapEntry';
 import MapEntryStatus from './mapEntryStatus';
 import MapHolder from './mapHolder';
 import Server from '../server';
@@ -159,10 +158,6 @@ export default class MapHandler
 
     private onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
     {
-        // TODO: We need at least every user and anonymous entries here.
-        //       Calculated map meta data like the highest number of people voting for a content on an entry
-        //       is optional and should only be send if it is already calculated/known.
-
         if (!Validation.isCallable(reply))
         {
             return;
@@ -207,40 +202,18 @@ export default class MapHandler
             return;
         }
 
-        let mapEntrySetResult: MapEntrySetResult;
-
-        if (this.userHandler.isLoggedIn(user))
-        {
-            mapEntrySetResult = mapHolder.setUserEntry(x, y, user.id, contentId);
-        }
-        else
-        {
-            mapEntrySetResult = mapHolder.setAnonymousEntry(x, y, user.ip, contentId);
-        }
+        const mapEntrySetResult = mapHolder.setEntry(x, y, user, contentId);
 
         // We only need to inform the users if something has actually changed:
         if (mapEntrySetResult.status != MapEntryStatus.Unchanged)
         {
-            // TODO: This could lead to a bad user experience if the load is too high.
-            //       Even if users do not change the vote rapidly, there could happen a lot of these changes if there are a couple of
-            //       users active with the load growing exponentially.
-            //       Maybe we should only inform the user if the entry really changes, meaning if the content the most users/sockets vote
-            //       for change. This could reduce the load by a lot, but we would need a possibility for the user to get all votes
-            //       for a specific entry.
-            //       Furthermore, this would reduce client choices about vote weightings... but do we really need that?
-
             const roomName = this.mapIdToRoomName(user.selectedMapId);
 
-            // Send the user ID if he is logged in, otherwise null for anonymous:
-            const userId = this.userHandler.isLoggedIn(user) ? user.id : null;
-
             // Inform every other user in the room (on the map) about the change:
-            // The user who made the change will ALSO be notified because only the server knows if the content has changed.
-            // TODO: Is this really necessary? Couldn't we abstract or better this client side?
-            this.io.in(roomName).emit(
+            user.socket.in(roomName).emit(
                 FunctionNames.setMapEntry,
-                x, y,
-                userId,
+                x,
+                y,
                 mapEntrySetResult.oldContentId,
                 mapEntrySetResult.newContentId
             );
@@ -283,6 +256,11 @@ export default class MapHandler
         const arrowFunction = (...args: any[]): void =>
         {
             const user = this.userHandler.getUserFromSocket(socket);
+
+            if (user === null)
+            {
+                return; // TODO: Should we inform the user about this? There should always be a user for a socket...
+            }
 
             callable(user, ...args);
         };

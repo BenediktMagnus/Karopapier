@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import { ContentTable } from './tables/contentTable';
 import { MapContentGroupNumber } from './tables/mapContentTable';
-import MapEntryAnonymousTable from './tables/mapEntryAnonymousTable';
-import MapEntryUserTable from './tables/mapEntryUserTable';
+import MapEntryTable from './tables/mapEntryTable';
 import { MapTable } from './tables/mapTable';
 import SessionTable from './tables/sessionTable';
 import { UserTable } from './tables/userTable';
@@ -343,91 +342,59 @@ export default class Database
         return contents;
     }
 
-    public getAnonymousMapEntries (mapId: number): MapEntryAnonymousTable[]
-    {
-        const statement = this.database.prepare(
-            'SELECT * FROM mapEntryAnonymous WHERE mapId = ?'
-        );
-
-        const mapEntries = statement.all(mapId) as MapEntryAnonymousTable[];
-
-        return mapEntries;
-    }
-
-    public insertAnonymousMapEntry (anonymousMapEntry: MapEntryAnonymousTable): void
+    public insertMapEntry (mapEntry: MapEntryTable): void
     {
         const statement = this.database.prepare(
             `INSERT INTO
-                mapEntryAnonymous (mapId, ip, x, y, contentId)
+                mapEntry (mapId, userId, sessionId, ip, x, y, contentId)
             VALUES
-                (:mapId, :ip, :x, :y, :contentId)`
+                (:mapId, :userId, :sessionId, :ip, :x, :y, :contentId)`
         );
 
-        const insertObject = this.getBindablesFromObject(anonymousMapEntry);
+        const insertObject = this.getBindablesFromObject(mapEntry);
 
         statement.run(insertObject);
     }
 
-    public updateAnonymousMapEntry (anonymousMapEntry: MapEntryAnonymousTable): void
+    public updateMapEntry (mapEntry: MapEntryTable): void
     {
         const statement = this.database.prepare(
             `UPDATE
-                mapEntryAnonymous
+                mapEntry
             SET
                 contentId = :contentId
             WHERE
                 mapId = :mapId
                 AND x = :x
                 AND y = :y
-                AND ip = :ip`
+                AND (
+                    userId = :userId
+                    OR (
+                        userId IS NULL
+                        AND (
+                            sessionId = :sessionId
+                            OR (
+                                sessionId IS NULL
+                                AND ip = ip
+                            )
+                        )
+                    )
+                )`
         );
 
-        const updateObject = this.getBindablesFromObject(anonymousMapEntry);
+        const updateObject = this.getBindablesFromObject(mapEntry);
 
         statement.run(updateObject);
     }
 
-    public getUserMapEntries (mapId: number): MapEntryUserTable[]
+    public getMapEntries (mapId: number): MapEntryTable[]
     {
         const statement = this.database.prepare(
-            'SELECT * FROM mapEntryUser WHERE mapId = ?'
+            'SELECT * FROM mapEntry WHERE mapId = ?'
         );
 
-        const mapEntries = statement.all(mapId) as MapEntryUserTable[];
+        const mapEntries = statement.all(mapId) as MapEntryTable[];
 
         return mapEntries;
-    }
-
-    public insertUserMapEntry (userMapEntry: MapEntryUserTable): void
-    {
-        const statement = this.database.prepare(
-            `INSERT INTO
-                mapEntryUser (mapId, userId, x, y, contentId)
-            VALUES
-                (:mapId, :userId, :x, :y, :contentId)`
-        );
-
-        const insertObject = this.getBindablesFromObject(userMapEntry);
-
-        statement.run(insertObject);
-    }
-
-    public updateUserMapEntry (userMapEntry: MapEntryUserTable): void
-    {
-        const statement = this.database.prepare(
-            `UPDATE
-                mapEntryUser
-            SET
-                contentId = :contentId
-            WHERE
-                mapId = :mapId
-                AND x = :x
-                AND y = :y
-                AND userId = :userId`
-        );
-
-        const updateObject = this.getBindablesFromObject(userMapEntry);
-
-        statement.run(updateObject);
     }
 }

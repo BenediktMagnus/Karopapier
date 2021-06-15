@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import * as Constants from "../../shared/constants";
 import Database from '../database/database';
 import socketIo from 'socket.io';
 import Utils from '../../utility/utils';
@@ -103,7 +104,7 @@ export default class SessionManager
             return null;
         }
 
-        const passwordIsCorrect = await bcrypt.compare(password, user.passwordHash);
+        const passwordIsCorrect = (name == Constants.anonymousUserName) || await bcrypt.compare(password, user.passwordHash);
 
         if (!passwordIsCorrect)
         {
