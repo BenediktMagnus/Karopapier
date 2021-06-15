@@ -10,7 +10,7 @@ export default class Palette
 
     private tools: Tool[];
 
-    protected selectedPoint: Point|null;
+    private selectedPoint: Point|null;
 
     private onToolSelected: PaletteEvent; // TODO: This is not elegant and the naming scheme is ambiguous.
 

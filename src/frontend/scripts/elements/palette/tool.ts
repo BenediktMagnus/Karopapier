@@ -7,8 +7,8 @@ export default class Tool // TODO: Should be renamed as this includes votings, m
     private voteCountElement: HTMLSpanElement;
     private hoverTextElement: HTMLSpanElement;
 
-    protected readonly contentId: number;
-    protected readonly name: string;
+    private readonly contentId: number;
+    private readonly name: string;
 
     /**
      * Create a point for the given coordinates.
@@ -36,7 +36,7 @@ export default class Tool // TODO: Should be renamed as this includes votings, m
 
         this.hoverTextElement = document.createElement('span');
         this.hoverTextElement.classList.add('tooltip', 'toolHoverText');
-        this.hoverTextElement.textContent = name;
+        this.hoverTextElement.textContent = this.name;
         this.mainElement.appendChild(this.hoverTextElement);
 
         this.mainElement.onclick = (): void => { onClick(this.contentId); };

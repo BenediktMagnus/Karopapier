@@ -34,9 +34,9 @@ export default class Point
 
     private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
-    protected contentId: number;
+    private contentId: number;
     private highestUserCount: number;
-    protected anonymousContentVote: number;
+    private anonymousContentVote: number;
     private highestAnonymousCount: number;
 
     /**
