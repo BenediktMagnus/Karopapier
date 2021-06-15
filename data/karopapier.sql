@@ -83,19 +83,19 @@ VALUES
 INSERT INTO
     `content` (`id`, `publicIdentifier`, `name`)
 VALUES
-    (0, '', 'Empty'),
-    (1, '', 'Transparent'),
-    (2, '', 'Path'),
-    (3, '', 'Door top'),
-    (4, '', 'Door down'),
-    (5, '', 'Door left'),
-    (6, '', 'Door right'),
-    (7, '', 'Stairs up'),
-    (8, '', 'Stairs down'),
-    (9, '', 'Plate'),
-    (10, '', 'Arrow top'),
-    (11, '', 'Arrow down'),
-    (12, '', 'Arrow left'),
-    (13, '', 'Arrow right');
+    (0, 'empty', 'Empty'),
+    (1, 'transparent', 'Transparent'),
+    (2, 'path', 'Path'),
+    (3, 'door_top', 'Door top'),
+    (4, 'door_bottom', 'Door bottom'),
+    (5, 'door_left', 'Door left'),
+    (6, 'door_right', 'Door right'),
+    (7, 'stairs_up', 'Stairs up'),
+    (8, 'stairs_down', 'Stairs down'),
+    (9, 'plate', 'Plate'),
+    (10, 'arrow_up', 'Arrow up'),
+    (11, 'arrow_down', 'Arrow down'),
+    (12, 'arrow_left', 'Arrow left'),
+    (13, 'arrow_right', 'Arrow right');
 
 COMMIT;
