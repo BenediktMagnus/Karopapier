@@ -146,24 +146,24 @@ export default class Database
         this.database.close();
     }
 
-    public getUser (userId: number): UserTable
+    public getUser (userId: number): UserTable|undefined
     {
         const statement = this.database.prepare(
             'SELECT * FROM user WHERE id = ?'
         );
 
-        const user = statement.get(userId) as UserTable;
+        const user = statement.get(userId) as UserTable|undefined;
 
         return user;
     }
 
-    public getUserByName (userName: string): UserTable
+    public getUserByName (userName: string): UserTable|undefined
     {
         const statement = this.database.prepare(
             'SELECT * FROM user WHERE name = ?'
         );
 
-        const user = statement.get(userName) as UserTable;
+        const user = statement.get(userName) as UserTable|undefined;
 
         return user;
     }
@@ -198,13 +198,13 @@ export default class Database
         return sessionTable;
     }
 
-    public getSession (sessionId: number): SessionTable
+    public getSession (sessionId: number): SessionTable|undefined
     {
         const statement = this.database.prepare(
             'SELECT * FROM session WHERE id = ?'
         );
 
-        const session = statement.get(sessionId) as SessionTable;
+        const session = statement.get(sessionId) as SessionTable|undefined;
 
         return session;
     }
@@ -234,35 +234,17 @@ export default class Database
         statement.run(sessionId);
     }
 
-    public hasMap (mapId: number): boolean
-    {
-        const selectQuery = 'SELECT 1 FROM map WHERE id = ?';
-
-        const result = this.hasSomething(selectQuery, mapId);
-
-        return result;
-    }
-
-    public hasMapPublicIdentifier (publicIdentifier: string): boolean
-    {
-        const selectQuery = 'SELECT 1 FROM map WHERE publicIdentifier = ?';
-
-        const result = this.hasSomething(selectQuery, publicIdentifier);
-
-        return result;
-    }
-
     /**
      * Get a map by its ID.
      * @returns The map.
      */
-    public getMap (mapId: number): MapTable
+    public getMap (mapId: number): MapTable|undefined
     {
         const statement = this.database.prepare(
             'SELECT * FROM map WHERE id = ?'
         );
 
-        const map = statement.get(mapId) as MapTable;
+        const map = statement.get(mapId) as MapTable|undefined;
 
         return map;
     }
@@ -271,13 +253,13 @@ export default class Database
      * Get a map by its public identifier.
      * @returns The map.
      */
-    public getMapByPublicIdentifier (publicIdentifier: string): MapTable
+    public getMapByPublicIdentifier (publicIdentifier: string): MapTable|undefined
     {
         const statement = this.database.prepare(
             'SELECT * FROM map WHERE publicIdentifier = ?'
         );
 
-        const map = statement.get(publicIdentifier) as MapTable;
+        const map = statement.get(publicIdentifier) as MapTable|undefined;
 
         return map;
     }

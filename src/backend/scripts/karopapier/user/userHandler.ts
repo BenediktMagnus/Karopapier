@@ -73,6 +73,12 @@ export default class UserHandler
         }
 
         const userTable = this.database.getUser(userId);
+
+        if (userTable === undefined)
+        {
+            throw new Error(`Could not load the user; no user found for ID "${userId}".`);
+        }
+
         const ipAddress = this.sessionManager.getIpAddress(socket);
 
         const user: User = {

@@ -77,7 +77,12 @@ export default class SessionManager
      */
     public async login (name: string, password: string): Promise<Session|null>
     {
-        const user = this.database.getUserByName(name); // FIXME: Handle the case that the user name does not exist.
+        const user = this.database.getUserByName(name);
+
+        if (user === undefined)
+        {
+            return null;
+        }
 
         const passwordIsCorrect = await bcrypt.compare(password, user.passwordHash);
 
@@ -100,7 +105,12 @@ export default class SessionManager
      */
     public authenticate (sessionId: number, sessionToken: string): Session|null
     {
-        const session = this.database.getSession(sessionId); // FIXME: Handle the case that the session ID does not exist.
+        const session = this.database.getSession(sessionId);
+
+        if (session === undefined)
+        {
+            return null;
+        }
 
         if (this.sessionIsExpired(session.lastAccess))
         {

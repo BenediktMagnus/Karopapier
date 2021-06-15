@@ -40,7 +40,14 @@ export default class MapHolder
         this.socketCount = 1;
         this.coordinates = new Map<number, MapEntryMap>();
 
-        this.mapInfo = this.database.getMap(mapId);
+        const mapInfo = this.database.getMap(mapId);
+
+        if (mapInfo === undefined)
+        {
+            throw new Error(`Could not create mapHolder for map ID "${mapId}" because the database returned no map with this ID.`);
+        }
+
+        this.mapInfo = mapInfo;
 
         const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(this.mapInfo.width);
         const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(this.mapInfo.height);
