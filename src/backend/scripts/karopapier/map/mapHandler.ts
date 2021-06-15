@@ -92,7 +92,7 @@ export default class MapHandler
 
         const roomName = this.mapIdToRoomName(map.id);
 
-        user.socket.join(roomName); // TODO: Do not ignore the callback, give an answer about success to the user.
+        user.socket.join(roomName) as void; // NOTE: Since we are using the default adapter, join() returns void and not a promise.
 
         user.selectedMapId = map.id;
 

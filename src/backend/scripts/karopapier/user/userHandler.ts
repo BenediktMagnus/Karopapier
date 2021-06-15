@@ -1,9 +1,9 @@
 import * as FunctionDefinitions from '../../shared/functionDefinitions';
 import * as FunctionNames from '../../shared/functionNames';
+import * as socketIo from 'socket.io';
 import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
-import * as socketIo from 'socket.io';
 import User from './user';
 import Utils from '../../utility/utils';
 import Validation from '../../utility/validation';

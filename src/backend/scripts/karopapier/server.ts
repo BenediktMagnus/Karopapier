@@ -1,7 +1,7 @@
 import * as http from 'http';
+import * as socketIo from 'socket.io';
 import compression from 'compression';
 import express from 'express';
-import * as socketIo from 'socket.io';
 
 export default class Server
 {
