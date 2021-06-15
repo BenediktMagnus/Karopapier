@@ -177,7 +177,7 @@ export default class Database
     {
         const statement = this.database.prepare(
             `INSERT INTO
-                contact (userId, token, lastAccess)
+                session (userId, token, lastAccess)
             VALUES
                 (:userId, :token, :lastAccess)`
         );
