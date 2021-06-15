@@ -166,9 +166,9 @@ export default class SessionManager
             const ipAddresses = xForwardedForHeader.split(',');
             ipAddress = ipAddresses[0].trim();
         }
-        else if (socket.request.connection.remoteAddress != undefined)
+        else if (socket.request.socket.remoteAddress != undefined)
         {
-            ipAddress = socket.request.connection.remoteAddress;
+            ipAddress = socket.request.socket.remoteAddress;
         }
         else
         {
