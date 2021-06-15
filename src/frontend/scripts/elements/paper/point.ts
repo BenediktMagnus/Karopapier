@@ -233,20 +233,14 @@ export default class Point
         if (this.highestUserCount > 0)
         {
             vote = this.contentId;
-
-            this.frontElement.style.removeProperty('--voting-count');
         }
         else if (this.highestAnonymousCount > 0)
         {
             vote = this.anonymousContentVote;
-
-            this.frontElement.style.setProperty('--voting-count', `${this.highestAnonymousCount}`);
         }
         else
         {
             vote = 0;
-
-            this.frontElement.style.removeProperty('--voting-count');
         }
 
         if (vote == 0)
