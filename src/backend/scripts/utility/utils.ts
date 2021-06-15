@@ -9,7 +9,7 @@ export default abstract class Utils
     {
         const arrowFunction = (...args: any[]): void =>
         {
-            promiseReturner(args).catch(
+            promiseReturner(...args).catch(
                 (error) =>
                 {
                     console.error(error);
