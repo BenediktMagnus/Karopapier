@@ -6,7 +6,7 @@ import Utils from '../../utility/utils';
 const min32BitInt = 1 << 30;
 const max32BitInt = 2 ** 32;
 
-const secondsBeforeASessionExpires = 2419200; // 4 weeks
+const secondsBeforeASessionExpires = 60 * 60 * 24 * 7 * 52;
 
 interface Session
 {
