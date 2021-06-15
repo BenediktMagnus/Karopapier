@@ -146,6 +146,33 @@ export default class Database
         this.database.close();
     }
 
+    public insertUser (userName: string, passwordHash: string, isAdmin: boolean): UserTable
+    {
+        const statement = this.database.prepare(
+            `INSERT INTO
+                user (name, passwordHash, isAdmin)
+            VALUES
+                (:name, :passwordHash, :isAdmin)`
+        );
+
+        const insertObject = {
+            name: userName,
+            passwordHash: passwordHash,
+            isAdmin: isAdmin,
+        };
+
+        const bindedInsertObject = this.getBindablesFromObject(insertObject);
+
+        const runResult = statement.run(bindedInsertObject);
+
+        const userTable: UserTable = {
+            ...insertObject,
+            id: runResult.lastInsertRowid as number
+        };
+
+        return userTable;
+    }
+
     public getUser (userId: number): UserTable|undefined
     {
         const statement = this.database.prepare(

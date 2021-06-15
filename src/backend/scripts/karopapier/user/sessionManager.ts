@@ -71,7 +71,26 @@ export default class SessionManager
     }
 
     /**
-     * Log in a user with name and password, generating a new token.
+     * Register a new user with name and password, creating a session.
+     * @param name The user name to register.
+     * @param password The user's plain text password.
+     * @param isAdmin Whether the user shall get admin priviliges.
+     */
+    public async register (name: string, password: string, isAdmin: boolean): Promise<Session|null>
+    {
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const user = this.database.insertUser(name, passwordHash, isAdmin);
+
+        const token = this.generateSessionToken();
+
+        const session: Session = this.database.insertSession(user.id, token);
+
+        return session;
+    }
+
+    /**
+     * Log in a user with name and password, creating a new session.
      * @param name The user name to log in.
      * @param password The user's plain text password.
      */
