@@ -37,7 +37,7 @@ export default class UserHandler
 
         if (user === undefined)
         {
-            // If there can no user be found in the map, he has not logged in yet, so he becomes an anonymous user:
+            // If no user can be found in the map, he has not logged in yet, so he becomes an anonymous user:
             user = this.loadUser(this.anonymousUserId, socket);
         }
 

@@ -73,7 +73,7 @@ CREATE INDEX `mapEntryUserCoordinates` ON `mapEntryUser` (`mapId`, `x`, `y`, `us
 -- Speeding up content searches:
 CREATE UNIQUE INDEX `mapContentAssociation` ON `mapContent` (`mapId`, `contentId`);
 
--- The default anonymous user, here to go sure the ID is zero and the first entry:
+-- The default anonymous user, the first entry in the table with ID zero and no password:
 INSERT INTO
     `user` (`id`, `name`, `passwordHash`, `isAdmin`)
 VALUES
