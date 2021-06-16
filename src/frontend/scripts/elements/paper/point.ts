@@ -8,11 +8,13 @@ export class PointEvents
 {
     public readonly onClick: EventHandler<PointEvent>;
     public readonly onMouseOver: EventHandler<PointEvent>;
+    public readonly onContentChange: EventHandler<PointEvent>;
 
     constructor ()
     {
         this.onClick = new EventHandler<PointEvent>();
         this.onMouseOver = new EventHandler<PointEvent>();
+        this.onContentChange = new EventHandler<PointEvent>();
     }
 }
 
@@ -35,7 +37,6 @@ export default class Point
     private contentIdToContentEntryMap: Map<number, ContentEntry>;
 
     private contentId: number;
-    private highestVoteCount: number;
 
     /**
      * Create a point for the given coordinates.
@@ -47,7 +48,6 @@ export default class Point
     constructor (x: number, y: number, events: PointEvents, parentElement: HTMLTableRowElement)
     {
         this.contentId = Constants.emptyContentId;
-        this.highestVoteCount = 0;
 
         this.x = x;
         this.y = y;
@@ -87,18 +87,30 @@ export default class Point
     {
         this.resetContent();
 
+        let highestVoteCount = 0;
+
         for (const contentEntry of contentEntries)
         {
             this.contentIdToContentEntryMap.set(contentEntry.contentId, contentEntry);
 
-            if (contentEntry.voteCount > this.highestVoteCount)
+            if (contentEntry.voteCount > highestVoteCount)
             {
-                this.highestVoteCount = contentEntry.voteCount;
                 this.contentId = contentEntry.contentId;
+                highestVoteCount = contentEntry.voteCount;
             }
         }
 
         this.showContent();
+    }
+
+    /**
+     * Get the content entries for the point.
+     */
+    public getContentEntries (): ContentEntry[]
+    {
+        const contentEntries = Array.from(this.contentIdToContentEntryMap.values());
+
+        return contentEntries;
     }
 
     public setEntry (oldContentId: number|null, newContentId: number): void
@@ -129,14 +141,20 @@ export default class Point
             this.contentIdToContentEntryMap.set(newContentId, newEntry);
         }
 
-        // Set the content ID of this point if the new entry has a higher voter count:
-        if (newEntry.voteCount > this.highestVoteCount)
+        // Find the new highest vote and set the contentId:
+        let highestVoteCount = 0;
+        for (const contentEntry of this.contentIdToContentEntryMap.values())
         {
-            this.highestVoteCount = newEntry.voteCount;
-            this.contentId = newEntry.contentId;
+            if (contentEntry.voteCount > highestVoteCount)
+            {
+                this.contentId = contentEntry.contentId;
+                highestVoteCount = contentEntry.voteCount;
+            }
         }
 
         this.showContent();
+
+        this.events.onContentChange.dispatchEvent(this);
     }
 
     /**
@@ -158,7 +176,6 @@ export default class Point
     private resetContent (): void
     {
         this.contentId = Constants.emptyContentId;
-        this.highestVoteCount = 0;
 
         this.contentIdToContentEntryMap.clear();
 
@@ -167,13 +184,13 @@ export default class Point
 
     private showContent (): void
     {
-        if (this.highestVoteCount > 0)
+        if (this.contentId == Constants.emptyContentId)
         {
-            this.frontElement.style.backgroundImage = `url("/images/${this.contentId}.svg")`;
+            this.frontElement.style.backgroundImage = 'none';
         }
         else
         {
-            this.frontElement.style.backgroundImage = 'none';
+            this.frontElement.style.backgroundImage = `url("/images/${this.contentId}.svg")`;
         }
     }
 }

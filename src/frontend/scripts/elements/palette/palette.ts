@@ -1,7 +1,6 @@
-import { ContentEntry, MapContent } from "../../shared/map";
+import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
-import VoteCountHolder from "./voteCountHolder";
 
 export type PaletteEvent = (x: number, y: number, contentId: number) => void; // TODO: Change this to Point.
 
@@ -13,13 +12,10 @@ export default class Palette
 
     private selectedPoint: Point|null;
 
-    private voteCountHolder: VoteCountHolder;
-
     private onToolSelected: PaletteEvent; // TODO: This is not elegant and the naming scheme is ambiguous.
 
-    constructor (voteCountHolder: VoteCountHolder, onToolSelected: PaletteEvent)
+    constructor (onToolSelected: PaletteEvent)
     {
-        this.voteCountHolder = voteCountHolder;
         this.onToolSelected = onToolSelected;
 
         this.contentIdToToolMap = new Map<number, Tool>();
@@ -37,8 +33,6 @@ export default class Palette
         }
 
         this.unselectPoint();
-
-        this.voteCountHolder.contentChanged.addEventListener(this.onContentChange.bind(this));
     }
 
     /**
@@ -94,12 +88,12 @@ export default class Palette
 
         this.selectedPoint = point;
 
-        this.updateVoteCounts(point.x, point.y);
+        this.updateVoteCounts(point);
 
         this.selectPoint();
     }
 
-    private updateVoteCounts (x: number, y: number): void
+    private updateVoteCounts (point: Point): void
     {
         // First, reset all vote counts to zero:
         for (const tool of this.contentIdToToolMap.values())
@@ -109,7 +103,7 @@ export default class Palette
 
         // Then, update the vote coints that differ from zero to their actual values:
 
-        const contentEntries = this.voteCountHolder.getContentEntries(x, y);
+        const contentEntries = point.getContentEntries();
 
         for (const contentEntry of contentEntries)
         {
@@ -127,15 +121,15 @@ export default class Palette
 
     /**
      * Called if the content for a coordinate changes.
-     * @param x The x coordinate of the point the content belongs to.
-     * @param y The y coordinate of the point the content belongs to.
-     * @param contentEntry The content entry that changed.
+     * @param point The point of the content that has been changed.
      */
-    public onContentChange (x: number, y: number, contentEntry: ContentEntry): void
+    public onContentChange (point: Point): void
     {
-        if (this.selectedPoint !== null)
+        if (this.selectedPoint === point)
         {
-            if ((this.selectedPoint.x == x) && (this.selectedPoint.y == y))
+            const contentEntries = point.getContentEntries();
+
+            for (const contentEntry of contentEntries)
             {
                 const tool = this.contentIdToToolMap.get(contentEntry.contentId);
 
@@ -162,6 +156,7 @@ export default class Palette
             this.onToolSelected(this.selectedPoint.x, this.selectedPoint.y, contentId);
         }
 
+        // TODO: Maybe we should not unselect the point after a tool has been selected.
         this.unselectPoint();
     }
 
@@ -174,5 +169,10 @@ export default class Palette
     {
         this.selectedPoint?.unselect();
         this.selectedPoint = null;
+
+        for (const tool of this.contentIdToToolMap.values())
+        {
+            tool.setVoteCount(0);
+        }
     }
 }
