@@ -1,7 +1,9 @@
 import * as Constants from "./shared/constants";
 import * as FunctionNames from "./shared/functionNames";
+import { ContentEntryListElement } from "./shared/map";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
+import VoteCountHolder from "./elements/palette/voteCountHolder";
 
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
 import type * as socketIoClient from "socket.io-client";
@@ -17,6 +19,7 @@ class Main
     private mapPublicIdentifier: string|null;
     private paper?: Paper;
     private palette?: Palette;
+    private voteCountHolder?: VoteCountHolder;
 
     private isLoggedIn: boolean;
 
@@ -124,9 +127,12 @@ class Main
     private onDocumentLoaded (): void
     {
         this.paper = new Paper();
+
+        this.voteCountHolder = new VoteCountHolder();
+
         // TODO: The following is not elegant... we should abstract it, maybe with addSelectedListener or something?
         //       Because client side we need to do at least SOMETHING, too. The user must see a quick response.
-        this.palette = new Palette(this.socket.emit.bind(this.socket, FunctionNames.setMapEntry));
+        this.palette = new Palette(this.voteCountHolder, this.socket.emit.bind(this.socket, FunctionNames.setMapEntry));
 
         this.paper.events.onClick.addEventListener(this.palette.onPaperClick.bind(this.palette));
 
@@ -150,7 +156,7 @@ class Main
      */
     private onReady (): void
     {
-        if ((this.paper === undefined) || (this.palette === undefined))
+        if ((this.paper === undefined) || (this.voteCountHolder === undefined) || (this.palette === undefined))
         {
             // TODO: Should we do something here? It would mean a big error...
 
@@ -161,8 +167,16 @@ class Main
 
         // Map events, we only need to listen to them as soon as the map is loaded:
         this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
+        this.socket.on(FunctionNames.setMapEntry, this.voteCountHolder.onSetMapEntry.bind(this.voteCountHolder));
 
-        this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
+        this.socket.emit(
+            FunctionNames.loadMap,
+            (mapEntries: ContentEntryListElement[]) =>
+            {
+                this.paper?.loadMap(mapEntries);
+                this.voteCountHolder?.onLoadMap(mapEntries);
+            }
+        );
 
         this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
 

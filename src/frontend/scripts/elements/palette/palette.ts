@@ -1,6 +1,7 @@
-import { MapContent } from "../../shared/map";
+import { ContentEntry, MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
+import VoteCountHolder from "./voteCountHolder";
 
 export type PaletteEvent = (x: number, y: number, contentId: number) => void; // TODO: Change this to Point.
 
@@ -12,10 +13,13 @@ export default class Palette
 
     private selectedPoint: Point|null;
 
+    private voteCountHolder: VoteCountHolder;
+
     private onToolSelected: PaletteEvent; // TODO: This is not elegant and the naming scheme is ambiguous.
 
-    constructor (onToolSelected: PaletteEvent)
+    constructor (voteCountHolder: VoteCountHolder, onToolSelected: PaletteEvent)
     {
+        this.voteCountHolder = voteCountHolder;
         this.onToolSelected = onToolSelected;
 
         this.contentIdToToolMap = new Map<number, Tool>();
@@ -33,6 +37,8 @@ export default class Palette
         }
 
         this.unselectPoint();
+
+        this.voteCountHolder.contentChanged.addEventListener(this.onContentChange.bind(this));
     }
 
     /**
@@ -88,7 +94,61 @@ export default class Palette
 
         this.selectedPoint = point;
 
+        this.updateVoteCounts(point.x, point.y);
+
         this.selectPoint();
+    }
+
+    private updateVoteCounts (x: number, y: number): void
+    {
+        // First, reset all vote counts to zero:
+        for (const tool of this.contentIdToToolMap.values())
+        {
+            tool.setVoteCount(0);
+        }
+
+        // Then, update the vote coints that differ from zero to their actual values:
+
+        const contentEntries = this.voteCountHolder.getContentEntries(x, y);
+
+        for (const contentEntry of contentEntries)
+        {
+            const tool = this.contentIdToToolMap.get(contentEntry.contentId);
+
+            if (tool === undefined)
+            {
+                // TODO: What to do? We must have inconsistent data here... Can this even happen?
+                continue;
+            }
+
+            tool.setVoteCount(contentEntry.voteCount);
+        }
+    }
+
+    /**
+     * Called if the content for a coordinate changes.
+     * @param x The x coordinate of the point the content belongs to.
+     * @param y The y coordinate of the point the content belongs to.
+     * @param contentEntry The content entry that changed.
+     */
+    public onContentChange (x: number, y: number, contentEntry: ContentEntry): void
+    {
+        if (this.selectedPoint !== null)
+        {
+            if ((this.selectedPoint.x == x) && (this.selectedPoint.y == y))
+            {
+                const tool = this.contentIdToToolMap.get(contentEntry.contentId);
+
+                if (tool === undefined)
+                {
+                    // TODO: What should we do? This must mean outdated data, right?
+
+                    return;
+                }
+
+                tool.setVoteCount(contentEntry.voteCount);
+            }
+        }
     }
 
     /**

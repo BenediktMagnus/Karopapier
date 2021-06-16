@@ -48,6 +48,11 @@ export default class Tool // TODO: Should be renamed as this includes votings, m
         this.mainElement.style.gridRow = `${row}`;
     }
 
+    public setVoteCount (newVoteCount: number): void
+    {
+        this.voteCountElement.textContent = `${newVoteCount}`;
+    }
+
     /**
      * Destroys the tool by removing its element from its parent.
      */
