@@ -150,22 +150,21 @@ class Main
      */
     private onReady (): void
     {
-        if (this.paper !== undefined)
+        if ((this.paper === undefined) || (this.palette === undefined))
         {
-            this.socket.emit(FunctionNames.getMapData, this.paper.createMap.bind(this.paper));
+            // TODO: Should we do something here? It would mean a big error...
 
-            // Map events, we only need to listen to them as soon as the map is loaded:
-            this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
-
-            this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
+            return;
         }
-        // TODO: Should we otherwise do something? It would mean a big error...
 
-        if (this.palette !== undefined)
-        {
-            this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
-        }
-        // TODO: Should we otherwise do something? It would mean a big error...
+        this.socket.emit(FunctionNames.getMapData, this.paper.createMap.bind(this.paper));
+
+        // Map events, we only need to listen to them as soon as the map is loaded:
+        this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
+
+        this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
+
+        this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
 
         // TODO:
         //       mapData: Name for the name display.
