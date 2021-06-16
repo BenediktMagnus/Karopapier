@@ -177,6 +177,8 @@ export default class MapHandler
 
     private onSetMapEntry (user: User, x: number, y: number, contentId: number): void
     {
+        // TODO: Rename to "onSetContentEntry".
+
         if (!Number.isSafeInteger(x)
             || !Number.isSafeInteger(y)
             || !Number.isSafeInteger(contentId))
@@ -236,8 +238,6 @@ export default class MapHandler
 
     private mapIdToRoomName (mapId: number): string
     {
-        // TODO: Is this really necessary? Couldn't we simply use the mapId without a prefix?
-
         const result = `map-${mapId}`;
 
         return result;

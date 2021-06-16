@@ -13,8 +13,6 @@ export default abstract class MapUtility
      */
     public static axisLengthToLowAndHigh (length: number): AxisLogAndHigh
     {
-        // TODO: Should we split this into two functions, one for low, the other for high?
-
         const distanceFromZero = (length - 1) / 2;
         const low = -Math.floor(distanceFromZero);
         const high = Math.ceil(distanceFromZero);

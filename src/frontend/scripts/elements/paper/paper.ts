@@ -64,7 +64,7 @@ export default class Paper
         const xLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.width);
         const yLowAndHigh = MapUtility.axisLengthToLowAndHigh(mapData.height);
 
-        // TODO: The lowest value must be at the bottom!
+        // TODO: The lowest value should be at the bottom!
         for(let y = yLowAndHigh.low; y <= yLowAndHigh.high; y++)
         {
             const row = new Row(y, xLowAndHigh.low, xLowAndHigh.high, this.events, this.tableElement);

@@ -1,6 +1,6 @@
 import { ContentEntryListElement, MapContent, MapData } from "./map";
 
-// TODO: Find a better, less generic name for this module.
+// TODO: Replace with the buildin functionality of socket.io for typed events.
 
 export type AuthenticateResponseFunction = (successful: boolean) => void;
 export type GetMapContentsResponseFunction = (mapContents: MapContent[]) => void;

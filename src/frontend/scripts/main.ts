@@ -179,12 +179,6 @@ class Main
         );
 
         this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
-
-        // TODO:
-        //       mapData: Name for the name display.
-        //    X  mapData: Height and width for the paper to be created.
-        //    X  mapEntries: For the paper to load the map entries.
-        //    X  mapContents: For the toolbox to load and show the tools.
     }
 }
 
