@@ -81,13 +81,13 @@ export default class Point
 
     /**
      * Load a content entry list into the point, overwriting every previous content.
-     * @param cntentEntries The list of content entries.
+     * @param contentEntries The list of content entries.
      */
-    public loadContentEntries (cntentEntries: ContentEntry[]): void
+    public loadContentEntries (contentEntries: ContentEntry[]): void
     {
         this.resetContent();
 
-        for (const contentEntry of cntentEntries)
+        for (const contentEntry of contentEntries)
         {
             this.contentIdToContentEntryMap.set(contentEntry.contentId, contentEntry);
 
