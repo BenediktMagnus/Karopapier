@@ -8,7 +8,7 @@ export default class Palette
 {
     private toolsElement: HTMLDivElement;
 
-    private tools: Tool[];
+    private contentIdToToolMap: Map<number, Tool>;
 
     private selectedPoint: Point|null;
 
@@ -18,7 +18,7 @@ export default class Palette
     {
         this.onToolSelected = onToolSelected;
 
-        this.tools = [];
+        this.contentIdToToolMap = new Map<number, Tool>();
         this.selectedPoint = null;
 
         const toolsElement = document.getElementById('tools') as HTMLDivElement;
@@ -62,7 +62,7 @@ export default class Palette
 
             tool.setPosition(columnNumber, rowNumber);
 
-            this.tools.push(tool);
+            this.contentIdToToolMap.set(mapContent.id, tool);
 
             columnNumber++;
         }
@@ -70,12 +70,12 @@ export default class Palette
 
     private clearContents (): void
     {
-        for (const tool of this.tools)
+        for (const tool of this.contentIdToToolMap.values())
         {
             tool.destroy();
         }
 
-        this.tools = [];
+        this.contentIdToToolMap.clear();
     }
 
     /**
