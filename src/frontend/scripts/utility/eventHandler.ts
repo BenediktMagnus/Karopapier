@@ -1,4 +1,4 @@
-export default class EventHandler<T extends CallableFunction>
+export default class EventHandler<T extends (...args: any[]) => void>
 {
     private events: Set<T>;
 
@@ -17,7 +17,7 @@ export default class EventHandler<T extends CallableFunction>
         this.events.delete(event);
     }
 
-    public dispatchEvent (...args: unknown[]): void
+    public dispatchEvent (...args: Parameters<T>): void
     {
         for (const event of this.events)
         {
