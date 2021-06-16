@@ -209,8 +209,8 @@ export default class MapHandler
         {
             const roomName = this.mapIdToRoomName(user.selectedMapId);
 
-            // Inform every other user in the room (on the map) about the change:
-            user.socket.in(roomName).emit(
+            // Inform every user in the room (on the map) about the change:
+            this.io.in(roomName).emit(
                 FunctionNames.setMapEntry,
                 x,
                 y,
