@@ -58,8 +58,6 @@ class Main
 
         // After connection, the same has to happen as after a reconnect:
         this.onReconnect();
-
-        this.callOnReadyIfReady();
     }
 
     private onReconnect (): void
@@ -143,7 +141,6 @@ class Main
     {
         if (this.socket.connected && (document.readyState != 'loading') && this.isLoggedIn)
         {
-            // FIXME: This does not work! It is fired twice!
             this.onReady();
         }
     }
