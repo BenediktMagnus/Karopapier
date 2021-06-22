@@ -67,11 +67,10 @@ export default class Server
 
     public async stop (): Promise<void>
     {
-        // Transformation of a callback to a promise for the async function:
-        const promise = new Promise<void>(
+        const socketIoPromise = new Promise<void>(
             (resolve, reject) =>
             {
-                this.http.close(
+                this.socketIo.close(
                     error =>
                     {
                         if (error)
@@ -87,6 +86,6 @@ export default class Server
             }
         );
 
-        await promise;
+        await socketIoPromise;
     }
 }

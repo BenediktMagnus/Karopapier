@@ -55,7 +55,6 @@ export default class Karopapier
                 if (this.server)
                 {
                     this.server.stop(); // FIXME: Promises must be handled appropriately.
-                    this.server.socketIo.close(); // TODO: Shouldn't this happen inside server.close()?
                 }
             }
         );
