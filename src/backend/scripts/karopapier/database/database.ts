@@ -1,10 +1,10 @@
 import * as fs from 'fs';
+import SessionTable, { SessionTableInsert } from './tables/sessionTable';
+import { UserTable, UserTableInsert } from './tables/userTable';
 import { ContentTable } from './tables/contentTable';
 import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryTable from './tables/mapEntryTable';
 import { MapTable } from './tables/mapTable';
-import SessionTable from './tables/sessionTable';
-import { UserTable } from './tables/userTable';
 import Utils from '../../utility/utils';
 import Sqlite = require('better-sqlite3');
 
@@ -145,7 +145,7 @@ export default class Database
         this.database.close();
     }
 
-    public insertUser (userName: string, passwordHash: string, isAdmin: boolean): UserTable
+    public insertUser (userTableInsert: UserTableInsert): UserTable
     {
         const statement = this.database.prepare(
             `INSERT INTO
@@ -154,19 +154,13 @@ export default class Database
                 (:name, :passwordHash, :isAdmin)`
         );
 
-        const insertObject = {
-            name: userName,
-            passwordHash: passwordHash,
-            isAdmin: isAdmin,
-        };
+        const insertObject = this.getBindablesFromObject(userTableInsert);
 
-        const bindedInsertObject = this.getBindablesFromObject(insertObject);
-
-        const runResult = statement.run(bindedInsertObject);
+        const runResult = statement.run(insertObject);
 
         const userTable: UserTable = {
-            ...insertObject,
-            id: runResult.lastInsertRowid as number
+            id: runResult.lastInsertRowid as number,
+            ...userTableInsert
         };
 
         return userTable;
@@ -196,10 +190,8 @@ export default class Database
 
     /**
      * Insert a new session into the database.
-     * @param userId The user ID for the user this session will be associated with.
-     * @param token The unique token for the session.
      */
-    public insertSession (userId: number, token: string): SessionTable
+    public insertSession (sessionTableInsert: SessionTableInsert): SessionTable
     {
         const statement = this.database.prepare(
             `INSERT INTO
@@ -208,17 +200,19 @@ export default class Database
                 (:userId, :token, :lastAccess)`
         );
 
-        const insertObject = {
-            userId: userId,
-            token: token,
-            lastAccess: Utils.getCurrentUnixTime()
-        };
+        const insertObject = this.getBindablesFromObject(
+            {
+                ...sessionTableInsert,
+                lastAccess: Utils.getCurrentUnixTime()
+            }
+        );
 
         const runResult = statement.run(insertObject);
 
         const sessionTable: SessionTable = {
-            ...insertObject,
-            id: runResult.lastInsertRowid as number
+            id: runResult.lastInsertRowid as number,
+            lastAccess: insertObject.lastAccess,
+            ...sessionTableInsert
         };
 
         return sessionTable;

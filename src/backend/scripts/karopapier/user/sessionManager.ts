@@ -81,11 +81,22 @@ export default class SessionManager
     {
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const user = this.database.insertUser(name, passwordHash, isAdmin);
+        const userInsert = {
+            name: name,
+            passwordHash: passwordHash,
+            isAdmin: isAdmin,
+        };
+
+        const user = this.database.insertUser(userInsert);
 
         const token = this.generateSessionToken();
 
-        const session: Session = this.database.insertSession(user.id, token);
+        const sessionInsert = {
+            userId: user.id,
+            token: token,
+        };
+
+        const session: Session = this.database.insertSession(sessionInsert);
 
         return session;
     }
@@ -113,7 +124,12 @@ export default class SessionManager
 
         const token = this.generateSessionToken();
 
-        const session: Session = this.database.insertSession(user.id, token);
+        const sessionInsert = {
+            userId: user.id,
+            token: token,
+        };
+
+        const session: Session = this.database.insertSession(sessionInsert);
 
         return session;
     }
