@@ -71,6 +71,9 @@ class Main
 
     private authenticate (): void
     {
+        // TODO: Move authentication into a seperate class.
+        // TODO: Shouldn't the authentication be async and everything else wait for it to finish?
+
         const sessionId = localStorage.getItem(sessionIdStorageKey);
         const sessionToken = localStorage.getItem(sessionTokenStorageKey);
 

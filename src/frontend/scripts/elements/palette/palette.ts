@@ -106,7 +106,7 @@ export default class Palette
             tool.setVoteCount(0);
         }
 
-        // Then, update the vote coints that differ from zero to their actual values:
+        // Then, update the vote counts that differ from zero to their actual values:
 
         const contentEntries = point.getContentEntries();
 
@@ -166,7 +166,7 @@ export default class Palette
     {
         if (this.selectedPoint !== null)
         {
-            this.selectedPoint.select();
+            this.selectedPoint.select(); // TODO: The point, as it calls the click event, should select itself.
 
             this.coordinates.onChange(this.selectedPoint);
         }
@@ -174,7 +174,7 @@ export default class Palette
 
     private unselectPoint (): void
     {
-        this.selectedPoint?.unselect();
+        this.selectedPoint?.unselect(); // TODO: The point, as it calls the click event, should unselect itself.
         this.selectedPoint = null;
 
         for (const tool of this.contentIdToToolMap.values())

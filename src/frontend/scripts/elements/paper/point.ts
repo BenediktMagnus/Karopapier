@@ -63,6 +63,7 @@ export default class Point
 
         this.showContent();
 
+        // TODO: It should be possible to unselect points after selection.
         this.mainElement.onclick = (): void => { this.events.onClick.dispatchEvent(this); };
         this.mainElement.onmouseover = (): void => { this.events.onMouseOver.dispatchEvent(this); };
     }
