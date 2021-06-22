@@ -50,7 +50,10 @@ export default class Paper
 
         this.events = new PointEvents();
 
+        // Update coordinates when the mouse hovers over a point:
         this.events.onMouseOver.addEventListener(this.coordinates.onChange.bind(this.coordinates));
+        // Reset the coordinates when the mouse laves the table:
+        this.tableElement.onmouseleave = this.coordinates.reset.bind(this.coordinates);
     }
 
     /**
