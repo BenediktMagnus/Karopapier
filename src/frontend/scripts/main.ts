@@ -4,6 +4,7 @@ import type * as TypedSocketIo from "./typedSocketIo";
 import type { io } from "socket.io-client";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
+import UserCountController from "./elements/userCountController";
 
 const sessionIdStorageKey = 'sessionId';
 const sessionTokenStorageKey = 'sessionToken';
@@ -15,6 +16,7 @@ class Main
     private mapPublicIdentifier: string;
     private paper?: Paper;
     private palette?: Palette;
+    private userCountController?: UserCountController;
 
     private isLoggedIn: boolean;
 
@@ -136,6 +138,8 @@ class Main
         this.paper.events.onClick.addEventListener(this.palette.onPaperClick.bind(this.palette));
         this.paper.events.onContentChange.addEventListener(this.palette.onContentChange.bind(this.palette));
 
+        this.userCountController = new UserCountController('userCount');
+
         this.callOnReadyIfReady();
     }
 
@@ -156,12 +160,14 @@ class Main
      */
     private onReady (): void
     {
-        if ((this.paper === undefined) || (this.palette === undefined))
+        if ((this.paper === undefined) || (this.palette === undefined) || (this.userCountController === undefined))
         {
             // TODO: Should we do something here? It would mean a big error...
 
             return;
         }
+
+        this.socket.on('updateUserCount', this.userCountController.onChange.bind(this.userCountController));
 
         this.socket.emit('getMapData', this.paper.createMap.bind(this.paper));
 

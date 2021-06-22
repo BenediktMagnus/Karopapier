@@ -22,3 +22,5 @@ export type SelectMap = (mapPublicIdentifier: string) => void;
 export type SetMapEntry = (x: number, y: number, contentId: number) => void;
 
 export type UpdateMapEntry = (x: number, y: number, oldContentId: number|null, newContentId: number) => void;
+
+export type UpdateUserCount = (userCount: number) => void;

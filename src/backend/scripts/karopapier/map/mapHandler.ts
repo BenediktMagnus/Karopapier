@@ -66,6 +66,12 @@ export default class MapHandler
                     // Unload map:
                     this.mapIdToMapHolderMap.delete(user.selectedMapId);
                 }
+
+                // Inform every user in the room (on the map) about the new user:
+                const roomName = this.mapIdToRoomName(user.selectedMapId);
+                this.io.in(roomName).emit('updateUserCount', mapHolder.socketCount);
+
+                user.selectedMapId = undefined;
             }
         }
     }
@@ -108,6 +114,9 @@ export default class MapHandler
             mapHolder = new MapHolder(this.database, map.id);
             this.mapIdToMapHolderMap.set(map.id, mapHolder);
         }
+
+        // Inform every user in the room (on the map) about the new user:
+        this.io.in(roomName).emit('updateUserCount', mapHolder.socketCount);
     }
 
     private onGetMapData (user: User, reply: EventFunctionDefinitions.GetMapDataReply): void
