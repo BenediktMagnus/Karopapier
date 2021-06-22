@@ -1,9 +1,9 @@
-import socketIo from 'socket.io';
+import * as TypedSocketIo from '../typedSocketIo';
 import { UserTable } from "../database/tables/userTable";
 
 export default interface User extends UserTable
 {
-    socket: socketIo.Socket;
+    socket: TypedSocketIo.Socket;
     sessionId: number;
     ip: string;
     selectedMapId?: number;

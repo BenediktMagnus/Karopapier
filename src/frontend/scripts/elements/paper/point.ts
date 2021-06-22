@@ -113,7 +113,7 @@ export default class Point
         return contentEntries;
     }
 
-    public setEntry (oldContentId: number|null, newContentId: number): void
+    public setOrUpdateEntry (oldContentId: number|null, newContentId: number): void
     {
         if (oldContentId !== null)
         {

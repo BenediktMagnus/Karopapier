@@ -1,6 +1,5 @@
-import * as FunctionDefinitions from '../../shared/functionDefinitions';
-import * as FunctionNames from '../../shared/functionNames';
-import * as socketIo from 'socket.io';
+import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
+import * as TypedSocketIo from '../typedSocketIo';
 import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
@@ -10,7 +9,7 @@ import Validation from '../../utility/validation';
 
 export default class UserHandler
 {
-    private io: socketIo.Server;
+    private io: TypedSocketIo.Server;
     private database: Database;
 
     private sessionManager: SessionManager;
@@ -29,7 +28,7 @@ export default class UserHandler
         this.io.on('connection', this.onConnection.bind(this));
     }
 
-    public getUserFromSocket (socket: socketIo.Socket): User|null
+    public getUserFromSocket (socket: TypedSocketIo.Socket): User|null
     {
         const user = this.socketIdToUserMap.get(socket.id);
 
@@ -47,7 +46,7 @@ export default class UserHandler
      * @param socket The socket to associate the user with.
      * @returns The loaded user.
      */
-    private loadUser (userId: number, sessionId: number, socket: socketIo.Socket): User
+    private loadUser (userId: number, sessionId: number, socket: TypedSocketIo.Socket): User
     {
         if (this.socketIdToUserMap.has(socket.id))
         {
@@ -78,7 +77,7 @@ export default class UserHandler
         return user;
     }
 
-    private onConnection (socket: socketIo.Socket): void
+    private onConnection (socket: TypedSocketIo.Socket): void
     {
         // We have to do three things here for every event:
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
@@ -87,11 +86,11 @@ export default class UserHandler
 
         socket.on('disconnect', this.onDisconnect.bind(this, socket));
 
-        socket.on(FunctionNames.login, Utils.catchVoidPromise(this.onLogin.bind(this, socket)));
-        socket.on(FunctionNames.authenticate, this.onAuthenticate.bind(this, socket));
+        socket.on('login', Utils.catchVoidPromise(this.onLogin.bind(this, socket)));
+        socket.on('authenticate', this.onAuthenticate.bind(this, socket));
     }
 
-    private onDisconnect (socket: socketIo.Socket): void
+    private onDisconnect (socket: TypedSocketIo.Socket): void
     {
         // Remove the user from the user/socket list as soon as there is a disconnect:
         this.socketIdToUserMap.delete(socket.id);
@@ -101,10 +100,10 @@ export default class UserHandler
      * Login with user name and password.
      */
     private async onLogin (
-        socket: socketIo.Socket,
+        socket: TypedSocketIo.Socket,
         name: string,
         password: string,
-        reply: FunctionDefinitions.LoginResponseFunction
+        reply: EventFunctionDefinitions.LoginReply
     ): Promise<void>
     {
         if (!Validation.isNonEmptyString(name)
@@ -131,10 +130,10 @@ export default class UserHandler
      * Authentication via session (ID and token).
      */
     private onAuthenticate (
-        socket: socketIo.Socket,
+        socket: TypedSocketIo.Socket,
         sessionId: number,
         sessionToken: string,
-        reply: FunctionDefinitions.AuthenticateResponseFunction
+        reply: EventFunctionDefinitions.AuthenticateReply
     ): void
     {
         if (!Validation.isValidId(sessionId)

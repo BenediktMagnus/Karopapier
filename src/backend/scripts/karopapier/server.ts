@@ -1,5 +1,5 @@
 import * as http from 'http';
-import * as socketIo from 'socket.io';
+import * as TypedSocketIo from './typedSocketIo';
 import compression from 'compression';
 import express from 'express';
 
@@ -10,7 +10,7 @@ export default class Server
     private readonly server: express.Express;
     private readonly http: http.Server;
 
-    private readonly io: socketIo.Server;
+    private readonly io: TypedSocketIo.Server;
 
     public httpPort: number;
 
@@ -52,10 +52,10 @@ export default class Server
 
         this.http = new http.Server(this.server);
 
-        this.io = new socketIo.Server(this.http);
+        this.io = new TypedSocketIo.Server(this.http);
     }
 
-    public get socketIo (): socketIo.Server
+    public get socketIo (): TypedSocketIo.Server
     {
         return this.io;
     }

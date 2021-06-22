@@ -1,20 +1,18 @@
 import * as Constants from "./shared/constants";
-import * as FunctionNames from "./shared/functionNames";
+import type * as TypedSocketIo from "./typedSocketIo";
+// FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
+import type { io } from "socket.io-client";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
-
-// FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
-import type * as socketIoClient from "socket.io-client";
-import type { io } from "socket.io-client";
 
 const sessionIdStorageKey = 'sessionId';
 const sessionTokenStorageKey = 'sessionToken';
 
 class Main
 {
-    private readonly socket: socketIoClient.Socket;
+    private readonly socket: TypedSocketIo.Socket;
 
-    private mapPublicIdentifier: string|null;
+    private mapPublicIdentifier: string;
     private paper?: Paper;
     private palette?: Palette;
 
@@ -26,7 +24,7 @@ class Main
 
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
-        this.mapPublicIdentifier = urlParameters.get('map');
+        this.mapPublicIdentifier = urlParameters.get('map') ?? '';
 
         // DOM events:
         document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
@@ -36,7 +34,7 @@ class Main
 
         // Socket.io events:
         this.socket.on('connect', this.onConnect.bind(this));
-        this.socket.on('reconnect', this.onReconnect.bind(this));
+        this.socket.io.on('reconnect', this.onReconnect.bind(this));
     }
 
     public run (): void
@@ -46,7 +44,7 @@ class Main
 
     private onConnect (): void
     {
-        if (this.mapPublicIdentifier === null)
+        if (this.mapPublicIdentifier == '')
         {
             this.socket.disconnect();
 
@@ -64,7 +62,7 @@ class Main
     {
         this.authenticate();
 
-        this.socket.emit(FunctionNames.selectMap, this.mapPublicIdentifier);
+        this.socket.emit('selectMap', this.mapPublicIdentifier);
 
         // TODO: Reload entries and palette.
     }
@@ -78,7 +76,7 @@ class Main
         {
             const sessionIdAsNumber = Number.parseInt(sessionId);
             this.socket.emit(
-                FunctionNames.authenticate,
+                'authenticate',
                 sessionIdAsNumber,
                 sessionToken,
                 (successful: boolean) =>
@@ -101,12 +99,12 @@ class Main
         else
         {
             this.socket.emit(
-                FunctionNames.login,
+                'login',
                 Constants.anonymousUserName,
                 '', // Empty password
-                (successful: boolean, sessionId: number, sessionToken: string) =>
+                (successful: boolean, sessionId?: number, sessionToken?: string) =>
                 {
-                    if (!successful)
+                    if ((!successful) || (sessionId === undefined) || (sessionToken === undefined))
                     {
                         throw Error('Could not login as Anonymous.');
                     }
@@ -125,9 +123,15 @@ class Main
     {
         this.paper = new Paper();
 
-        // TODO: The following is not elegant... we should abstract it, maybe with addSelectedListener or something?
-        //       Because client side we need to do at least SOMETHING, too. The user must see a quick response.
-        this.palette = new Palette(this.socket.emit.bind(this.socket, FunctionNames.setMapEntry));
+        this.palette = new Palette(
+            (x: number, y: number, contentId: number): void =>
+            {
+                /* TODO: This is not elegant... we should abstract it because client side we need to do at least SOMETHING, too.
+                         The user must see a quick response. */
+
+                this.socket.emit('setMapEntry', x, y, contentId);
+            }
+        );
 
         this.paper.events.onClick.addEventListener(this.palette.onPaperClick.bind(this.palette));
         this.paper.events.onContentChange.addEventListener(this.palette.onContentChange.bind(this.palette));
@@ -159,14 +163,14 @@ class Main
             return;
         }
 
-        this.socket.emit(FunctionNames.getMapData, this.paper.createMap.bind(this.paper));
+        this.socket.emit('getMapData', this.paper.createMap.bind(this.paper));
 
         // Map events, we only need to listen to them as soon as the map is loaded:
-        this.socket.on(FunctionNames.setMapEntry, this.paper.setMapEntry.bind(this.paper));
+        this.socket.on('updateMapEntry', this.paper.setOrUpdateMapEntry.bind(this.paper));
 
-        this.socket.emit(FunctionNames.loadMap, this.paper.loadMap.bind(this.paper));
+        this.socket.emit('loadMap', this.paper.loadMap.bind(this.paper));
 
-        this.socket.emit(FunctionNames.getMapContents, this.palette.loadContents.bind(this.palette));
+        this.socket.emit('getMapContents', this.palette.loadContents.bind(this.palette));
     }
 }
 

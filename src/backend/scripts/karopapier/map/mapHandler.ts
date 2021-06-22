@@ -1,11 +1,10 @@
-import * as FunctionDefinitions from '../../shared/functionDefinitions';
-import * as FunctionNames from '../../shared/functionNames';
+import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
+import * as TypedSocketIo from '../typedSocketIo';
 import { MapContent, MapData } from '../../shared/map';
 import Database from '../database/database';
 import MapEntryStatus from './mapEntryStatus';
 import MapHolder from './mapHolder';
 import Server from '../server';
-import socketIo from 'socket.io';
 import User from '../user/user';
 import UserHandler from '../user/userHandler';
 import Validation from '../../utility/validation';
@@ -14,7 +13,7 @@ import Validation from '../../utility/validation';
 
 export default class MapHandler
 {
-    private io: socketIo.Server;
+    private io: TypedSocketIo.Server;
     private database: Database;
 
     private userHandler: UserHandler;
@@ -32,7 +31,7 @@ export default class MapHandler
         this.io.on('connection', (socket) => this.onConnection(socket));
     }
 
-    private onConnection (socket: socketIo.Socket): void
+    private onConnection (socket: TypedSocketIo.Socket): void
     {
         // We have to do the following here:
         // 1. Bind the functions to prevent suprising changes of the meaning for "this".
@@ -43,11 +42,11 @@ export default class MapHandler
         // TODO: Does this really work for socket.io EventEmitters?
         socket.prependListener('disconnect', this.wrapSocketAsUser(socket, this.onDisconnect.bind(this)));
 
-        socket.on(FunctionNames.getMapContents, this.wrapSocketAsUser(socket, this.onGetMapContents.bind(this)));
-        socket.on(FunctionNames.getMapData, this.wrapSocketAsUser(socket, this.onGetMapData.bind(this)));
-        socket.on(FunctionNames.loadMap, this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
-        socket.on(FunctionNames.selectMap, this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
-        socket.on(FunctionNames.setMapEntry, this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
+        socket.on('getMapContents', this.wrapSocketAsUser(socket, this.onGetMapContents.bind(this)));
+        socket.on('getMapData', this.wrapSocketAsUser(socket, this.onGetMapData.bind(this)));
+        socket.on('loadMap', this.wrapSocketAsUser(socket, this.onLoadMap.bind(this)));
+        socket.on('selectMap', this.wrapSocketAsUser(socket, this.onSelectMap.bind(this)));
+        socket.on('setMapEntry', this.wrapSocketAsUser(socket, this.onSetMapEntry.bind(this)));
     }
 
     private onDisconnect (user: User): void
@@ -111,7 +110,7 @@ export default class MapHandler
         }
     }
 
-    private onGetMapData (user: User, reply: FunctionDefinitions.GetMapDataResponseFunction): void
+    private onGetMapData (user: User, reply: EventFunctionDefinitions.GetMapDataReply): void
     {
         if (!Validation.isCallable(reply))
         {
@@ -130,7 +129,7 @@ export default class MapHandler
         reply(mapData);
     }
 
-    private onGetMapContents (user: User, reply: FunctionDefinitions.GetMapContentsResponseFunction): void
+    private onGetMapContents (user: User, reply: EventFunctionDefinitions.GetMapContentsReply): void
     {
         if (!Validation.isCallable(reply))
         {
@@ -156,7 +155,7 @@ export default class MapHandler
         reply(mapContents);
     }
 
-    private onLoadMap (user: User, reply: FunctionDefinitions.LoadMapResponseFunction): void
+    private onLoadMap (user: User, reply: EventFunctionDefinitions.LoadMapReply): void
     {
         if (!Validation.isCallable(reply))
         {
@@ -212,13 +211,7 @@ export default class MapHandler
             const roomName = this.mapIdToRoomName(user.selectedMapId);
 
             // Inform every user in the room (on the map) about the change:
-            this.io.in(roomName).emit(
-                FunctionNames.setMapEntry,
-                x,
-                y,
-                mapEntrySetResult.oldContentId,
-                mapEntrySetResult.newContentId
-            );
+            this.io.in(roomName).emit('updateMapEntry', x, y, mapEntrySetResult.oldContentId, mapEntrySetResult.newContentId);
         }
     }
 
@@ -249,7 +242,7 @@ export default class MapHandler
      * @param callable The function/method that needs a user as parameter.
      */
     private wrapSocketAsUser (
-        socket: socketIo.Socket,
+        socket: TypedSocketIo.Socket,
         callable: (user: User, ...args: any[]) => void
     ): (...args: any[]) => void
     {
