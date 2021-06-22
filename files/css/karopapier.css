@@ -122,8 +122,11 @@ body {
 }
 
 #palette {
-    margin: 1rem;
-    padding: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+#palette > * {
+    margin-bottom: 0.5rem;
 }
 
 #tools {

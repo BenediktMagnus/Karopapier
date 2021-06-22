@@ -1,3 +1,4 @@
+import CoordinateController from "../coordinateController";
 import { MapContent } from "../../shared/map";
 import Point from "../paper/point";
 import Tool from "./tool";
@@ -7,6 +8,8 @@ export type PaletteEvent = (x: number, y: number, contentId: number) => void; //
 export default class Palette
 {
     private toolsElement: HTMLDivElement;
+
+    private coordinates: CoordinateController;
 
     private contentIdToToolMap: Map<number, Tool>;
 
@@ -31,6 +34,8 @@ export default class Palette
         {
             this.toolsElement = toolsElement;
         }
+
+        this.coordinates = new CoordinateController('paletteCoordinates');
 
         this.unselectPoint();
     }
@@ -159,7 +164,12 @@ export default class Palette
 
     private selectPoint (): void
     {
-        this.selectedPoint?.select();
+        if (this.selectedPoint !== null)
+        {
+            this.selectedPoint.select();
+
+            this.coordinates.onChange(this.selectedPoint);
+        }
     }
 
     private unselectPoint (): void
@@ -171,5 +181,7 @@ export default class Palette
         {
             tool.setVoteCount(0);
         }
+
+        this.coordinates.reset();
     }
 }

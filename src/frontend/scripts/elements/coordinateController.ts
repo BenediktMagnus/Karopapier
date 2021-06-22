@@ -30,6 +30,14 @@ export default class CoordinateController
         this.ySpan = clone.lastElementChild as HTMLSpanElement;
 
         this.parentElement.appendChild(clone);
+
+        this.reset();
+    }
+
+    private set (x: number, y: number): void
+    {
+        this.xSpan.textContent = `${x}`;
+        this.ySpan.textContent = `${y}`;
     }
 
     /**
@@ -38,7 +46,15 @@ export default class CoordinateController
      */
     public onChange (point: Point): void
     {
-        this.xSpan.textContent = `${point.x}`;
-        this.ySpan.textContent = `${point.y}`;
+        this.set(point.x, point.y);
+    }
+
+    /**
+     * Resets the coordinates by setting them to nothing.
+     */
+    public reset (): void
+    {
+        this.xSpan.textContent = '-';
+        this.ySpan.textContent = '-';
     }
 }
