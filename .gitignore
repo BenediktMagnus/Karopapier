@@ -27,3 +27,6 @@ build/**/*
 
 # Allow all keep files:
 !**/.keep
+
+# Coverage directory used by tools like istanbul:
+coverage

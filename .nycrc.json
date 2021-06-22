@@ -1,0 +1,36 @@
+{
+    "cache": false,
+    "all": true,
+    "reporter": [
+        "html",
+        "text"
+    ],
+    "watermarks": {
+        "statements": [60, 80],
+        "branches": [70, 90],
+        "functions": [80, 95],
+        "lines": [50, 80]
+    },
+    "require": [
+        "ts-node/register/transpile-only"
+    ],
+    "extension": [
+        ".ts"
+    ],
+    "include": [
+        "src/backend/**/*.ts",
+        "src/frontend/**/*.ts"
+    ],
+    "exclude": [
+        "**/*.d.ts",
+        "coverage/**",
+        "test/**",
+        "tests/**",
+        "test{,-*}.ts",
+        "tests{,-*}.ts",
+        "**/*{.,-}{test,spec}.ts",
+        "**/__tests__/**",
+        "**/node_modules/**"
+    ],
+    "temp-dir": "./coverage/.nyc_output"
+}
