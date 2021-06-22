@@ -155,9 +155,6 @@ export default class Palette
         {
             this.onToolSelected(this.selectedPoint.x, this.selectedPoint.y, contentId);
         }
-
-        // TODO: Maybe we should not unselect the point after a tool has been selected.
-        this.unselectPoint();
     }
 
     private selectPoint (): void
