@@ -1,10 +1,10 @@
 import * as fs from 'fs';
+import { MapTable, MapTableInsert } from './tables/mapTable';
 import SessionTable, { SessionTableInsert } from './tables/sessionTable';
 import { UserTable, UserTableInsert } from './tables/userTable';
 import { ContentTable } from './tables/contentTable';
 import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryTable from './tables/mapEntryTable';
-import { MapTable } from './tables/mapTable';
 import Utils from '../../utility/utils';
 import Sqlite = require('better-sqlite3');
 
@@ -264,6 +264,27 @@ export default class Database
         );
 
         statement.run(sessionId);
+    }
+
+    public insertMap (mapTableInsert: MapTableInsert): MapTable
+    {
+        const statement = this.database.prepare(
+            `INSERT INTO
+                map (publicIdentifier, name, isActive, width, height)
+            VALUES
+                (:publicIdentifier, :name, :isActive, :width, :height)`
+        );
+
+        const insertObject = this.getBindablesFromObject(mapTableInsert);
+
+        const runResult = statement.run(insertObject);
+
+        const mapTable: MapTable = {
+            id: runResult.lastInsertRowid as number,
+            ...mapTableInsert
+        };
+
+        return mapTable;
     }
 
     /**
