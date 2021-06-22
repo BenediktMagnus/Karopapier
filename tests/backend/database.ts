@@ -62,5 +62,92 @@ describe('database',
                 assert.deepStrictEqual(gotUser, insertedUser);
             }
         );
+
+        it('can insert a session.',
+            function ()
+            {
+                const sessionInsert = {
+                    userId: database.insertUser(testUserInsert).id,
+                    token: 'testToken',
+                };
+
+                const session = database.insertSession(sessionInsert);
+
+                assert.notStrictEqual(session.id, 0);
+                assert.strictEqual(session.userId, sessionInsert.userId);
+                assert.strictEqual(session.token, sessionInsert.token);
+                assert.notStrictEqual(session.lastAccess, 0);
+            }
+        );
+
+        it('can get a session.',
+            function ()
+            {
+                const sessionInsert = {
+                    userId: database.insertUser(testUserInsert).id,
+                    token: 'testToken',
+                };
+
+                const insertedSession = database.insertSession(sessionInsert);
+
+                const gotSession = database.getSession(insertedSession.id);
+
+                assert.deepStrictEqual(gotSession, insertedSession);
+            }
+        );
+
+        it('can update session access time.',
+            function ()
+            {
+                const sessionInsert = {
+                    userId: database.insertUser(testUserInsert).id,
+                    token: 'testToken',
+                };
+
+                const insertedSession = database.insertSession(sessionInsert);
+
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                const originalUtilsGetCurrentUnixTime = Utils.getCurrentUnixTime;
+
+                try
+                {
+                    // Mock the unix time to return something different from what has been set:
+                    Utils.getCurrentUnixTime = (): number => { return insertedSession.lastAccess + 1; };
+
+                    database.updateSessionAccessTime(insertedSession.id);
+                }
+                finally
+                {
+                    Utils.getCurrentUnixTime = originalUtilsGetCurrentUnixTime;
+                }
+
+                const updatedSession = database.getSession(insertedSession.id);
+
+                assert.isDefined(updatedSession);
+
+                if (updatedSession !== undefined)
+                {
+                    assert.notStrictEqual(updatedSession.lastAccess, insertedSession.lastAccess);
+                }
+            }
+        );
+
+        it('can delete a session.',
+            function ()
+            {
+                const sessionInsert = {
+                    userId: database.insertUser(testUserInsert).id,
+                    token: 'testToken',
+                };
+
+                const insertedSession = database.insertSession(sessionInsert);
+
+                database.deleteSession(insertedSession.id);
+
+                const gotSession = database.getSession(insertedSession.id);
+
+                assert.isUndefined(gotSession);
+            }
+        );
     }
 );
