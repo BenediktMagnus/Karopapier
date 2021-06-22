@@ -56,7 +56,7 @@
         "prestart": "npm run build",
         "prepack": "npm run clean && npx tsc -p src/backend/tsconfig.release.json && npx tsc -p src/frontend/tsconfig.release.json",
         "start": "node build/backend/main.js",
-        "test": "npx mocha -r ts-node/register 'tests/**/*.ts'"
+        "test": "npx mocha -r ts-node/register/transpile-only 'tests/**/*.ts'"
     },
     "private": true
 }
