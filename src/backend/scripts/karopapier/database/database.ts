@@ -174,6 +174,12 @@ export default class Database
 
         const user = statement.get(userId) as UserTable|undefined;
 
+        if (user !== undefined)
+        {
+            // TODO: Instead of handling booleans at this level we should do this inside UserTable's constructor and call it here.
+            user.isAdmin = !!user.isAdmin;
+        }
+
         return user;
     }
 
@@ -184,6 +190,12 @@ export default class Database
         );
 
         const user = statement.get(userName) as UserTable|undefined;
+
+        if (user !== undefined)
+        {
+            // TODO: Instead of handling booleans at this level we should do this inside UserTable's constructor and call it here.
+            user.isAdmin = !!user.isAdmin;
+        }
 
         return user;
     }
