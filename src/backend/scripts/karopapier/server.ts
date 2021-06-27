@@ -18,6 +18,9 @@ export default class Server
     {
         this.server = express();
 
+        // Do not send the "x-powered-by: express" header entry:
+        this.server.disable('x-powered-by');
+
         // Middleware for gzip compression:
         this.server.use(compression());
 
