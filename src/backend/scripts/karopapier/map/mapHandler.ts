@@ -1,12 +1,14 @@
 import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
 import * as TypedSocketIo from '../typedSocketIo';
 import { MapContent, MapData } from '../../shared/map';
+import { ApiError } from '../../utility/apiError';
 import Database from '../database/database';
 import MapEntryStatus from './mapEntryStatus';
 import MapHolder from './mapHolder';
 import Server from '../server';
 import User from '../user/user';
 import UserHandler from '../user/userHandler';
+import Utils from '../../utility/utils';
 import Validation from '../../utility/validation';
 
 // TODO: We could use a z axis to allow multiple contents on the same x-y field!
@@ -80,6 +82,8 @@ export default class MapHandler
     {
         if (!Validation.isNonEmptyString(mapPublicIdentifier))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('selectMap', ApiError.InvalidCallback));
+
             return;
         }
 
@@ -87,12 +91,16 @@ export default class MapHandler
 
         if (map === undefined)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('selectMap', ApiError.NoMapForIdentifier));
+
+            return;
         }
 
         if (!map.isActive)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('selectMap', ApiError.MapNotActive));
+
+            return;
         }
 
         const roomName = this.mapIdToRoomName(map.id);
@@ -123,12 +131,16 @@ export default class MapHandler
     {
         if (!Validation.isCallable(reply))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('getMapData', ApiError.InvalidCallback));
+
             return;
         }
 
         if (user.selectedMapId === undefined)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('getMapData', ApiError.NoMapSelected));
+
+            return;
         }
 
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
@@ -142,12 +154,16 @@ export default class MapHandler
     {
         if (!Validation.isCallable(reply))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('getMapContents', ApiError.InvalidCallback));
+
             return;
         }
 
         if (user.selectedMapId === undefined)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('getMapContents', ApiError.NoMapSelected));
+
+            return;
         }
 
         const contentTableList = this.database.getContentsForMap(user.selectedMapId);
@@ -168,12 +184,16 @@ export default class MapHandler
     {
         if (!Validation.isCallable(reply))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('loadMap', ApiError.InvalidCallback));
+
             return;
         }
 
         if (user.selectedMapId === undefined)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('loadMap', ApiError.NoMapSelected));
+
+            return;
         }
 
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
@@ -191,24 +211,31 @@ export default class MapHandler
             || !Number.isSafeInteger(y)
             || !Number.isSafeInteger(contentId))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('setMapEntry', ApiError.InvalidParameters));
+
             return;
         }
 
         if (user.selectedMapId === undefined)
         {
-            return; // TODO: Should we inform the user about this?
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('setMapEntry', ApiError.NoMapSelected));
+
+            return;
         }
 
         if (!this.database.hasContent(contentId, user.selectedMapId))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('setMapEntry', ApiError.MapDoesNotHaveContent));
+
             return;
-            // TODO: Should we inform the user? We should only do this if it is possible with the UI.
         }
 
         const mapHolder = this.getOrCreateMapHolder(user.selectedMapId);
 
         if (!mapHolder.isPointInsideMap(x, y))
         {
+            user.socket.emit('reportError', Utils.forgeApiErrorMessage('setMapEntry', ApiError.CordinatesAreOutsideOfMap));
+
             return;
         }
 
@@ -261,7 +288,9 @@ export default class MapHandler
 
             if (user === null)
             {
-                return; // TODO: Should we inform the user about this? There should always be a user for a socket...
+                socket.emit('reportError', Utils.forgeApiErrorMessage('Error', ApiError.NoUserForSocket));
+
+                return;
             }
 
             callable(user, ...args);

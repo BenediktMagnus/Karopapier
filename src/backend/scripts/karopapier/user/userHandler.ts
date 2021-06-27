@@ -1,5 +1,6 @@
 import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
 import * as TypedSocketIo from '../typedSocketIo';
+import { ApiError } from '../../utility/apiError';
 import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
@@ -106,9 +107,17 @@ export default class UserHandler
         reply: EventFunctionDefinitions.LoginReply
     ): Promise<void>
     {
-        if (!Validation.isNonEmptyString(name)
-            || !Validation.isCallable(reply))
+        if (!Validation.isNonEmptyString(name))
         {
+            socket.emit('reportError', Utils.forgeApiErrorMessage('login', ApiError.InvalidParameters));
+
+            return;
+        }
+
+        if (!Validation.isCallable(reply))
+        {
+            socket.emit('reportError', Utils.forgeApiErrorMessage('login', ApiError.InvalidCallback));
+
             return;
         }
 
@@ -136,10 +145,17 @@ export default class UserHandler
         reply: EventFunctionDefinitions.AuthenticateReply
     ): void
     {
-        if (!Validation.isValidId(sessionId)
-            || !Validation.isNonEmptyString(sessionToken)
-            || !Validation.isCallable(reply))
+        if (!Validation.isValidId(sessionId) || !Validation.isNonEmptyString(sessionToken))
         {
+            socket.emit('reportError', Utils.forgeApiErrorMessage('authenticate', ApiError.InvalidParameters));
+
+            return;
+        }
+
+        if (!Validation.isCallable(reply))
+        {
+            socket.emit('reportError', Utils.forgeApiErrorMessage('authenticate', ApiError.InvalidCallback));
+
             return;
         }
 

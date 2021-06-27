@@ -1,3 +1,6 @@
+import { ApiError } from "./apiError";
+import ClientToServerEvents from "../shared/clientToServerEvents";
+
 export default abstract class Utils
 {
     public static getCurrentUnixTime (): number
@@ -18,5 +21,10 @@ export default abstract class Utils
         };
 
         return arrowFunction;
+    }
+
+    public static forgeApiErrorMessage (functionName: (keyof ClientToServerEvents)|'Error', apiError: ApiError): string
+    {
+        return `${functionName}: ${apiError}`;
     }
 }

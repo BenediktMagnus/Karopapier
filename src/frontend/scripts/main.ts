@@ -37,6 +37,8 @@ class Main
         // Socket.io events:
         this.socket.on('connect', this.onConnect.bind(this));
         this.socket.io.on('reconnect', this.onReconnect.bind(this));
+        // Log errors to the console: // TODO: Should we do this in production?
+        this.socket.on('reportError', console.error.bind(console));
     }
 
     public run (): void

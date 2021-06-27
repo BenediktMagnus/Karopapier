@@ -17,6 +17,8 @@ export type LoginReply = (successful: boolean, sessionId?: number, sessionToken?
 /* TODO: LoginReply is not optimally typed. "sessionId" and "sessionToken" are given if "successful" is true otherwise they are undefined.
          How is it possible in Typescript to type such a function so we do not need to check for "sessionId" and "sessionToken"? */
 
+export type ReportError = (message: string) => void;
+
 export type SelectMap = (mapPublicIdentifier: string) => void;
 
 export type SetMapEntry = (x: number, y: number, contentId: number) => void;
