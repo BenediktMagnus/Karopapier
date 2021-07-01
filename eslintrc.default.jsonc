@@ -94,6 +94,13 @@
                 "trailingUnderscore": "forbid"
             },
             {
+                "selector": "classProperty",
+                "modifiers": ["private"],
+                "format": ["camelCase"],
+                "leadingUnderscore": "allow",
+                "trailingUnderscore": "forbid"
+            },
+            {
                 "selector": "typeLike",
                 "format": ["PascalCase"],
                 "leadingUnderscore": "forbid",
