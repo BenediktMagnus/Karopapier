@@ -1,28 +1,24 @@
-import * as Constants from "./shared/constants";
 import type * as TypedSocketIo from "./typedSocketIo";
+import Authenticator from "./authenticator";
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
 import type { io } from "socket.io-client";
 import Palette from "./elements/palette/palette";
 import Paper from "./elements/paper/paper";
 import UserCountController from "./elements/userCountController";
 
-const sessionIdStorageKey = 'sessionId';
-const sessionTokenStorageKey = 'sessionToken';
-
 class Main
 {
     private readonly socket: TypedSocketIo.Socket;
+
+    private readonly authenticator: Authenticator;
 
     private mapPublicIdentifier: string;
     private paper?: Paper;
     private palette?: Palette;
     private userCountController?: UserCountController;
 
-    private isLoggedIn: boolean;
-
     constructor ()
     {
-        this.isLoggedIn = false;
 
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
@@ -39,6 +35,8 @@ class Main
         this.socket.io.on('reconnect', this.onReconnect.bind(this));
         // Log errors to the console: // TODO: Should we do this in production?
         this.socket.on('reportError', console.error.bind(console));
+
+        this.authenticator = new Authenticator(this.socket);
     }
 
     public run (): void
@@ -64,66 +62,11 @@ class Main
 
     private onReconnect (): void
     {
-        this.authenticate();
+        this.authenticator.run(this.callOnReadyIfReady.bind(this));
 
         this.socket.emit('selectMap', this.mapPublicIdentifier);
 
         // TODO: Reload entries and palette.
-    }
-
-    private authenticate (): void
-    {
-        // TODO: Move authentication into a seperate class.
-        // TODO: Shouldn't the authentication be async and everything else wait for it to finish?
-
-        const sessionId = localStorage.getItem(sessionIdStorageKey);
-        const sessionToken = localStorage.getItem(sessionTokenStorageKey);
-
-        if ((sessionId !== null) && (sessionToken !== null))
-        {
-            const sessionIdAsNumber = Number.parseInt(sessionId);
-            this.socket.emit(
-                'authenticate',
-                sessionIdAsNumber,
-                sessionToken,
-                (successful: boolean) =>
-                {
-                    if (successful)
-                    {
-                        this.isLoggedIn = true;
-                        this.callOnReadyIfReady();
-                    }
-                    else
-                    {
-                        localStorage.removeItem(sessionIdStorageKey);
-                        localStorage.removeItem(sessionTokenStorageKey);
-
-                        this.authenticate();
-                    }
-                }
-            );
-        }
-        else
-        {
-            this.socket.emit(
-                'login',
-                Constants.anonymousUserName,
-                '', // Empty password
-                (successful: boolean, sessionId?: number, sessionToken?: string) =>
-                {
-                    if ((!successful) || (sessionId === undefined) || (sessionToken === undefined))
-                    {
-                        throw Error('Could not login as Anonymous.');
-                    }
-
-                    localStorage.setItem(sessionIdStorageKey, `${sessionId}`);
-                    localStorage.setItem(sessionTokenStorageKey, sessionToken);
-
-                    this.isLoggedIn = true;
-                    this.callOnReadyIfReady();
-                }
-            );
-        }
     }
 
     private onDocumentLoaded (): void
@@ -154,7 +97,7 @@ class Main
      */
     private callOnReadyIfReady (): void
     {
-        if (this.socket.connected && (document.readyState != 'loading') && this.isLoggedIn)
+        if (this.socket.connected && (document.readyState != 'loading') && this.authenticator.isLoggedIn)
         {
             this.onReady();
         }
