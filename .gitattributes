@@ -3,3 +3,6 @@
 *.svg binary
 *.ttf binary
 
+# Correctly detect SQL files:
+*.sql linguist-detectable=true
+*.sql linguist-language=SQL
