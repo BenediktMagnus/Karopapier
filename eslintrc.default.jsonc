@@ -41,13 +41,6 @@
                 "ignoreConsecutiveComments": true
             }
         ],
-        "indent": [
-            "warn",
-            4,
-            {
-                "SwitchCase": 1
-            }
-        ],
         "no-extra-semi": "error",
         "no-throw-literal": "error",
         "no-cond-assign": "error",
