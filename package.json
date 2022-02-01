@@ -40,7 +40,9 @@
         "build",
         "config",
         "data",
-        "files"
+        "files",
+        "LICENSE.md",
+        "README.md"
     ],
     "main": "build/backend/main.js",
     "scripts": {
