@@ -1,3 +1,4 @@
+import * as Constants from '../../shared/constants';
 import * as fs from 'fs';
 import { MapTable, MapTableInsert } from './tables/mapTable';
 import SessionTable, { SessionTableInsert } from './tables/sessionTable';
@@ -389,24 +390,22 @@ export default class Database
             `UPDATE
                 mapEntry
             SET
-                contentId = :contentId
+                contentId = :contentId,
+                sessionId = :sessionId,
+                ip = :ip
             WHERE
                 mapId = :mapId
                 AND x = :x
                 AND y = :y
-                AND (
-                    userId = :userId
-                    OR (
-                        userId IS NULL
-                        AND (
+                AND
+                    CASE
+                        WHEN userId != ${Constants.anonymousUserId}
+                        THEN userId = :userId
+                        ELSE (
                             sessionId = :sessionId
-                            OR (
-                                sessionId IS NULL
-                                AND ip = ip
-                            )
+                            OR ip = :ip
                         )
-                    )
-                )`
+                    END`
         );
 
         const updateObject = this.getBindablesFromObject(mapEntry);

@@ -1,3 +1,4 @@
+import * as Constants from "../../shared/constants";
 import { ContentEntry } from "../../shared/map";
 import MapEntryStatus from "./mapEntryStatus";
 
@@ -56,16 +57,21 @@ export default class MapEntry
 
         const newContentEntry = this.getOrCreateContentEntry(newContentId);
 
-        let entry = this.userIdToEntryMap.get(userId);
+        let entry: UserEntry|undefined = undefined;
+
+        if (userId !== Constants.anonymousUserId)
+        {
+            entry = this.userIdToEntryMap.get(userId);
+        }
 
         if ((entry === undefined) && (sessionId !== null))
         {
-            this.sessionIdToEntryMap.get(sessionId);
+            entry = this.sessionIdToEntryMap.get(sessionId);
         }
 
         if ((entry === undefined) && (ip !== null))
         {
-            this.ipToEntryMap.get(ip);
+            entry = this.ipToEntryMap.get(ip);
         }
 
         if (entry !== undefined)
@@ -105,7 +111,10 @@ export default class MapEntry
 
         // Update all maps in every case because one of the user properties (especially the IP) could have changed in the meantime:
 
-        this.userIdToEntryMap.set(userId, entry);
+        if (userId !== Constants.anonymousUserId)
+        {
+            this.userIdToEntryMap.set(userId, entry);
+        }
         if (sessionId !== null)
         {
             this.sessionIdToEntryMap.set(sessionId, entry);
