@@ -24,11 +24,18 @@ class Main
         const urlParameters = new URLSearchParams(window.location.search);
         this.mapPublicIdentifier = urlParameters.get('map') ?? '';
 
-        // DOM events:
-        document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this), false);
-
         // @ts-expect-error Error expected because of the import type hack.
         this.socket = io();
+
+        // DOM events:
+        if (document.readyState === 'loading')
+        {
+            document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this));
+        }
+        else
+        {
+            this.onDocumentLoaded();
+        }
 
         // Socket.io events:
         this.socket.on('connect', this.onConnect.bind(this));
