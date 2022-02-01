@@ -49,7 +49,7 @@
         "build": "npm run build:backend && npm run build:frontend",
         "build:backend": "npx tsc --build src/backend/tsconfig.json",
         "build:frontend": "npx tsc --build src/frontend/tsconfig.json",
-        "clean": "rm -r build",
+        "clean": "rm -r build && rm -rf coverage",
         "coverage": "npx nyc npm run test",
         "coverage:text": "npx nyc --reporter=text npm run test",
         "lint": "npm run lint:backend && npm run lint:frontend",
