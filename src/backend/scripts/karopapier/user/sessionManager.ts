@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import * as Constants from "../../shared/constants";
+import * as Constants from '../../shared/constants';
 import Database from '../database/database';
 import socketIo from 'socket.io';
 import Utils from '../../utility/utils';

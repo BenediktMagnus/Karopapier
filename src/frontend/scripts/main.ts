@@ -19,7 +19,6 @@ class Main
 
     constructor ()
     {
-
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
         this.mapPublicIdentifier = urlParameters.get('map') ?? '';
@@ -99,7 +98,7 @@ class Main
     }
 
     /**
-     * Will check wether everything is read i.e. the document is completely loaded, the socket is connected etc.
+     * Will check whether everything is read i.e. the document is completely loaded, the socket is connected etc.
      * and if yes it will call the associated event.
      */
     private callOnReadyIfReady (): void

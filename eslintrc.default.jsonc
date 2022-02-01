@@ -13,8 +13,6 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
-        "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-unused-vars": "off", // Provided by the tsconfig.json
         "spaced-comment": "warn",
         "no-multi-spaces": "warn",
         "no-whitespace-before-property": "warn",
@@ -54,6 +52,8 @@
                 "ignoreReadBeforeAssign": true
             }
         ],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": "off", // Provided by the tsconfig.json
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unused-expressions": "warn",
         "@typescript-eslint/no-floating-promises": "warn",
