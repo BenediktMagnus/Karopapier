@@ -12,7 +12,8 @@ class Main
 
     private readonly authenticator: Authenticator;
 
-    private mapPublicIdentifier: string;
+    private readonly mapPublicIdentifier: string;
+    private readonly isGreenScreen: boolean;
     private paper?: Paper;
     private palette?: Palette;
     private userCountController?: UserCountController;
@@ -22,6 +23,7 @@ class Main
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
         this.mapPublicIdentifier = urlParameters.get('map') ?? '';
+        this.isGreenScreen = urlParameters.has('greenScreen');
 
         // @ts-expect-error Error expected because of the import type hack.
         this.socket = io();
@@ -48,6 +50,15 @@ class Main
     public run (): void
     {
         this.socket.connect();
+
+        if (this.isGreenScreen)
+        {
+            const css = document.createElement('link');
+            css.rel = 'stylesheet';
+            css.type = 'text/css';
+            css.href = '/css/greenScreen.css';
+            document.head.appendChild(css);
+        }
     }
 
     private onConnect (): void

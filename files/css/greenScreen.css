@@ -1,0 +1,23 @@
+:root {
+    --background-colour: #589c00;
+}
+
+#paper {
+    background-color: var(--background-colour);
+}
+
+#paper td {
+    opacity: 1;
+}
+
+#paper td div {
+    opacity: 1;
+}
+
+#palette {
+    visibility: hidden;
+}
+
+#paperCoordinates {
+    visibility: hidden;
+}
