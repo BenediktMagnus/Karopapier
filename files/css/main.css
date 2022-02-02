@@ -1,33 +1,11 @@
 :root {
-    --background-colour: #000;
-    --contrast-colour: #444;
-
-    --default-element-spacing: 0.3rem;
-
-    --header-height: 1rem;
-
     --tool-image-size: 2rem;
     --tool-border-size: 0.2rem;
     --tool-spacing: 0.5rem;
-
-    --semi-transparent-opacity-value: 0.5;
-}
-
-html, body {
-    overflow: hidden;
 }
 
 body {
-    margin: 0;
-    padding: var(--default-element-spacing);
-
     display: flex;
-
-    background-color: var(--background-colour);
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    color: #FFF;
 }
 
 .textAlignLeft {
@@ -186,7 +164,7 @@ body {
     border-radius: 0.5rem;
 
     background-color: #333;
-    color: white;
+    color: var(--font-colour);
 
     text-align: center;
 

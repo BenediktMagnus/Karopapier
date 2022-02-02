@@ -1,0 +1,26 @@
+:root {
+    --background-colour: #000;
+    --contrast-colour: #444;
+    --font-colour: #FFF;
+
+    --default-element-spacing: 0.3rem;
+
+    --header-height: 1rem;
+
+    --semi-transparent-opacity-value: 0.5;
+}
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: var(--default-element-spacing);
+
+    background-color: var(--background-colour);
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    color: var(--font-colour);
+}
