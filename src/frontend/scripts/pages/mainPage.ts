@@ -1,12 +1,12 @@
-import type * as TypedSocketIo from "./typedSocketIo";
-import Authenticator from "./authenticator";
+import type * as TypedSocketIo from "../network/typedSocketIo";
+import Authenticator from "../network/authenticator";
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
 import type { io } from "socket.io-client";
-import Palette from "./elements/palette/palette";
-import Paper from "./elements/paper/paper";
-import UserCountController from "./elements/userCountController";
+import Palette from "../elements/palette/palette";
+import Paper from "../elements/paper/paper";
+import UserCountController from "../elements/userCountController";
 
-class Main
+class MainPage
 {
     private readonly socket: TypedSocketIo.Socket;
 
@@ -145,5 +145,5 @@ class Main
     }
 }
 
-const main = new Main();
-main.run();
+const mainPage = new MainPage();
+mainPage.run();
