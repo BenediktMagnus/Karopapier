@@ -1,10 +1,10 @@
-import type * as TypedSocketIo from "../network/typedSocketIo";
-import Authenticator from "../network/authenticator";
-// FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
-import type { io } from "socket.io-client";
-import Palette from "../elements/palette/palette";
-import Paper from "../elements/paper/paper";
-import UserCountController from "../elements/userCountController";
+import type * as TypedSocketIo from '../network/typedSocketIo';
+import Authenticator from '../network/authenticator';
+// FIXME: This is not correct. 'import type' should not be needed according to the documentation. What is wrong?
+import type { io } from 'socket.io-client';
+import Palette from '../elements/palette/palette';
+import Paper from '../elements/paper/paper';
+import UserCountController from '../elements/userCountController';
 
 class MainPage
 {

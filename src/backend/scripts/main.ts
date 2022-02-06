@@ -1,4 +1,4 @@
-import Karopapier from "./karopapier";
+import Karopapier from './karopapier';
 
 class Main
 {
@@ -32,7 +32,7 @@ class Main
                 this.karopapier.terminate();
             }
 
-            console.log("\nKaropapier closed.");
+            console.log('\nKaropapier closed.');
         }
     }
 

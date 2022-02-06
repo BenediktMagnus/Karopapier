@@ -1,6 +1,6 @@
-import * as Constants from "../../shared/constants";
-import { ContentEntry } from "../../shared/map";
-import MapEntryStatus from "./mapEntryStatus";
+import * as Constants from '../../shared/constants';
+import { ContentEntry } from '../../shared/map';
+import MapEntryStatus from './mapEntryStatus';
 
 interface UserEntry
 {

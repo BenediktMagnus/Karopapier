@@ -1,5 +1,5 @@
-import * as Constants from "../shared/constants";
-import type * as TypedSocketIo from "./typedSocketIo";
+import * as Constants from '../shared/constants';
+import type * as TypedSocketIo from './typedSocketIo';
 
 const sessionIdStorageKey = 'sessionId';
 const sessionTokenStorageKey = 'sessionToken';

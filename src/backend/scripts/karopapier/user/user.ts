@@ -1,5 +1,5 @@
 import * as TypedSocketIo from '../typedSocketIo';
-import { UserTable } from "../database/tables/userTable";
+import { UserTable } from '../database/tables/userTable';
 
 export default interface User extends UserTable
 {

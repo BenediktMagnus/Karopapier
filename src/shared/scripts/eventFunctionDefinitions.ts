@@ -1,4 +1,4 @@
-import { ContentEntryListElement, MapContent, MapData } from "./map";
+import { ContentEntryListElement, MapContent, MapData } from './map';
 
 export type Authenticate = (sessionId: number, sessionToken: string, reply: AuthenticateReply) => void;
 export type AuthenticateReply = (successful: boolean) => void;

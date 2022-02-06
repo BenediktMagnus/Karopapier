@@ -1,4 +1,4 @@
-import Point from "./paper/point";
+import Point from './paper/point';
 
 /**
  * Used to manage a coordinates element by automatically updating its content on changes.

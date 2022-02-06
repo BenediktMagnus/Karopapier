@@ -1,6 +1,6 @@
-import * as Constants from "../../shared/constants";
-import { ContentEntry } from "../../shared/map";
-import EventHandler from "../../utility/eventHandler";
+import * as Constants from '../../shared/constants';
+import { ContentEntry } from '../../shared/map';
+import EventHandler from '../../utility/eventHandler';
 
 type PointEvent = (point: Point) => void;
 

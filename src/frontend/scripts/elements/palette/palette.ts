@@ -1,7 +1,7 @@
-import CoordinateController from "../coordinateController";
-import { MapContent } from "../../shared/map";
-import Point from "../paper/point";
-import Tool from "./tool";
+import CoordinateController from '../coordinateController';
+import { MapContent } from '../../shared/map';
+import Point from '../paper/point';
+import Tool from './tool';
 
 export type PaletteEvent = (x: number, y: number, contentId: number) => void; // TODO: Change this to Point.
 

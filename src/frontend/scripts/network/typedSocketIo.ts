@@ -1,4 +1,4 @@
-import type * as socketIoClient from "socket.io-client";
+import type * as socketIoClient from 'socket.io-client';
 import ClientToServerEvents from '../shared/clientToServerEvents';
 import ServerToClientEvents from '../shared/serverToClientEvents';
 

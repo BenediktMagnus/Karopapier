@@ -1,4 +1,4 @@
-import Point, { PointEvents } from "./point";
+import Point, { PointEvents } from './point';
 
 type PointMap = Map<number, Point>;
 
