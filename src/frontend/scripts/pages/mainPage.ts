@@ -1,5 +1,6 @@
 import type * as TypedSocketIo from '../network/typedSocketIo';
 import Authenticator from '../network/authenticator';
+import { FrontendUtils } from '../utility/frontendUtils';
 // FIXME: This is not correct. 'import type' should not be needed according to the documentation. What is wrong?
 import type { io } from 'socket.io-client';
 import Palette from '../elements/palette/palette';
@@ -28,15 +29,7 @@ class MainPage
         // @ts-expect-error Error expected because of the import type hack.
         this.socket = io();
 
-        // DOM events:
-        if (document.readyState === 'loading')
-        {
-            document.addEventListener('DOMContentLoaded', this.onDocumentLoaded.bind(this));
-        }
-        else
-        {
-            this.onDocumentLoaded();
-        }
+        FrontendUtils.callWhenDocumentIsReady(this.onDocumentLoaded.bind(this));
 
         // Socket.io events:
         this.socket.on('connect', this.onConnect.bind(this));
