@@ -103,7 +103,7 @@ class LoginPage
         {
             await this.authenticator.login(this.nameInput.value, this.passwordInput.value);
 
-            window.location.assign('/');
+            window.location.assign('/lobby');
         }
         catch
         {
