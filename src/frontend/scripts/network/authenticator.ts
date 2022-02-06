@@ -22,68 +22,97 @@ export default class Authenticator
         this.socket = socket;
     }
 
-    public run (onAuthenticated: () => void): void
+    /**
+     * Try to authenticate with stored session ID and token. If there are none or this fails, login as anonymous.
+     */
+    public async run (): Promise<void>
     {
         const sessionId = localStorage.getItem(sessionIdStorageKey);
         const sessionToken = localStorage.getItem(sessionTokenStorageKey);
 
         if ((sessionId !== null) && (sessionToken !== null))
         {
-            this.tryAuthentication(sessionId, sessionToken, onAuthenticated);
+            await this.tryAuthentication(sessionId, sessionToken);
         }
         else
         {
-            this.login(onAuthenticated);
+            await this.loginAsAnonymous();
         }
     }
 
-    private tryAuthentication (sessionId: string, sessionToken: string, onAuthenticated: () => void): void
+    private async tryAuthentication (sessionId: string, sessionToken: string): Promise<void>
     {
         const sessionIdAsNumber = Number.parseInt(sessionId);
 
-        this.socket.emit(
-            'authenticate',
-            sessionIdAsNumber,
-            sessionToken,
-            (successful: boolean) =>
+        const authentication = new Promise<void>(
+            (resolve, reject) =>
             {
-                if (successful)
-                {
-                    this._isLoggedIn = true;
-                    onAuthenticated();
-                }
-                else
-                {
-                    localStorage.removeItem(sessionIdStorageKey);
-                    localStorage.removeItem(sessionTokenStorageKey);
+                this.socket.emit(
+                    'authenticate',
+                    sessionIdAsNumber,
+                    sessionToken,
+                    (successful: boolean) =>
+                    {
+                        if (successful)
+                        {
+                            this._isLoggedIn = true;
+                            resolve();
+                        }
+                        else
+                        {
+                            localStorage.removeItem(sessionIdStorageKey);
+                            localStorage.removeItem(sessionTokenStorageKey);
 
-                    this.login(onAuthenticated);
-                }
+                            reject(new Error('Authentication failed.'));
+                        }
+                    }
+                );
             }
         );
+
+        try
+        {
+            await authentication;
+        }
+        catch
+        {
+            await this.loginAsAnonymous();
+        }
     }
 
-    private login (onAuthenticated: () => void): void
+    private async loginAsAnonymous (): Promise<void>
     {
-        // TODO: Implement login with real credentials before login as anonymous.
+        await this.login(Constants.anonymousUserName, '');
+    }
 
-        this.socket.emit(
-            'login',
-            Constants.anonymousUserName,
-            '', // Anonymous' password is empty.
-            (successful: boolean, sessionId?: number, sessionToken?: string) =>
+    public async login (userName: string, password: string): Promise<void>
+    {
+        const login = new Promise<void>(
+            (resolve, reject) =>
             {
-                if ((!successful) || (sessionId === undefined) || (sessionToken === undefined))
-                {
-                    throw Error('Could not login as Anonymous.');
-                }
+                this.socket.emit(
+                    'login',
+                    userName,
+                    password,
+                    (successful: boolean, sessionId?: number, sessionToken?: string) =>
+                    {
+                        if ((!successful) || (sessionId === undefined) || (sessionToken === undefined))
+                        {
+                            reject(new Error(`Could not login as "${userName}".`));
 
-                localStorage.setItem(sessionIdStorageKey, `${sessionId}`);
-                localStorage.setItem(sessionTokenStorageKey, sessionToken);
+                            return;
+                        }
 
-                this._isLoggedIn = true;
-                onAuthenticated();
+                        localStorage.setItem(sessionIdStorageKey, `${sessionId}`);
+                        localStorage.setItem(sessionTokenStorageKey, sessionToken);
+
+                        this._isLoggedIn = true;
+                        resolve();
+                    }
+                );
             }
         );
+
+        await login;
     }
 }

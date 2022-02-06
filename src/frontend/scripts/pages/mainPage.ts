@@ -6,6 +6,7 @@ import type { io } from 'socket.io-client';
 import Palette from '../elements/palette/palette';
 import Paper from '../elements/paper/paper';
 import UserCountController from '../elements/userCountController';
+import Utils from '../shared/utils';
 
 class MainPage
 {
@@ -32,8 +33,8 @@ class MainPage
         FrontendUtils.callWhenDocumentIsReady(this.onDocumentLoaded.bind(this));
 
         // Socket.io events:
-        this.socket.on('connect', this.onConnect.bind(this));
-        this.socket.io.on('reconnect', this.onReconnect.bind(this));
+        this.socket.on('connect', Utils.catchVoidPromise(this.onConnect.bind(this)));
+        this.socket.io.on('reconnect', Utils.catchVoidPromise(this.onReconnect.bind(this)));
         // Log errors to the console: // TODO: Should we do this in production?
         this.socket.on('reportError', console.error.bind(console));
 
@@ -54,7 +55,7 @@ class MainPage
         }
     }
 
-    private onConnect (): void
+    private async onConnect (): Promise<void>
     {
         if (this.mapPublicIdentifier == '')
         {
@@ -67,12 +68,14 @@ class MainPage
         }
 
         // After connection, the same has to happen as after a reconnect:
-        this.onReconnect();
+        await this.onReconnect();
     }
 
-    private onReconnect (): void
+    private async onReconnect (): Promise<void>
     {
-        this.authenticator.run(this.callOnReadyIfReady.bind(this));
+        await this.authenticator.run();
+
+        this.callOnReadyIfReady();
 
         this.socket.emit('selectMap', this.mapPublicIdentifier);
 
