@@ -1,12 +1,13 @@
 import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
 import * as TypedSocketIo from '../typedSocketIo';
-import { ApiError } from '../../utility/apiError';
+import { ApiError } from '../../api/apiError';
+import ApiErrorMessage from '../../api/apiErrorMessage';
 import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
 import User from './user';
-import Utils from '../../utility/utils';
-import Validation from '../../utility/validation';
+import Utils from '../../shared/utils';
+import Validation from '../../api/validation';
 
 export default class UserHandler
 {
@@ -109,14 +110,14 @@ export default class UserHandler
     {
         if (!Validation.isNonEmptyString(name))
         {
-            socket.emit('reportError', Utils.forgeApiErrorMessage('login', ApiError.InvalidParameters));
+            socket.emit('reportError', ApiErrorMessage.forge('login', ApiError.InvalidParameters));
 
             return;
         }
 
         if (!Validation.isCallable(reply))
         {
-            socket.emit('reportError', Utils.forgeApiErrorMessage('login', ApiError.InvalidCallback));
+            socket.emit('reportError', ApiErrorMessage.forge('login', ApiError.InvalidCallback));
 
             return;
         }
@@ -147,14 +148,14 @@ export default class UserHandler
     {
         if (!Validation.isValidId(sessionId) || !Validation.isNonEmptyString(sessionToken))
         {
-            socket.emit('reportError', Utils.forgeApiErrorMessage('authenticate', ApiError.InvalidParameters));
+            socket.emit('reportError', ApiErrorMessage.forge('authenticate', ApiError.InvalidParameters));
 
             return;
         }
 
         if (!Validation.isCallable(reply))
         {
-            socket.emit('reportError', Utils.forgeApiErrorMessage('authenticate', ApiError.InvalidCallback));
+            socket.emit('reportError', ApiErrorMessage.forge('authenticate', ApiError.InvalidCallback));
 
             return;
         }

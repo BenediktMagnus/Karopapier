@@ -6,8 +6,8 @@ import { UserTable, UserTableInsert } from './tables/userTable';
 import { ContentTable } from './tables/contentTable';
 import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryTable from './tables/mapEntryTable';
-import Utils from '../../utility/utils';
 import Sqlite = require('better-sqlite3');
+import Utils from '../../shared/utils';
 
 export default class Database
 {

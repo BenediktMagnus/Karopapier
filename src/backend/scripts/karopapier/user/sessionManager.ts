@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import * as Constants from '../../shared/constants';
 import Database from '../database/database';
 import socketIo from 'socket.io';
-import Utils from '../../utility/utils';
+import Utils from '../../shared/utils';
 
 const min32BitInt = 1 << 30;
 const max32BitInt = 2 ** 32;
