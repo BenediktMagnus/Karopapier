@@ -1,0 +1,42 @@
+form :disabled {
+    filter: grayscale(100%) contrast(70%);
+    cursor: wait;
+}
+
+fieldset {
+    margin: 0;
+    padding: 0;
+
+    border: none;
+}
+
+input[type=text], input[type=password] {
+    width: 40%;
+
+    margin: var(--default-element-spacing) 0;
+    padding: var(--default-element-spacing);
+
+    box-sizing: border-box;
+    border: none;
+
+    background-color: var(--contrast-colour);
+    color: var(--font-colour);
+}
+
+button {
+    width: 40%;
+
+    margin: var(--default-element-spacing) 0;
+    padding: var(--default-element-spacing);
+
+    border: none;
+
+    background-color: var(--contrast-colour);
+    color: var(--font-colour);
+
+    cursor: pointer;
+}
+
+button:hover:enabled {
+    opacity: var(--semi-transparent-opacity-value);
+}

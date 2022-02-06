@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Karopapier - Login</title>
+
+    <!-- Icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any">
+
+	<!-- Meta settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" type="text/css" href="/css/base.css">
+	<link rel="stylesheet" type="text/css" href="/css/login.css">
+
+	<!-- Scripts -->
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="module" src="/scripts/pages/loginPage.js"></script>
+</head>
+<body>
+    <!-- Page content -->
+
+    <form name="login" id="loginForm">
+        <fieldset>
+            <label for="name">Name</label>
+            <br>
+            <input type="text" name="name" required>
+            <br>
+            <label for="password">Password</label>
+            <br>
+            <input type="password" name="password" required>
+            <br>
+            <button>Login</button>
+        </fieldset>
+    </form>
+
+    <p class="errorMessage" id="loginErrorMessage" style="visibility: hidden">Name or password incorrect!</p>
+</body>
+</html>

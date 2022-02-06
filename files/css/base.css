@@ -1,7 +1,8 @@
 :root {
     --background-colour: #000;
     --contrast-colour: #444;
-    --font-colour: #FFF;
+    --font-colour: #fff;
+    --error-colour: #b61515;
 
     --default-element-spacing: 0.3rem;
 
@@ -44,4 +45,22 @@ body {
 .displayFlexEqualGrow * {
     flex-grow: 1;
     flex-basis: 0;
+}
+
+.errorMessage {
+    color: var(--error-colour);
+}
+
+@keyframes flash {
+    50%, 100% {
+        opacity: 1;
+    }
+    0%, 75% {
+        opacity: 0.25;
+    }
+}
+
+.flash {
+    animation-name: flash;
+    animation-duration: 0.5s;
 }
