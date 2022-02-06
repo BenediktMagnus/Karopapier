@@ -75,9 +75,9 @@ class MainPage
     {
         await this.authenticator.run();
 
-        this.callOnReadyIfReady();
-
         this.socket.emit('selectMap', this.mapPublicIdentifier);
+
+        this.callOnReadyIfReady();
 
         // TODO: Reload entries and palette.
     }
