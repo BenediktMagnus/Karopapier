@@ -24,7 +24,19 @@ class MainPage
     {
         // Get the map from the URL query string:
         const urlParameters = new URLSearchParams(window.location.search);
-        this.mapPublicIdentifier = urlParameters.get('map') ?? '';
+        const mapPublicIdentifier = urlParameters.get('map');
+
+        if (mapPublicIdentifier === null)
+        {
+            window.location.assign('/lobby');
+
+            throw new Error('No map public identifier could not be found. Forward to lobby.');
+        }
+        else
+        {
+            this.mapPublicIdentifier = mapPublicIdentifier;
+        }
+
         this.isGreenScreen = urlParameters.has('greenScreen');
 
         // @ts-expect-error Error expected because of the import type hack.
@@ -36,7 +48,7 @@ class MainPage
         this.socket.on('connect', Utils.catchVoidPromise(this.onConnect.bind(this)));
         this.socket.io.on('reconnect', Utils.catchVoidPromise(this.onReconnect.bind(this)));
         // Log errors to the console: // TODO: Should we do this in production?
-        this.socket.on('reportError', console.error.bind(console));
+        this.socket.on('reportError', this.onError.bind(this));
 
         this.authenticator = new Authenticator(this.socket);
     }
@@ -80,6 +92,17 @@ class MainPage
         this.callOnReadyIfReady();
 
         // TODO: Reload entries and palette.
+    }
+
+    private onError (message: string): void
+    {
+        console.error(message);
+
+        // If there is an error while selecting the map (meaning it is invalid/inactive), return to the lobby:
+        if (message.startsWith('selectMap')) // TODO: Checking the string for a substring is unclean and not safe. This should be improved.
+        {
+            window.location.assign('/lobby');
+        }
     }
 
     private onDocumentLoaded (): void
