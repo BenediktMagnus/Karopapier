@@ -8,27 +8,6 @@ body {
     display: flex;
 }
 
-.textAlignLeft {
-    text-align: left;
-}
-
-.textAlignCentre {
-    text-align: center;
-}
-
-.textAlignRight {
-    text-align: right;
-}
-
-.displayFlexEqualGrow {
-    display: flex;
-}
-
-.displayFlexEqualGrow * {
-    flex-grow: 1;
-    flex-basis: 0;
-}
-
 .header {
     height: var(--header-height);
 
