@@ -1,4 +1,4 @@
-import CoordinateController from '../coordinateController';
+import CoordinateController from '../controllers/coordinateController';
 import { MapContent } from '../../shared/map';
 import Point from '../paper/point';
 import Tool from './tool';

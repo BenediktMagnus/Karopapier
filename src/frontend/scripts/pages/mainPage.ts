@@ -5,7 +5,7 @@ import { FrontendUtils } from '../utility/frontendUtils';
 import type { io } from 'socket.io-client';
 import Palette from '../elements/palette/palette';
 import Paper from '../elements/paper/paper';
-import UserCountController from '../elements/userCountController';
+import UserCountController from '../elements/controllers/userCountController';
 import Utils from '../shared/utils';
 
 class MainPage

@@ -1,6 +1,6 @@
 import { ContentEntryListElement, MapData } from '../../shared/map';
 import Point, { PointEvents } from './point';
-import CoordinateController from '../coordinateController';
+import CoordinateController from '../controllers/coordinateController';
 import MapUtility from '../../shared/mapUtility';
 import Row from './row';
 
