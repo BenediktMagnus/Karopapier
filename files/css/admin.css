@@ -1,0 +1,31 @@
+.tabHeader {
+    overflow: hidden;
+
+    background-color: var(--background-colour);
+}
+
+.tabButton {
+    padding: calc(var(--default-element-spacing) * 3);
+
+    background-color: var(--contrast-colour);
+    color: var(--font-colour);
+
+    float: left;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tabButton:hover {
+    opacity: calc(var(--semi-transparent-opacity-value) * 1.2);
+}
+
+.activeTabButton {
+    background-color: var(--active-colour);
+}
+
+.tabContent {
+    display: none;
+
+    padding: var(--default-element-spacing);
+}

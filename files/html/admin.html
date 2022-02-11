@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
 
 	<!-- Stylesheets -->
+	<link rel="stylesheet" type="text/css" href="/css/base.css">
+	<link rel="stylesheet" type="text/css" href="/css/admin.css">
 
 	<!-- Scripts -->
 	<script src="/socket.io/socket.io.js"></script>
@@ -20,10 +22,39 @@
 <body>
     <!-- Page content -->
 
+    <div class="tabHeader">
+        <button class="tabButton" forTab="usersTab">Users</button>
+        <button class="tabButton" forTab="mapsTab">Maps</button>
+        <button class="tabButton" forTab="toolsTab">Tools</button>
+        <button class="tabButton" forTab="moderationTab">Moderation</button>
+    </div>
+
+    <div id="usersTab" class="tabContent">
+        <h3>Users</h3>
+        <p>User User User!</p>
+    </div>
+
+    <div id="mapsTab" class="tabContent">
+        <h3>Maps</h3>
+        <p>Map Map Map!</p>
+    </div>
+
+    <div id="toolsTab" class="tabContent">
+        <h3>Tools</h3>
+        <p>Tool Tool Tool!</p>
+    </div>
+
+    <div id="moderationTab" class="tabContent">
+        <h3>Moderation</h3>
+        <p>Moderation Moderation Moderation!</p>
+    </div>
+
     <!--
         TODO: User list for user administration (new user, make mod/admin, online list)
         TODO: Socket list for anonymous administration (block/ban IP, delete his votes)
         TODO: Map administration: Activate/deactivate maps, reset anonymous votes
+        TODO: Possibility to create new maps
+        TODO: Possibility to add and edit tools
 
         In map view adminstration (for things to add in index.html):
         TODO: See which IPs have voted for what (block/ban them?)

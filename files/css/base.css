@@ -1,5 +1,6 @@
 :root {
     --background-colour: #000;
+    --active-colour: #222;
     --contrast-colour: #444;
     --font-colour: #fff;
     --error-colour: #b61515;
