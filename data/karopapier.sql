@@ -38,7 +38,7 @@ CREATE TABLE `mapEntry` (
     `contentId` INTEGER NOT NULL,
     FOREIGN KEY(`mapId`) REFERENCES `map`(`id`) ON DELETE CASCADE,
     FOREIGN KEY(`userId`) REFERENCES `user`(`id`) ON DELETE SET DEFAULT, -- On DELETE, set the userId to 0 which is the anonymous user.
-    FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY(`sessionId`) REFERENCES `session`(`id`) ON DELETE SET NULL, -- FIXME: This cannot be set to NULL! How would a session be deleted?
     FOREIGN KEY(`contentId`) REFERENCES `content`(`id`) ON DELETE CASCADE
 );
 
