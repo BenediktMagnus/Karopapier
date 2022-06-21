@@ -9,7 +9,7 @@ config = {
     ],
     bundle: true,
     sourcemap: true,
-    target: 'es2015',
+    target: 'es2021',
     platform: 'browser',
     tsconfig: 'src/frontend/tsconfig.json',
     outdir: 'build/frontend/',

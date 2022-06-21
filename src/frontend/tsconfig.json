@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.default.jsonc",
     "compilerOptions": {
         "module": "es2015",
-        "target": "es2015",
+        "target": "es2021",
         "moduleResolution": "node",
 
         "noEmit": true,

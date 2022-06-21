@@ -8,7 +8,7 @@
     "parserOptions": {
         "project": "src/frontend/tsconfig.json",
         "sourceType": "module",
-        "ecmaVersion": 5
+        "ecmaVersion": 2021
     },
     "extends": [
         "../../eslintrc.default.jsonc"

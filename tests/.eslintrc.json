@@ -9,7 +9,7 @@
     "parserOptions": {
         "project": "./tsconfig.json",
         "sourceType": "module",
-        "ecmaVersion": 2018
+        "ecmaVersion": 2021
     },
     "extends": [
         "../eslintrc.default.jsonc"
