@@ -293,6 +293,8 @@ export default class MapHandler
                 return;
             }
 
+            // TODO: Can the following disable statement be prevented by better typing?
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             callable(user, ...args);
         };
 
