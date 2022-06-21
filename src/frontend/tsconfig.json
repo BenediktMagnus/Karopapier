@@ -11,6 +11,6 @@
         "isolatedModules": true
     },
     "include": [
-        "scripts/**/*.ts"
+        "./**/*.ts"
     ]
 }

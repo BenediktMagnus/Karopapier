@@ -1,4 +1,4 @@
-import * as EventFunctionDefinitions from '../../../../shared/scripts/eventFunctionDefinitions';
+import * as EventFunctionDefinitions from '../../../shared/eventFunctionDefinitions';
 import * as TypedSocketIo from '../typedSocketIo';
 import { ApiError } from '../../api/apiError';
 import ApiErrorMessage from '../../api/apiErrorMessage';
@@ -6,7 +6,7 @@ import Database from '../database/database';
 import Server from '../server';
 import SessionManager from './sessionManager';
 import User from './user';
-import Utils from '../../../../shared/scripts/utils';
+import Utils from '../../../shared/utils';
 import Validation from '../../api/validation';
 
 export default class UserHandler

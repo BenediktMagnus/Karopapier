@@ -1,10 +1,10 @@
 import MapEntry, { MapEntrySetResult } from './mapEntry';
-import { ContentEntryListElement } from '../../../../shared/scripts/map';
+import { ContentEntryListElement } from '../../../shared/map';
 import Database from '../database/database';
 import MapEntryStatus from './mapEntryStatus';
 import MapEntryTable from '../database/tables/mapEntryTable';
 import { MapTable } from '../database/tables/mapTable';
-import MapUtility from '../../../../shared/scripts/mapUtility';
+import MapUtility from '../../../shared/mapUtility';
 import User from '../user/user';
 
 type MapEntryMap = Map<number, MapEntry>;

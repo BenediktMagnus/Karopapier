@@ -1,5 +1,5 @@
 import { ApiError } from './apiError';
-import ClientToServerEvents from '../../../shared/scripts/clientToServerEvents';
+import ClientToServerEvents from '../../shared/clientToServerEvents';
 
 export default abstract class ApiErrorMessage
 {

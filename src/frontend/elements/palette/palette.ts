@@ -1,5 +1,5 @@
 import CoordinateController from '../controllers/coordinateController';
-import { MapContent } from '../../../../shared/scripts/map';
+import { MapContent } from '../../../shared/map';
 import Point from '../paper/point';
 import Tool from './tool';
 

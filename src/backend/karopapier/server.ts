@@ -34,8 +34,8 @@ export default class Server
             // source files for the Javascript scripts, making debugging in the browser easier:
             this.server.use('/scripts', express.static('./build/frontend', {extensions: ['js', 'js.map']}));
             this.server.use(
-                '/src/frontend/scripts',
-                express.static('./src/frontend/scripts', {extensions: ['ts']})
+                '/src/frontend',
+                express.static('./src/frontend', {extensions: ['ts']})
             );
         }
         else

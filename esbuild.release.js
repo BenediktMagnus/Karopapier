@@ -2,10 +2,10 @@ const esbuild = require('esbuild');
 
 config = {
     entryPoints: [
-        'src/frontend/scripts/pages/mainPage.ts',
-        'src/frontend/scripts/pages/adminPage.ts',
-        'src/frontend/scripts/pages/lobbyPage.ts',
-        'src/frontend/scripts/pages/loginPage.ts'
+        'src/frontend/pages/mainPage.ts',
+        'src/frontend/pages/adminPage.ts',
+        'src/frontend/pages/lobbyPage.ts',
+        'src/frontend/pages/loginPage.ts'
     ],
     bundle: true,
     minify: true,
