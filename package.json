@@ -42,7 +42,7 @@
         "config",
         "data",
         "files",
-        "LICENSE.md",
+        "LICENSE",
         "README.md"
     ],
     "main": "build/backend/main.js",
