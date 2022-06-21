@@ -1,5 +1,5 @@
 import type * as TypedSocketIo from '../network/typedSocketIo';
-import { AdminTabs } from '../elements/adminTabs';
+import { AdminTabs } from '../elements/admin/adminTabs';
 import Authenticator from '../network/authenticator';
 import { FrontendUtils } from '../utility/frontendUtils';
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
