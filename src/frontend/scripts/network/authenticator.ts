@@ -1,4 +1,4 @@
-import * as Constants from '../shared/constants';
+import * as Constants from '../../../shared/scripts/constants';
 import type * as TypedSocketIo from './typedSocketIo';
 
 const sessionIdStorageKey = 'sessionId';

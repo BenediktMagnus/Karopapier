@@ -1,8 +1,8 @@
 {
     "env": {
-        "node": false,
+        "browser": true,
         "es6": true,
-        "browser": true
+        "node": false
     },
     "root": true,
     "parserOptions": {

@@ -1,6 +1,6 @@
-import * as EventFunctionDefinitions from '../../shared/eventFunctionDefinitions';
+import * as EventFunctionDefinitions from '../../../../shared/scripts/eventFunctionDefinitions';
 import * as TypedSocketIo from '../typedSocketIo';
-import { MapContent, MapData } from '../../shared/map';
+import { MapContent, MapData } from '../../../../shared/scripts/map';
 import { ApiError } from '../../api/apiError';
 import Database from '../database/database';
 import MapEntryStatus from './mapEntryStatus';

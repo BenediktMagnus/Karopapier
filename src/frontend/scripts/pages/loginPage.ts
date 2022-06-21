@@ -3,7 +3,7 @@ import Authenticator from '../network/authenticator';
 import { FrontendUtils } from '../utility/frontendUtils';
 // FIXME: This is not correct. "import type" should not be needed according to the documentation. What is wrong?
 import type { io } from 'socket.io-client';
-import Utils from '../shared/utils';
+import Utils from '../../../shared/scripts/utils';
 
 class LoginPage
 {

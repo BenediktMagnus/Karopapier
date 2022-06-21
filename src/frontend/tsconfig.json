@@ -5,7 +5,9 @@
         "target": "es2015",
         "moduleResolution": "node",
 
-        "outDir": "../../build/frontend"
+        "noEmit": true,
+
+        "isolatedModules": true
     },
     "include": [
         "scripts/**/*.ts"

@@ -1,7 +1,7 @@
-import { ContentEntryListElement, MapData } from '../../shared/map';
+import { ContentEntryListElement, MapData } from '../../../../shared/scripts/map';
 import Point, { PointEvents } from './point';
 import CoordinateController from '../controllers/coordinateController';
-import MapUtility from '../../shared/mapUtility';
+import MapUtility from '../../../../shared/scripts/mapUtility';
 import Row from './row';
 
 type RowMap = Map<number, Row>;

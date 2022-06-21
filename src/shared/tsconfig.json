@@ -1,0 +1,11 @@
+{
+    "extends": "../frontend/tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../build/shared",
+
+        "isolatedModules": true
+    },
+    "include": [
+        "./**/*.ts"
+    ]
+}

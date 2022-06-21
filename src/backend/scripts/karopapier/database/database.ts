@@ -1,4 +1,4 @@
-import * as Constants from '../../shared/constants';
+import * as Constants from '../../../../shared/scripts/constants';
 import * as fs from 'fs';
 import { MapTable, MapTableInsert } from './tables/mapTable';
 import SessionTable, { SessionTableInsert } from './tables/sessionTable';
@@ -7,7 +7,7 @@ import { ContentTable } from './tables/contentTable';
 import { MapContentGroupNumber } from './tables/mapContentTable';
 import MapEntryTable from './tables/mapEntryTable';
 import Sqlite = require('better-sqlite3');
-import Utils from '../../shared/utils';
+import Utils from '../../../../shared/scripts/utils';
 
 export default class Database
 {
