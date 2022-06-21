@@ -2,6 +2,7 @@
     "extends": "../frontend/tsconfig.json",
     "compilerOptions": {
         "outDir": "../../build/shared",
+        "tsBuildInfoFile": "../../build/tsbuildinfo.shared.json",
 
         "isolatedModules": true
     },

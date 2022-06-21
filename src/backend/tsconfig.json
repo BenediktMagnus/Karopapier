@@ -4,7 +4,8 @@
         "module": "commonjs",
         "target": "es2021",
 
-        "outDir": "../../build/backend"
+        "outDir": "../../build/backend",
+        "tsBuildInfoFile": "../../build/tsbuildinfo.backend.json"
     },
     "include": [
         "scripts/**/*.ts"
