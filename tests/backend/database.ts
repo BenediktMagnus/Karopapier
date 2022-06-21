@@ -1,7 +1,7 @@
 import 'mocha';
 import { assert } from 'chai';
-import Database from '../../src/backend/scripts/karopapier/database/database';
-import Utils from '../../src/shared/scripts/utils';
+import Database from '../../src/backend/karopapier/database/database';
+import Utils from '../../src/shared/utils';
 
 const testUserInsert = {
     name: 'testName',
