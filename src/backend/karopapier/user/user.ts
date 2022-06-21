@@ -6,5 +6,5 @@ export default interface User extends UserTable
     socket: TypedSocketIo.Socket;
     sessionId: number;
     ip: string;
-    selectedMapId?: number;
+    selectedMapId?: number | undefined;
 }
