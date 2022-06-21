@@ -1,13 +1,13 @@
 {
-	"extends": "../../tsconfig.default.jsonc",
-	"compilerOptions": {
-		"module": "es2015",
-		"target": "es2015",
-		"moduleResolution": "node",
+    "extends": "../../tsconfig.default.jsonc",
+    "compilerOptions": {
+        "module": "es2015",
+        "target": "es2015",
+        "moduleResolution": "node",
 
-		"outDir": "../../build/frontend"
-	},
-	"include": [
-		"scripts/**/*.ts"
-	]
+        "outDir": "../../build/frontend"
+    },
+    "include": [
+        "scripts/**/*.ts"
+    ]
 }

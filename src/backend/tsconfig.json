@@ -1,12 +1,12 @@
 {
-	"extends": "../../tsconfig.default.jsonc",
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2018",
+    "extends": "../../tsconfig.default.jsonc",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2018",
 
-		"outDir": "../../build/backend"
-	},
-	"include": [
-		"scripts/**/*.ts"
-	]
+        "outDir": "../../build/backend"
+    },
+    "include": [
+        "scripts/**/*.ts"
+    ]
 }

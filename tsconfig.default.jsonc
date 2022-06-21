@@ -1,19 +1,19 @@
 {
-	"compilerOptions": {
-		"strict": true,
-		"noImplicitReturns": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
 
-		"allowJs": false,
-		"esModuleInterop": true,
+        "allowJs": false,
+        "esModuleInterop": true,
 
-		"sourceMap": true,
-		"removeComments": true
-	},
-	"include": [
-		"src/**/*.ts"
-	]
+        "sourceMap": true,
+        "removeComments": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }

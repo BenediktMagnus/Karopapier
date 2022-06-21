@@ -1,11 +1,11 @@
 export interface SessionTableInsert
 {
-	userId: number;
-	token: string;
+    userId: number;
+    token: string;
 }
 
 export default interface SessionTable extends SessionTableInsert
 {
-	id: number;
-	lastAccess: number;
+    id: number;
+    lastAccess: number;
 }
