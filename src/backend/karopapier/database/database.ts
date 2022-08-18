@@ -39,6 +39,8 @@ export default class Database
         database.pragma('journal_mode = WAL');
         // We want save data, so full synchronous:
         database.pragma('synchronous = FULL');
+        // Enable foreign key constraints:
+        database.pragma('foreign_keys = ON');
 
         if (fileCreated || inMemory)
         {
